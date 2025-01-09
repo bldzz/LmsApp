@@ -12,6 +12,8 @@ public class UnitOfWork : IUnitOfWork
         this.context = context;
     }
 
+    public ICourseRepo CourseRepo { get; }
+
     public async Task CompleteASync()
     {
         await context.SaveChangesAsync();
