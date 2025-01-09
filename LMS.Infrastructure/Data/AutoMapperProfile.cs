@@ -10,5 +10,7 @@ public class AutoMapperProfile : Profile
     public AutoMapperProfile()
     {
         CreateMap<UserForRegistrationDto, ApplicationUser>();
+        CreateMap<CourseCreationDto, Course>();
+        CreateMap<CourseDto, Course>();
     }
 }
