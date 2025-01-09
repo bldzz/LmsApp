@@ -23,10 +23,10 @@ namespace Domain.Models.Entites
         [Required]
         public DateTime StartDate { get; set; }
 
-        public ICollection<Module> Modules { get; set; } // One-to-Many with Modules
-        public ICollection<UserCourse> UserCourses { get; set; } // Many-to-Many with Users
+        public ICollection<Module>? Modules { get; set; } // One-to-Many with Modules
+        public ICollection<UserCourse>? UserCourses { get; set; } // Many-to-Many with Users
 
-        public ICollection<Document> Documents { get; set; } // Documents related to Course
+        public ICollection<Document>? Documents { get; set; } // Documents related to Course
     }
 
 }

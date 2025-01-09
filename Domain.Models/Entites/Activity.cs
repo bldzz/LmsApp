@@ -34,7 +34,7 @@ namespace Domain.Models.Entites
         public Module Module { get; set; }
         // Initialize collection to avoid null reference
 
-        public ICollection<Document> Documents { get; set; } = new List<Document>(); // One-to-Many with Documents
+        public ICollection<Document>? Documents { get; set; } = new List<Document>(); // One-to-Many with Documents
 
         
         /// Validates if the activity's time range is valid (EndTime > StartTime).
