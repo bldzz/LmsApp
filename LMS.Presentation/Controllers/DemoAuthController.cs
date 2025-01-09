@@ -3,7 +3,7 @@ using LMS.Shared.DTOs;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-namespace LMS.Presemtation.Controllers;
+namespace LMS.Presentation.Controllers;
 
 [Route("api/demoauth")]
 [ApiController]

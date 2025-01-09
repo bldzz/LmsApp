@@ -7,51 +7,51 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Domain.Models.Entites;
 
-namespace LMS.Presemtation.Controllers
+namespace LMS.Presentation.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class ModulesController : ControllerBase
+    public class CoursesController : ControllerBase
     {
         private readonly LmsContext _context;
 
-        public ModulesController(LmsContext context)
+        public CoursesController(LmsContext context)
         {
             _context = context;
         }
 
-        // GET: api/Modules
+        // GET: api/Courses
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Module>>> GetModules()
+        public async Task<ActionResult<IEnumerable<Course>>> GetCourses()
         {
-            return await _context.Modules.ToListAsync();
+            return await _context.Courses.ToListAsync();
         }
 
-        // GET: api/Modules/5
+        // GET: api/Courses/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Module>> GetModule(int id)
+        public async Task<ActionResult<Course>> GetCourse(int id)
         {
-            var @module = await _context.Modules.FindAsync(id);
+            var course = await _context.Courses.FindAsync(id);
 
-            if (@module == null)
+            if (course == null)
             {
                 return NotFound();
             }
 
-            return @module;
+            return course;
         }
 
-        // PUT: api/Modules/5
+        // PUT: api/Courses/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutModule(int id, Module @module)
+        public async Task<IActionResult> PutCourse(int id, Course course)
         {
-            if (id != @module.Id)
+            if (id != course.Id)
             {
                 return BadRequest();
             }
 
-            _context.Entry(@module).State = EntityState.Modified;
+            _context.Entry(course).State = EntityState.Modified;
 
             try
             {
@@ -59,7 +59,7 @@ namespace LMS.Presemtation.Controllers
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!ModuleExists(id))
+                if (!CourseExists(id))
                 {
                     return NotFound();
                 }
@@ -72,36 +72,36 @@ namespace LMS.Presemtation.Controllers
             return NoContent();
         }
 
-        // POST: api/Modules
+        // POST: api/Courses
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Module>> PostModule(Module @module)
+        public async Task<ActionResult<Course>> PostCourse(Course course)
         {
-            _context.Modules.Add(@module);
+            _context.Courses.Add(course);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetModule", new { id = @module.Id }, @module);
+            return CreatedAtAction("GetCourse", new { id = course.Id }, course);
         }
 
-        // DELETE: api/Modules/5
+        // DELETE: api/Courses/5
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteModule(int id)
+        public async Task<IActionResult> DeleteCourse(int id)
         {
-            var @module = await _context.Modules.FindAsync(id);
-            if (@module == null)
+            var course = await _context.Courses.FindAsync(id);
+            if (course == null)
             {
                 return NotFound();
             }
 
-            _context.Modules.Remove(@module);
+            _context.Courses.Remove(course);
             await _context.SaveChangesAsync();
 
             return NoContent();
         }
 
-        private bool ModuleExists(int id)
+        private bool CourseExists(int id)
         {
-            return _context.Modules.Any(e => e.Id == id);
+            return _context.Courses.Any(e => e.Id == id);
         }
     }
 }

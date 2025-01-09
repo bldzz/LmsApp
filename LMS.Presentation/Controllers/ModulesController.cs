@@ -7,51 +7,51 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Domain.Models.Entites;
 
-namespace LMS.Presemtation.Controllers
+namespace LMS.Presentation.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class DocumentsController : ControllerBase
+    public class ModulesController : ControllerBase
     {
         private readonly LmsContext _context;
 
-        public DocumentsController(LmsContext context)
+        public ModulesController(LmsContext context)
         {
             _context = context;
         }
 
-        // GET: api/Documents
+        // GET: api/Modules
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Document>>> GetDocuments()
+        public async Task<ActionResult<IEnumerable<Module>>> GetModules()
         {
-            return await _context.Documents.ToListAsync();
+            return await _context.Modules.ToListAsync();
         }
 
-        // GET: api/Documents/5
+        // GET: api/Modules/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Document>> GetDocument(int id)
+        public async Task<ActionResult<Module>> GetModule(int id)
         {
-            var document = await _context.Documents.FindAsync(id);
+            var @module = await _context.Modules.FindAsync(id);
 
-            if (document == null)
+            if (@module == null)
             {
                 return NotFound();
             }
 
-            return document;
+            return @module;
         }
 
-        // PUT: api/Documents/5
+        // PUT: api/Modules/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutDocument(int id, Document document)
+        public async Task<IActionResult> PutModule(int id, Module @module)
         {
-            if (id != document.Id)
+            if (id != @module.Id)
             {
                 return BadRequest();
             }
 
-            _context.Entry(document).State = EntityState.Modified;
+            _context.Entry(@module).State = EntityState.Modified;
 
             try
             {
@@ -59,7 +59,7 @@ namespace LMS.Presemtation.Controllers
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!DocumentExists(id))
+                if (!ModuleExists(id))
                 {
                     return NotFound();
                 }
@@ -72,36 +72,36 @@ namespace LMS.Presemtation.Controllers
             return NoContent();
         }
 
-        // POST: api/Documents
+        // POST: api/Modules
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Document>> PostDocument(Document document)
+        public async Task<ActionResult<Module>> PostModule(Module @module)
         {
-            _context.Documents.Add(document);
+            _context.Modules.Add(@module);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetDocument", new { id = document.Id }, document);
+            return CreatedAtAction("GetModule", new { id = @module.Id }, @module);
         }
 
-        // DELETE: api/Documents/5
+        // DELETE: api/Modules/5
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteDocument(int id)
+        public async Task<IActionResult> DeleteModule(int id)
         {
-            var document = await _context.Documents.FindAsync(id);
-            if (document == null)
+            var @module = await _context.Modules.FindAsync(id);
+            if (@module == null)
             {
                 return NotFound();
             }
 
-            _context.Documents.Remove(document);
+            _context.Modules.Remove(@module);
             await _context.SaveChangesAsync();
 
             return NoContent();
         }
 
-        private bool DocumentExists(int id)
+        private bool ModuleExists(int id)
         {
-            return _context.Documents.Any(e => e.Id == id);
+            return _context.Modules.Any(e => e.Id == id);
         }
     }
 }

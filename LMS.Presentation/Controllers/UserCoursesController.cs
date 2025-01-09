@@ -7,51 +7,51 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Domain.Models.Entites;
 
-namespace LMS.Presemtation.Controllers
+namespace LMS.Presentation.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class CoursesController : ControllerBase
+    public class UserCoursesController : ControllerBase
     {
         private readonly LmsContext _context;
 
-        public CoursesController(LmsContext context)
+        public UserCoursesController(LmsContext context)
         {
             _context = context;
         }
 
-        // GET: api/Courses
+        // GET: api/UserCourses
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Course>>> GetCourses()
+        public async Task<ActionResult<IEnumerable<UserCourse>>> GetUserCourses()
         {
-            return await _context.Courses.ToListAsync();
+            return await _context.UserCourses.ToListAsync();
         }
 
-        // GET: api/Courses/5
+        // GET: api/UserCourses/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Course>> GetCourse(int id)
+        public async Task<ActionResult<UserCourse>> GetUserCourse(int id)
         {
-            var course = await _context.Courses.FindAsync(id);
+            var userCourse = await _context.UserCourses.FindAsync(id);
 
-            if (course == null)
+            if (userCourse == null)
             {
                 return NotFound();
             }
 
-            return course;
+            return userCourse;
         }
 
-        // PUT: api/Courses/5
+        // PUT: api/UserCourses/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutCourse(int id, Course course)
+        public async Task<IActionResult> PutUserCourse(int id, UserCourse userCourse)
         {
-            if (id != course.Id)
+            if (id != userCourse.Id)
             {
                 return BadRequest();
             }
 
-            _context.Entry(course).State = EntityState.Modified;
+            _context.Entry(userCourse).State = EntityState.Modified;
 
             try
             {
@@ -59,7 +59,7 @@ namespace LMS.Presemtation.Controllers
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!CourseExists(id))
+                if (!UserCourseExists(id))
                 {
                     return NotFound();
                 }
@@ -72,36 +72,36 @@ namespace LMS.Presemtation.Controllers
             return NoContent();
         }
 
-        // POST: api/Courses
+        // POST: api/UserCourses
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Course>> PostCourse(Course course)
+        public async Task<ActionResult<UserCourse>> PostUserCourse(UserCourse userCourse)
         {
-            _context.Courses.Add(course);
+            _context.UserCourses.Add(userCourse);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetCourse", new { id = course.Id }, course);
+            return CreatedAtAction("GetUserCourse", new { id = userCourse.Id }, userCourse);
         }
 
-        // DELETE: api/Courses/5
+        // DELETE: api/UserCourses/5
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteCourse(int id)
+        public async Task<IActionResult> DeleteUserCourse(int id)
         {
-            var course = await _context.Courses.FindAsync(id);
-            if (course == null)
+            var userCourse = await _context.UserCourses.FindAsync(id);
+            if (userCourse == null)
             {
                 return NotFound();
             }
 
-            _context.Courses.Remove(course);
+            _context.UserCourses.Remove(userCourse);
             await _context.SaveChangesAsync();
 
             return NoContent();
         }
 
-        private bool CourseExists(int id)
+        private bool UserCourseExists(int id)
         {
-            return _context.Courses.Any(e => e.Id == id);
+            return _context.UserCourses.Any(e => e.Id == id);
         }
     }
 }

@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Services.Contracts;
 
-namespace LMS.Presemtation.Controllers;
+namespace LMS.Presentation.Controllers;
 
 //[ApiController]
 //[Route("api/[controller]")]

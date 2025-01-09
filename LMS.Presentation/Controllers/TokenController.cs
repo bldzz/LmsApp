@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Services.Contracts;
 
-namespace LMS.Presemtation.Controllers;
+namespace LMS.Presentation.Controllers;
 
 [Route("api/token")]
 [ApiController]
