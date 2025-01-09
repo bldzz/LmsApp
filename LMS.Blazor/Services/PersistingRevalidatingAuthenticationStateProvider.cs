@@ -7,7 +7,7 @@ using System.Diagnostics;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Components.Web;
 using LMS.Blazor.Client.Models;
-using LMS.Shared.User;
+using Domain.Models.Entites;
 
 namespace LMS.Blazor.Services;
 

@@ -1,5 +1,5 @@
-﻿using LMS.Blazor.Data;
-using LMS.Shared.User;
+﻿using Domain.Models.Entites;
+using LMS.Blazor.Data;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.Server;
 using Microsoft.AspNetCore.Identity;

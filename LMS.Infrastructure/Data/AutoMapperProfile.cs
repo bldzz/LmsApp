@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
+using Domain.Models.Entites;
 using LMS.Shared.DTOs;
-using LMS.Shared.User;
+
 
 namespace LMS.Infrastructure.Data;
 

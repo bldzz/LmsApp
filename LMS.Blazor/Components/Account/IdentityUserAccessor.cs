@@ -1,4 +1,4 @@
-﻿using LMS.Shared.User;
+﻿using Domain.Models.Entites;
 using Microsoft.AspNetCore.Identity;
 
 namespace LMS.Blazor.Components.Account
