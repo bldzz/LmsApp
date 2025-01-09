@@ -3,6 +3,8 @@ using Domain.Contracts;
 using Microsoft.EntityFrameworkCore;
 
 namespace LMS.Services;
+
+using Domain.Models.Entites;
 using LMS.Shared.DTOs;
 
 public class CourseService : ICourseService
@@ -22,14 +24,17 @@ public class CourseService : ICourseService
         return _mapper.Map<IEnumerable<CourseDto>>(courses);
     }
 
-    public Task<CourseDto> GetCourseAsync(int id)
+    public async Task<CourseDto> GetCourseAsync(int id)
     {
-        throw new NotImplementedException();
+        var course = await _uow.CourseRepo.FindByCondition(c => c.Id == id).SingleAsync();
+        return _mapper.Map<Course, CourseDto>(course);
     }
 
-    public Task<CourseDto> PostCourse(CourseCreationDto dto)
+    public async Task<CourseDto> PostCourse(CourseCreationDto dto)
     {
-        throw new NotImplementedException();
+        var course = _mapper.Map<CourseCreationDto, Course>(dto);
+        _uow.CourseRepo.Create(course);
+        await _uow.CompleteASync();
     }
 
     public Task<CourseDto> PutCourse(int id, CourseCreationDto dto)
