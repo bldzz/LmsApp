@@ -35,6 +35,7 @@ public class CourseService : ICourseService
         var course = _mapper.Map<CourseCreationDto, Course>(dto);
         _uow.CourseRepo.Create(course);
         await _uow.CompleteASync();
+        return _mapper.Map<Course, CourseDto>(course);
     }
 
     public Task<CourseDto> PutCourse(int id, CourseCreationDto dto)
