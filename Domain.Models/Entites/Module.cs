@@ -33,5 +33,4 @@ namespace Domain.Models.Entites
         public ICollection<Activity> Activities { get; set; } // One-to-Many with Activities
         public ICollection<Document> Documents { get; set; } // One-to-Many with Documents
     }
-
 }
