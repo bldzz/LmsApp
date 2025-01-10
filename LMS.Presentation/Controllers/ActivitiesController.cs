@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Domain.Models.Entites;
 
-namespace LMS.Presemtation.Controllers
+namespace LMS.Presentation.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]

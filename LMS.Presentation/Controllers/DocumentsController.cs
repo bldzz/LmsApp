@@ -7,51 +7,51 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Domain.Models.Entites;
 
-namespace LMS.Presemtation.Controllers
+namespace LMS.Presentation.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class UserCoursesController : ControllerBase
+    public class DocumentsController : ControllerBase
     {
         private readonly LmsContext _context;
 
-        public UserCoursesController(LmsContext context)
+        public DocumentsController(LmsContext context)
         {
             _context = context;
         }
 
-        // GET: api/UserCourses
+        // GET: api/Documents
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<UserCourse>>> GetUserCourses()
+        public async Task<ActionResult<IEnumerable<Document>>> GetDocuments()
         {
-            return await _context.UserCourses.ToListAsync();
+            return await _context.Documents.ToListAsync();
         }
 
-        // GET: api/UserCourses/5
+        // GET: api/Documents/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<UserCourse>> GetUserCourse(int id)
+        public async Task<ActionResult<Document>> GetDocument(int id)
         {
-            var userCourse = await _context.UserCourses.FindAsync(id);
+            var document = await _context.Documents.FindAsync(id);
 
-            if (userCourse == null)
+            if (document == null)
             {
                 return NotFound();
             }
 
-            return userCourse;
+            return document;
         }
 
-        // PUT: api/UserCourses/5
+        // PUT: api/Documents/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutUserCourse(int id, UserCourse userCourse)
+        public async Task<IActionResult> PutDocument(int id, Document document)
         {
-            if (id != userCourse.Id)
+            if (id != document.Id)
             {
                 return BadRequest();
             }
 
-            _context.Entry(userCourse).State = EntityState.Modified;
+            _context.Entry(document).State = EntityState.Modified;
 
             try
             {
@@ -59,7 +59,7 @@ namespace LMS.Presemtation.Controllers
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!UserCourseExists(id))
+                if (!DocumentExists(id))
                 {
                     return NotFound();
                 }
@@ -72,36 +72,36 @@ namespace LMS.Presemtation.Controllers
             return NoContent();
         }
 
-        // POST: api/UserCourses
+        // POST: api/Documents
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<UserCourse>> PostUserCourse(UserCourse userCourse)
+        public async Task<ActionResult<Document>> PostDocument(Document document)
         {
-            _context.UserCourses.Add(userCourse);
+            _context.Documents.Add(document);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetUserCourse", new { id = userCourse.Id }, userCourse);
+            return CreatedAtAction("GetDocument", new { id = document.Id }, document);
         }
 
-        // DELETE: api/UserCourses/5
+        // DELETE: api/Documents/5
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteUserCourse(int id)
+        public async Task<IActionResult> DeleteDocument(int id)
         {
-            var userCourse = await _context.UserCourses.FindAsync(id);
-            if (userCourse == null)
+            var document = await _context.Documents.FindAsync(id);
+            if (document == null)
             {
                 return NotFound();
             }
 
-            _context.UserCourses.Remove(userCourse);
+            _context.Documents.Remove(document);
             await _context.SaveChangesAsync();
 
             return NoContent();
         }
 
-        private bool UserCourseExists(int id)
+        private bool DocumentExists(int id)
         {
-            return _context.UserCourses.Any(e => e.Id == id);
+            return _context.Documents.Any(e => e.Id == id);
         }
     }
 }
