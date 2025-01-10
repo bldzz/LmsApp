@@ -7,6 +7,6 @@ public interface ICourseService
     Task<IEnumerable<CourseDto>> GetCourseAsync();
     Task<CourseDto> GetCourseAsync(int id);
     Task<CourseDto> PostCourse(CourseCreationDto dto);  
-    Task<CourseDto> PutCourse(int id, CourseCreationDto dto);
+    Task<CourseDto> PutCourse(int id, CourseDto dto);
     Task<CourseDto> DeleteCourse(int id);
 }
