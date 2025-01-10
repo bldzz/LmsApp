@@ -1,0 +1,113 @@
+﻿@page "/coursedtos/edit"
+@using Microsoft.EntityFrameworkCore
+@using LMS.Shared.DTOs
+@inject IDbContextFactory<LMS.Blazor.Data.ApplicationDbContext> DbFactory
+@inject NavigationManager NavigationManager
+
+<PageTitle>Edit</PageTitle>
+
+<h1>Edit</h1>
+
+<h2>CourseDto</h2>
+<hr />
+@if (CourseDto is null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <div class="row">
+        <div class="col-md-4">
+            <EditForm method="post" Model="CourseDto" OnValidSubmit="UpdateCourseDto" FormName="edit" Enhance>
+                <DataAnnotationsValidator />
+                <ValidationSummary role="alert" />
+                <input type="hidden" name="CourseDto.Id" value="@CourseDto.Id" />
+                <div class="mb-3">
+                    <label for="coursename" class="form-label">CourseName:</label>
+                    <InputText id="coursename" @bind-Value="CourseDto.CourseName" class="form-control" aria-required="true" />
+                    <ValidationMessage For="() => CourseDto.CourseName" class="text-danger" />
+                </div>
+                <div class="mb-3">
+                    <label for="startdate" class="form-label">StartDate:</label>
+                    <InputDate id="startdate" @bind-Value="CourseDto.StartDate" class="form-control" aria-required="true" />
+                    <ValidationMessage For="() => CourseDto.StartDate" class="text-danger" />
+                </div>
+                <div class="mb-3">
+                    <label for="moduleids" class="form-label">ModuleIds:</label>
+                    <InputText id="moduleids" @bind-Value="ModuleIdsInput" class="form-control" aria-required="true" />
+                    <ValidationMessage For="() => ModuleIdsInput" class="text-danger" />
+                </div>
+                <button type="submit" class="btn btn-primary">Save</button>
+            </EditForm>
+        </div>
+    </div>
+}
+
+<div>
+    <a href="/coursedtos">Back to List</a>
+</div>
+
+@code {
+    [SupplyParameterFromQuery]
+    private int Id { get; set; }
+
+    [SupplyParameterFromForm]
+    private CourseDto? CourseDto { get; set; }
+
+    private string ModuleIdsInput { get; set; } = string.Empty; // Temporary string for ModuleIds
+
+    protected override async Task OnInitializedAsync()
+    {
+        using var context = DbFactory.CreateDbContext();
+        CourseDto ??= await context.CourseDto.FirstOrDefaultAsync(m => m.Id == Id);
+
+        if (CourseDto is null)
+        {
+            NavigationManager.NavigateTo("notfound");
+        }
+        else
+        {
+            // Initialize the ModuleIdsInput with a comma-separated string
+            ModuleIdsInput = string.Join(", ", CourseDto.ModuleIds ?? new List<int>());
+        }
+    }
+
+    // To protect from overposting attacks, enable the specific properties you want to bind to.
+    // For more information, see https://learn.microsoft.com/aspnet/core/blazor/forms/#mitigate-overposting-attacks.
+    private async Task UpdateCourseDto()
+    {
+        using var context = DbFactory.CreateDbContext();
+
+        // Convert ModuleIdsInput to List<int> and update CourseDto.ModuleIds
+        CourseDto!.ModuleIds = ModuleIdsInput.Split(',', StringSplitOptions.RemoveEmptyEntries)
+                                             .Select(id => int.TryParse(id.Trim(), out var result) ? result : 0)
+                                             .Where(id => id > 0) // Filter out invalid IDs
+                                             .ToList();
+
+        context.Attach(CourseDto).State = EntityState.Modified;
+
+        try
+        {
+            await context.SaveChangesAsync();
+        }
+        catch (DbUpdateConcurrencyException)
+        {
+            if (!CourseDtoExists(CourseDto.Id))
+            {
+                NavigationManager.NavigateTo("notfound");
+            }
+            else
+            {
+                throw;
+            }
+        }
+
+        NavigationManager.NavigateTo("/coursedtos");
+    }
+
+    private bool CourseDtoExists(int id)
+    {
+        using var context = DbFactory.CreateDbContext();
+        return context.CourseDto.Any(e => e.Id == id);
+    }
+}
