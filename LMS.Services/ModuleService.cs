@@ -13,37 +13,38 @@ namespace LMS.Services
 
         protected override void CreateEntity(Module entity)
         {
-            throw new NotImplementedException();
+            _uow.ModuleRepo.Create(entity);
         }
 
         protected override void DeleteEntity(Module entity)
         {
-            throw new NotImplementedException();
+            _uow.ModuleRepo.Delete(entity);
         }
 
-        protected override Task<Module> FindEntityByIdAsync(int id)
+        protected override async Task<Module> FindEntityByIdAsync(int id)
         {
-            throw new NotImplementedException();
+            return await _uow.ModuleRepo.FindByCondition(m => m.Id == id).SingleAsync();
         }
 
-        protected override Task<IEnumerable<Module>> GetAllEntitiesAsync()
+        protected override async Task<IEnumerable<Module>> GetAllEntitiesAsync()
         {
-            throw new NotImplementedException();
+            return await _uow.ModuleRepo.FindAll().ToListAsync();
         }
 
-        protected override Task<Module> GetEntityByIdAsync(int id)
+        protected override async Task<Module> GetEntityByIdAsync(int id)
         {
-            throw new NotImplementedException();
+            return await _uow.ModuleRepo.FindByCondition(m => m.Id == id).SingleAsync();
         }
 
         protected override void UpdateEntity(Module entity)
         {
-            throw new NotImplementedException();
+            _uow.ModuleRepo.Update(entity);
         }
 
-        protected override Task<bool> ValidateEntityExistsAsync(int id)
+        protected override async Task<bool> ValidateEntityExistsAsync(int id)
         {
-            throw new NotImplementedException();
+            var entity = await _uow.ModuleRepo.FindByCondition(m => m.Id == id).SingleOrDefaultAsync();
+            return entity != null;
         }
     }
 }
