@@ -1,11 +1,9 @@
-﻿
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-
 
 namespace Domain.Models.Entites
 {
@@ -22,5 +20,4 @@ namespace Domain.Models.Entites
         public int CourseId { get; set; } // Foreign Key to Course
         public Course Course { get; set; }
     }
-
 }

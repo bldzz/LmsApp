@@ -16,6 +16,7 @@ namespace Domain.Models.Entites
 
         [Required]
         [MaxLength(255)]
+        [MinLength(3)]
         public string CourseName { get; set; }
 
         public string Description { get; set; }
