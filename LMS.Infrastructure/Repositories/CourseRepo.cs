@@ -15,10 +15,10 @@ namespace LMS.Infrastructure.Repositories
         public async Task<IEnumerable<Course>> GetAllCoursesAsync(bool trackChanges = false)
         {
             return await FindAll(trackChanges)
-                .Include(c => c.Modules) // Include related Modules
-                .Include(c => c.UserCourses) // Include User-Course relationships
-                    .ThenInclude(uc => uc.User) // Include related Users in UserCourses
-                .Include(c => c.Documents) // Include related Documents
+                .Include(c => c.Modules)
+                .Include(c => c.UserCourses)
+                    .ThenInclude(uc => uc.User)
+                .Include(c => c.Documents)
                 .ToListAsync();
         }
 

@@ -14,8 +14,8 @@ public class ActivityRepo : RepositoryBase<Activity>, IActivityRepo
     public async Task<IEnumerable<Activity>> GetAllActivitiesAsync(bool trackChanges = false)
     {
         return await FindAll(trackChanges)
-            .Include(a => a.Module) // Include related Module
-            .Include(a => a.Documents) // Include related Documents
+            .Include(a => a.Module)
+            .Include(a => a.Documents)
             .ToListAsync();
     }
 
@@ -23,8 +23,8 @@ public class ActivityRepo : RepositoryBase<Activity>, IActivityRepo
     public async Task<Activity?> GetActivityByIdAsync(Guid activityId, bool trackChanges = false)
     {
         return await FindByCondition(a => a.Id == activityId, trackChanges)
-            .Include(a => a.Module) // Include related Module
-            .Include(a => a.Documents) // Include related Documents
+            .Include(a => a.Module)
+            .Include(a => a.Documents)
             .FirstOrDefaultAsync();
     }
 
@@ -32,7 +32,7 @@ public class ActivityRepo : RepositoryBase<Activity>, IActivityRepo
     public async Task<IEnumerable<Activity>> GetActivitiesByModuleIdAsync(int moduleId, bool trackChanges = false)
     {
         return await FindByCondition(a => a.ModuleId == moduleId, trackChanges)
-            .Include(a => a.Documents) // Include related Documents
+            .Include(a => a.Documents)
             .ToListAsync();
     }
 
