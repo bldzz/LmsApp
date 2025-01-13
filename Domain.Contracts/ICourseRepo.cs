@@ -4,12 +4,11 @@ namespace Domain.Contracts;
 
 public interface ICourseRepo : IRepositoryBase<Course>
 {
-    /*
-    Task<IEnumerable<Course>> GetCoursesAsync();
-    Task<Course> GetCourseAsync(int id);
-    Task<bool> AnyCourseAsync(int id);
-    void AddCourse(Course course);
-    void RemoveCourse(Course course);
-    void UpdateCourse(Course course);
-    */
+    public interface ICourseRepo : IRepositoryBase<Course>
+    {
+        Task<IEnumerable<Course>> GetAllCoursesAsync(bool trackChanges = false);
+        Task<Course> GetCourseByIdAsync(int courseId, bool trackChanges = false);
+        Task<IEnumerable<Course>> GetCoursesByUserIdAsync(string userId, bool trackChanges = false);
+        Task<bool> CourseExistsAsync(int courseId);
+    }
 }
