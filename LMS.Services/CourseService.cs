@@ -27,12 +27,12 @@ public class CourseService : ICourseService
     public async Task<CourseDto> GetCourseAsync(int id)
     {
         var course = await _uow.CourseRepo.FindByCondition(c => c.Id == id).SingleAsync();
-        return _mapper.Map<Course, CourseDto>(course);
+        return _mapper.Map<CourseDto>(course);
     }
 
     public async Task<CourseDto> PostCourse(CourseCreationDto dto)
     {
-        var course = _mapper.Map<CourseCreationDto, Course>(dto);
+        var course = _mapper.Map<Course>(dto);
         _uow.CourseRepo.Create(course);
         await _uow.CompleteASync();
         var createdCourse = await _uow.CourseRepo.FindByCondition(c => c.Id == course.Id).SingleAsync();

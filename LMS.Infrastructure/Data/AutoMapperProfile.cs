@@ -12,5 +12,6 @@ public class AutoMapperProfile : Profile
         CreateMap<UserForRegistrationDto, ApplicationUser>();
         CreateMap<CourseCreationDto, Course>();
         CreateMap<CourseDto, Course>();
+        CreateMap<Course, CourseDto>();
     }
 }
