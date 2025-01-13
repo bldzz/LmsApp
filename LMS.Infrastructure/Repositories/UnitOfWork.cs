@@ -13,6 +13,7 @@ public class UnitOfWork : IUnitOfWork
     }
 
     public ICourseRepo CourseRepo { get; }
+    public IModuleRepo ModuleRepo { get; }
 
     public async Task CompleteASync()
     {
