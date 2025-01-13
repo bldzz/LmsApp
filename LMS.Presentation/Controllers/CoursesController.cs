@@ -1,11 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Domain.Models.Entites;
+using Services.Contracts;
+using LMS.Shared.DTOs;
 
 namespace LMS.Presentation.Controllers
 {
@@ -13,95 +10,65 @@ namespace LMS.Presentation.Controllers
     [ApiController]
     public class CoursesController : ControllerBase
     {
-        private readonly LmsContext _context;
+        private IServiceManager _serviceManager;
 
-        public CoursesController(LmsContext context)
+        public CoursesController(IServiceManager serviceManager)
         {
-            _context = context;
+            _serviceManager = serviceManager;
         }
 
         // GET: api/Courses
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Course>>> GetCourses()
+        public async Task<ActionResult<IEnumerable<CourseDto>>> GetCourses()
         {
-            return await _context.Courses.ToListAsync();
+            return Ok(await _serviceManager.CourseService.GetCourseAsync());
         }
 
         // GET: api/Courses/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Course>> GetCourse(int id)
+        public async Task<ActionResult<CourseDto>> GetCourse(int id)
         {
-            var course = await _context.Courses.FindAsync(id);
+            var course = await _serviceManager.CourseService.GetCourseAsync(id);
 
             if (course == null)
             {
                 return NotFound();
             }
 
-            return course;
+            return Ok(course);
         }
 
         // PUT: api/Courses/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutCourse(int id, Course course)
+        public async Task<IActionResult> PutCourse(int id, CourseDto course)
         {
-            if (id != course.Id)
-            {
-                return BadRequest();
-            }
+            await _serviceManager.CourseService.PutCourse(id, course);
 
-            _context.Entry(course).State = EntityState.Modified;
-
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!CourseExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
-            return NoContent();
+            return NoContent(); //TODO: måste fixa error handling
         }
 
         // POST: api/Courses
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Course>> PostCourse(Course course)
+        public async Task<ActionResult<Course>> PostCourse(CourseCreationDto course)
         {
-            _context.Courses.Add(course);
-            await _context.SaveChangesAsync();
+            var newCourse = await _serviceManager.CourseService.PostCourse(course);
 
-            return CreatedAtAction("GetCourse", new { id = course.Id }, course);
+            return CreatedAtAction("GetCourse", new { id = newCourse.Id }, course);
         }
 
         // DELETE: api/Courses/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteCourse(int id)
         {
-            var course = await _context.Courses.FindAsync(id);
-            if (course == null)
-            {
-                return NotFound();
-            }
-
-            _context.Courses.Remove(course);
-            await _context.SaveChangesAsync();
-
+            await _serviceManager.CourseService.DeleteCourse(id);
             return NoContent();
         }
 
         private bool CourseExists(int id)
         {
-            return _context.Courses.Any(e => e.Id == id);
+            return _serviceManager.CourseService.GetCourseAsync(id)!=null;
         }
     }
 }

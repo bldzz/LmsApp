@@ -2,13 +2,11 @@
 using Domain.Contracts;
 using Microsoft.EntityFrameworkCore;
 
-namespace LMS.Services;
-
 using Domain.Models.Entites;
 using LMS.Shared.DTOs;
 using Microsoft.AspNetCore.JsonPatch;
-using Microsoft.VisualBasic;
 
+namespace LMS.Services;
 public class CourseService : ICourseService
 {
     private readonly IMapper _mapper;

@@ -1,11 +1,12 @@
 ﻿using AutoMapper;
 using Domain.Contracts;
+using Domain.Models.Entites;
 using LMS.Shared.DTOs;
-using System.Reflection;
+using Microsoft.EntityFrameworkCore;
 
 namespace LMS.Services
 {
-    internal class ModuleService : ServiceBase<Module, ModuleDto, ModuleCreationDto>
+    public class ModuleService : ServiceBase<Module, ModuleDto, ModuleCreationDto>, IModuleService
     {
         public ModuleService(IMapper mapper, IUnitOfWork unitOfWork) : base(mapper, unitOfWork)
         {
