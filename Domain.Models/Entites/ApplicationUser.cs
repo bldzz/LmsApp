@@ -16,13 +16,6 @@
         [MaxLength(100)]
         public string LastName { get; set; } = string.Empty;
 
-        [Required]
-        [EmailAddress]
-        public override string Email { get; set; }
-
-        public string? RoleId { get; set; }
-        public IdentityRole Role { get; set; }
-
         public int? CurrentCourseId { get; set; }
         public Course CurrentCourse { get; set; }
 

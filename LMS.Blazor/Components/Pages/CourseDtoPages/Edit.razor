@@ -68,7 +68,7 @@ else
         else
         {
             // Initialize the ModuleIdsInput with a comma-separated string
-            ModuleIdsInput = string.Join(", ", CourseDto.ModuleIds ?? new List<int>());
+            ModuleIdsInput = string.Join(", ", CourseDto.Modules ?? new List<ModuleDto>());
         }
     }
 
@@ -79,10 +79,17 @@ else
         using var context = DbFactory.CreateDbContext();
 
         // Convert ModuleIdsInput to List<int> and update CourseDto.ModuleIds
-        CourseDto!.ModuleIds = ModuleIdsInput.Split(',', StringSplitOptions.RemoveEmptyEntries)
+        List<int> moduleIdsList = ModuleIdsInput.Split(',', StringSplitOptions.RemoveEmptyEntries)
                                              .Select(id => int.TryParse(id.Trim(), out var result) ? result : 0)
                                              .Where(id => id > 0) // Filter out invalid IDs
                                              .ToList();
+
+        List<ModuleDto> moduleDtos = new List<ModuleDto>();
+        foreach (int moduleId in moduleIdsList)
+        {
+            moduleDtos.Add(new ModuleDto { Id = moduleId });
+        }
+        CourseDto.Modules = moduleDtos;
 
         context.Attach(CourseDto).State = EntityState.Modified;
 

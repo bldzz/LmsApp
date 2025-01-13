@@ -17,7 +17,7 @@
 <QuickGrid Class="table" Items="context.CourseDto">
     <PropertyColumn Property="coursedto => coursedto.CourseName" />
     <PropertyColumn Property="coursedto => coursedto.StartDate" />
-    <PropertyColumn Property="coursedto => coursedto.ModuleIds" />
+    <PropertyColumn Property="coursedto => coursedto.Modules" />
 
     <TemplateColumn Context="coursedto">
         <a href="@($"coursedtos/edit?id={coursedto.Id}")">Edit</a> |

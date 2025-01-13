@@ -21,8 +21,7 @@ public record ModuleDto()
     public int CourseId { get; set; }
     
     [Required]
-    public List<Guid> ActivityIds { get; set; } = new List<Guid>();
+    public List<ActivityDto> ActivityIds { get; set; } = new List<ActivityDto>();
     
-    [Required]
-    public List<int> DocumentIds { get; set; } = new List<int>();
+    public List<DocumentDto> DocumentIds { get; set; } = new List<DocumentDto>();
 }
