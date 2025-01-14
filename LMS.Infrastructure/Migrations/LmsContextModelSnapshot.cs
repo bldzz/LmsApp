@@ -23,12 +23,13 @@ namespace LMS.Infrastructure.Migrations
 
             modelBuilder.Entity("Domain.Models.Entites.Activity", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Description")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("EndTime")
@@ -186,8 +187,8 @@ namespace LMS.Infrastructure.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<Guid?>("ActivityId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<int?>("ActivityId")
+                        .HasColumnType("int");
 
                     b.Property<int?>("CourseId")
                         .HasColumnType("int");
@@ -310,19 +311,19 @@ namespace LMS.Infrastructure.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "ba944d94-06df-4c18-8a94-2ffb91dca35f",
+                            Id = "1217fb71-b7c4-4387-a6c6-4213d80ce977",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "a1998b0f-c9e5-4f16-b149-ba0f0dc4632a",
+                            Id = "8d26a735-c5e8-49b5-945e-a7b861a20555",
                             Name = "Teacher",
                             NormalizedName = "TEACHER"
                         },
                         new
                         {
-                            Id = "72d1e6fb-98c6-4e1d-9ab7-a37fdd70d9b8",
+                            Id = "95b0b2aa-f320-49bf-9da3-3bcfa75504ec",
                             Name = "Student",
                             NormalizedName = "STUDENT"
                         });

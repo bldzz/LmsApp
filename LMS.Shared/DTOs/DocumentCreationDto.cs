@@ -7,13 +7,10 @@ namespace LMS.Shared.DTOs
     [Required]
     public string UserId { get; set; }
     
-    [Required]
     public int? CourseId { get; set; }
     
-    [Required]
     public int? ModuleId { get; set; }
     
-    [Required]
     public Guid? ActivityId { get; set; }
 
     }

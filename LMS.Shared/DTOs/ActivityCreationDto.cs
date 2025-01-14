@@ -24,5 +24,7 @@ namespace LMS.Shared.DTOs
     [Required]
     public List<int> DocumentIds { get; set; } = new List<int>();
 
+    public string? Description { get; init; }
+
     }
 }

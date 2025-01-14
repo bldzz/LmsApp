@@ -1,11 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Domain.Models.Entites;
+﻿using Microsoft.AspNetCore.Mvc;
+using Services.Contracts;
+using LMS.Shared.DTOs;
 
 namespace LMS.Presentation.Controllers
 {
@@ -13,95 +8,64 @@ namespace LMS.Presentation.Controllers
     [ApiController]
     public class ActivitiesController : ControllerBase
     {
-        private readonly LmsContext _context;
+        private readonly IServiceManager _serviceManager;
 
-        public ActivitiesController(LmsContext context)
+        public ActivitiesController(IServiceManager serviceManager)
         {
-            _context = context;
+            _serviceManager = serviceManager;
         }
 
         // GET: api/Activities
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Activity>>> GetActivities()
+        public async Task<ActionResult<IEnumerable<ActivityDto>>> GetActivities()
         {
-            return await _context.Activities.ToListAsync();
+            return Ok(await _serviceManager.ActivityService.GetAllAsync());
         }
 
         // GET: api/Activities/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Activity>> GetActivity(Guid id)
+        public async Task<ActionResult<ActivityDto>> GetActivity(int id)
         {
-            var activity = await _context.Activities.FindAsync(id);
+            var activity = await _serviceManager.ActivityService.GetByIdAsync(id);
 
             if (activity == null)
             {
                 return NotFound();
             }
 
-            return activity;
+            return Ok(activity);
         }
 
         // PUT: api/Activities/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutActivity(Guid id, Activity activity)
+        public async Task<IActionResult> PutActivity(int id, ActivityDto activity)
         {
-            if (id != activity.Id)
-            {
-                return BadRequest();
-            }
-
-            _context.Entry(activity).State = EntityState.Modified;
-
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!ActivityExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
+            await _serviceManager.ActivityService.UpdateAsync(id, activity);
             return NoContent();
         }
 
         // POST: api/Activities
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Activity>> PostActivity(Activity activity)
+        public async Task<ActionResult<ActivityDto>> PostActivity(ActivityCreationDto activity)
         {
-            _context.Activities.Add(activity);
-            await _context.SaveChangesAsync();
+            var newActivity = await _serviceManager.ActivityService.CreateAsync(activity);
 
-            return CreatedAtAction("GetActivity", new { id = activity.Id }, activity);
+            return CreatedAtAction("GetActivity", new { id = newActivity.Id }, activity);
         }
 
         // DELETE: api/Activities/5
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteActivity(Guid id)
+        public async Task<IActionResult> DeleteActivity(int id)
         {
-            var activity = await _context.Activities.FindAsync(id);
-            if (activity == null)
-            {
-                return NotFound();
-            }
-
-            _context.Activities.Remove(activity);
-            await _context.SaveChangesAsync();
-
+            await _serviceManager.ActivityService.DeleteAsync(id);
             return NoContent();
         }
 
-        private bool ActivityExists(Guid id)
+        private bool ActivityExists(int id)
         {
-            return _context.Activities.Any(e => e.Id == id);
+            return _serviceManager.ActivityService.GetByIdAsync(id)!=null;
         }
     }
 }

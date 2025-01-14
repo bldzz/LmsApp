@@ -7,6 +7,6 @@ public interface IServiceManager
     ICourseService CourseService { get; }
     IModuleService ModuleService { get; }
     IDocumentService DocumentService { get; }
-    //IModuleService ModuleService { get; }
+    IActivityService ActivityService { get; }
     //IModuleService ModuleService { get; }
 }

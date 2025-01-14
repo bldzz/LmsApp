@@ -8,11 +8,11 @@ public interface IActivityRepo : IRepositoryBase<Activity>
     Task<IEnumerable<Activity>> GetAllActivitiesAsync(bool trackChanges = false);
 
     // Fetch an activity by ID with related data
-    Task<Activity?> GetActivityByIdAsync(Guid activityId, bool trackChanges = false);
+    Task<Activity?> GetActivityByIdAsync(int activityId, bool trackChanges = false);
 
     // Fetch all activities for a specific module
     Task<IEnumerable<Activity>> GetActivitiesByModuleIdAsync(int moduleId, bool trackChanges = false);
 
     // Check if an activity exists by ID
-    Task<bool> ActivityExistsAsync(Guid activityId);
+    Task<bool> ActivityExistsAsync(int activityId);
 }

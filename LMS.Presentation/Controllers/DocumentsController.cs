@@ -1,6 +1,4 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Domain.Models.Entites;
 using Services.Contracts;
 using LMS.Shared.DTOs;
 

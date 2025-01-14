@@ -63,7 +63,7 @@ public class DocumentRepo : RepositoryBase<Document>, IDocumentRepo
         }
 
         // Fetch all documents for a specific activity
-        public async Task<IEnumerable<Document>> GetDocumentsByActivityIdAsync(Guid activityId, bool trackChanges = false)
+        public async Task<IEnumerable<Document>> GetDocumentsByActivityIdAsync(int activityId, bool trackChanges = false)
         {
             return await FindByCondition(d => d.ActivityId == activityId, trackChanges)
                 .Include(d => d.User)

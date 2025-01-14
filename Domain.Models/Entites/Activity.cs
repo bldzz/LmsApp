@@ -11,7 +11,7 @@ namespace Domain.Models.Entites
     public class Activity
     {
         [Key]
-        public Guid Id { get; set; }
+        public int Id { get; set; }
 
         [Required]
         [MaxLength(50)]
@@ -27,7 +27,7 @@ namespace Domain.Models.Entites
         [Required]
         public DateTime EndTime { get; set; }
 
-        public string Description { get; set; }
+        public string? Description { get; set; }
 
         [Required]
         public int ModuleId { get; set; } // Foreign Key to Module

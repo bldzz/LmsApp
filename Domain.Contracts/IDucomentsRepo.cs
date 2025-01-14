@@ -20,7 +20,7 @@ public interface IDocumentRepo : IRepositoryBase<Document>
     Task<IEnumerable<Document>> GetDocumentsByModuleIdAsync(int moduleId, bool trackChanges = false);
 
     // Fetch all documents for a specific activity
-    Task<IEnumerable<Document>> GetDocumentsByActivityIdAsync(Guid activityId, bool trackChanges = false);
+    Task<IEnumerable<Document>> GetDocumentsByActivityIdAsync(int activityId, bool trackChanges = false);
 
     // Check if a document exists by ID
     Task<bool> DocumentExistsAsync(int documentId);

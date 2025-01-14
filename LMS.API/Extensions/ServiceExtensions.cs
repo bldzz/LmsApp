@@ -31,14 +31,14 @@ public static class ServiceExtensions
         services.AddScoped<IAuthService, AuthService>();
         services.AddScoped<ICourseService, CourseService>();
         services.AddScoped<IModuleService, ModuleService>();
-        //services.AddScoped<IActivityService, ActivityService>();
+        services.AddScoped<IActivityService, ActivityService>();
         services.AddScoped<IDocumentService, DocumentService>();
         services.AddScoped<IUserCourseService, UserCourseService>();
 
         services.AddLazy<IAuthService>();
         services.AddLazy<ICourseService>();
         services.AddLazy<IModuleService>();
-        //services.AddLazy<IActivityService>();
+        services.AddLazy<IActivityService>();
         services.AddLazy<IDocumentService>();
         services.AddLazy<IUserCourseService>();
     }

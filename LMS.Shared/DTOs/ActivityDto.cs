@@ -5,7 +5,7 @@ namespace LMS.Shared.DTOs;
 public record ActivityDto()
 {
     [Required]
-    public Guid Id { get; set; }
+    public int Id { get; set; }
     
     [Required]
     [MaxLength(50)]
@@ -26,4 +26,6 @@ public record ActivityDto()
     
     [Required]
     public List<int> DocumentIds { get; set; } = new List<int>();
+
+    public string? Description { get; init; }
 }

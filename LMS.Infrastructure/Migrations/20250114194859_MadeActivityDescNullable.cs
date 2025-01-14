@@ -7,7 +7,7 @@
 namespace LMS.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class MadeDescriptionNullable : Migration
+    public partial class MadeActivityDescNullable : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -15,21 +15,21 @@ namespace LMS.Infrastructure.Migrations
             migrationBuilder.DeleteData(
                 table: "AspNetRoles",
                 keyColumn: "Id",
-                keyValue: "2f76a69d-c0f5-460b-b134-bbcdd220b05c");
+                keyValue: "1b5d159c-2f76-4847-8e73-f038a6c0c63f");
 
             migrationBuilder.DeleteData(
                 table: "AspNetRoles",
                 keyColumn: "Id",
-                keyValue: "396f0ac1-7ef0-4637-865c-52d81429950b");
+                keyValue: "20759171-c867-4a91-ab83-7c5045eadc9e");
 
             migrationBuilder.DeleteData(
                 table: "AspNetRoles",
                 keyColumn: "Id",
-                keyValue: "7b361ba5-0688-46d5-8438-6e7e06760fc6");
+                keyValue: "8b888c39-d0da-4135-ab30-40cba9a9a7de");
 
             migrationBuilder.AlterColumn<string>(
                 name: "Description",
-                table: "Modules",
+                table: "Activities",
                 type: "nvarchar(max)",
                 nullable: true,
                 oldClrType: typeof(string),
@@ -40,9 +40,9 @@ namespace LMS.Infrastructure.Migrations
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
                 values: new object[,]
                 {
-                    { "72d1e6fb-98c6-4e1d-9ab7-a37fdd70d9b8", null, "Student", "STUDENT" },
-                    { "a1998b0f-c9e5-4f16-b149-ba0f0dc4632a", null, "Teacher", "TEACHER" },
-                    { "ba944d94-06df-4c18-8a94-2ffb91dca35f", null, "Admin", "ADMIN" }
+                    { "1217fb71-b7c4-4387-a6c6-4213d80ce977", null, "Admin", "ADMIN" },
+                    { "8d26a735-c5e8-49b5-945e-a7b861a20555", null, "Teacher", "TEACHER" },
+                    { "95b0b2aa-f320-49bf-9da3-3bcfa75504ec", null, "Student", "STUDENT" }
                 });
         }
 
@@ -52,21 +52,21 @@ namespace LMS.Infrastructure.Migrations
             migrationBuilder.DeleteData(
                 table: "AspNetRoles",
                 keyColumn: "Id",
-                keyValue: "72d1e6fb-98c6-4e1d-9ab7-a37fdd70d9b8");
+                keyValue: "1217fb71-b7c4-4387-a6c6-4213d80ce977");
 
             migrationBuilder.DeleteData(
                 table: "AspNetRoles",
                 keyColumn: "Id",
-                keyValue: "a1998b0f-c9e5-4f16-b149-ba0f0dc4632a");
+                keyValue: "8d26a735-c5e8-49b5-945e-a7b861a20555");
 
             migrationBuilder.DeleteData(
                 table: "AspNetRoles",
                 keyColumn: "Id",
-                keyValue: "ba944d94-06df-4c18-8a94-2ffb91dca35f");
+                keyValue: "95b0b2aa-f320-49bf-9da3-3bcfa75504ec");
 
             migrationBuilder.AlterColumn<string>(
                 name: "Description",
-                table: "Modules",
+                table: "Activities",
                 type: "nvarchar(max)",
                 nullable: false,
                 defaultValue: "",
@@ -79,9 +79,9 @@ namespace LMS.Infrastructure.Migrations
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
                 values: new object[,]
                 {
-                    { "2f76a69d-c0f5-460b-b134-bbcdd220b05c", null, "Admin", "ADMIN" },
-                    { "396f0ac1-7ef0-4637-865c-52d81429950b", null, "Teacher", "TEACHER" },
-                    { "7b361ba5-0688-46d5-8438-6e7e06760fc6", null, "Student", "STUDENT" }
+                    { "1b5d159c-2f76-4847-8e73-f038a6c0c63f", null, "Teacher", "TEACHER" },
+                    { "20759171-c867-4a91-ab83-7c5045eadc9e", null, "Admin", "ADMIN" },
+                    { "8b888c39-d0da-4135-ab30-40cba9a9a7de", null, "Student", "STUDENT" }
                 });
         }
     }

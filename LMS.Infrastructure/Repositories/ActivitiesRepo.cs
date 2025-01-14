@@ -20,7 +20,7 @@ public class ActivityRepo : RepositoryBase<Activity>, IActivityRepo
     }
 
     // Fetch an activity by ID with related data (eager loading)
-    public async Task<Activity?> GetActivityByIdAsync(Guid activityId, bool trackChanges = false)
+    public async Task<Activity?> GetActivityByIdAsync(int activityId, bool trackChanges = false)
     {
         return await FindByCondition(a => a.Id == activityId, trackChanges)
             .Include(a => a.Module)
@@ -37,7 +37,7 @@ public class ActivityRepo : RepositoryBase<Activity>, IActivityRepo
     }
 
     // Check if an activity exists by ID
-    public async Task<bool> ActivityExistsAsync(Guid activityId)
+    public async Task<bool> ActivityExistsAsync(int activityId)
     {
         return await FindByCondition(a => a.Id == activityId).AnyAsync();
     }

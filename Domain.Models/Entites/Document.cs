@@ -32,7 +32,7 @@ namespace Domain.Models.Entites
         public Module? Module { get; set; } // Nullable navigation property
 
         // Foreign Key to Activity
-        public Guid? ActivityId { get; set; } // Nullable FK for Activity
+        public int? ActivityId { get; set; } // Nullable FK for Activity
         public Activity? Activity { get; set; } // Nullable navigation property
     }
 }
