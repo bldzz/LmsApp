@@ -1,0 +1,15 @@
+﻿@page "/module/{ModuleId:int}"
+
+<div id="content" class="container">
+    <div class="row">
+        <div id="courseModules" class="col-12 col-sm-12">
+            <LMS.Blazor.Client.Components.ModuleActivityList ModuleId="ModuleId" />
+        </div>
+    </div>
+</div>
+
+
+@code {
+    [Parameter]
+    public int ModuleId { get; set; }
+}

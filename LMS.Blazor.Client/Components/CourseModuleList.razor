@@ -11,12 +11,12 @@
         </tr>
     </thead>
     <tbody>
-        @foreach (var moduleId in Course.Modules)
+        @foreach (var module in Course.Modules)
         {
             <tr>
-                <td>@moduleId.ModuleName</td>
-                <td>@moduleId.StartDate</td>
-                <td>@moduleId.EndDate</td>
+                <td><a href="/module/@module.Id">@module.ModuleName</a></td>
+                <td>@module.StartDate</td>
+                <td>@module.EndDate</td>
             </tr>
         }
     </tbody>
@@ -38,10 +38,10 @@
                     StartDate = DateTime.Now.AddDays(7),
                     Modules = new List<ModuleDto>
                     {
-                        new ModuleDto{ Id = 1, ModuleName = "HTML", StartDate = DateTime.Now.AddDays(7), EndDate = DateTime.Now.AddDays(8), CourseId = 1, ActivityIds = new List<ActivityDto>()},
-                        new ModuleDto{ Id = 2, ModuleName = "Javascript", StartDate = DateTime.Now.AddDays(9), EndDate = DateTime.Now.AddDays(10), CourseId = 1, ActivityIds = new List<ActivityDto>()},
-                        new ModuleDto{ Id = 3, ModuleName = "Blazor", StartDate = DateTime.Now.AddDays(11), EndDate = DateTime.Now.AddDays(12), CourseId = 1, ActivityIds = new List<ActivityDto>()},
-                        new ModuleDto{ Id = 4, ModuleName = "Azure", StartDate = DateTime.Now.AddDays(13), EndDate = DateTime.Now.AddDays(14), CourseId = 1, ActivityIds = new List<ActivityDto>()}
+                        new ModuleDto{ Id = 1, ModuleName = "HTML", StartDate = DateTime.Now.AddDays(7), EndDate = DateTime.Now.AddDays(8), CourseId = 1, Activities = new List<ActivityDto>()},
+                        new ModuleDto{ Id = 2, ModuleName = "Javascript", StartDate = DateTime.Now.AddDays(9), EndDate = DateTime.Now.AddDays(10), CourseId = 1, Activities = new List<ActivityDto>()},
+                        new ModuleDto{ Id = 3, ModuleName = "Blazor", StartDate = DateTime.Now.AddDays(11), EndDate = DateTime.Now.AddDays(12), CourseId = 1, Activities = new List<ActivityDto>()},
+                        new ModuleDto{ Id = 4, ModuleName = "Azure", StartDate = DateTime.Now.AddDays(13), EndDate = DateTime.Now.AddDays(14), CourseId = 1, Activities = new List<ActivityDto>()}
                     }
                 };
         }
