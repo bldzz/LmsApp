@@ -18,7 +18,7 @@ namespace Domain.Models.Entites
         [MaxLength(255)]
         public string ModuleName { get; set; }
 
-        public string Description { get; set; }
+        public string? Description { get; set; }
 
         [Required]
         public DateTime StartDate { get; set; }

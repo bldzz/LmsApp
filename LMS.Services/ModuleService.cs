@@ -22,11 +22,6 @@ namespace LMS.Services
             _uow.ModuleRepo.Delete(entity);
         }
 
-        protected override async Task<Module> FindEntityByIdAsync(int id)
-        {
-            return await _uow.ModuleRepo.FindByCondition(m => m.Id == id).SingleAsync();
-        }
-
         protected override async Task<IEnumerable<Module>> GetAllEntitiesAsync()
         {
             return await _uow.ModuleRepo.FindAll().ToListAsync();

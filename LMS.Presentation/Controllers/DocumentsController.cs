@@ -1,11 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Domain.Models.Entites;
+using Services.Contracts;
+using LMS.Shared.DTOs;
 
 namespace LMS.Presentation.Controllers
 {
@@ -13,95 +10,64 @@ namespace LMS.Presentation.Controllers
     [ApiController]
     public class DocumentsController : ControllerBase
     {
-        private readonly LmsContext _context;
+        private readonly IServiceManager _serviceManager;
 
-        public DocumentsController(LmsContext context)
+        public DocumentsController(IServiceManager serviceManager)
         {
-            _context = context;
+            _serviceManager = serviceManager;
         }
 
         // GET: api/Documents
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Document>>> GetDocuments()
+        public async Task<ActionResult<IEnumerable<DocumentDto>>> GetDocuments()
         {
-            return await _context.Documents.ToListAsync();
+            return Ok(await _serviceManager.DocumentService.GetAllAsync());
         }
 
         // GET: api/Documents/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Document>> GetDocument(int id)
+        public async Task<ActionResult<DocumentDto>> GetDocument(int id)
         {
-            var document = await _context.Documents.FindAsync(id);
+            var document = await _serviceManager.DocumentService.GetByIdAsync(id);
 
             if (document == null)
             {
                 return NotFound();
             }
 
-            return document;
+            return Ok(document);
         }
 
         // PUT: api/Documents/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutDocument(int id, Document document)
+        public async Task<IActionResult> PutDocument(int id, DocumentDto document)
         {
-            if (id != document.Id)
-            {
-                return BadRequest();
-            }
-
-            _context.Entry(document).State = EntityState.Modified;
-
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!DocumentExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
+            await _serviceManager.DocumentService.UpdateAsync(id, document);
             return NoContent();
         }
 
         // POST: api/Documents
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Document>> PostDocument(Document document)
+        public async Task<ActionResult<DocumentDto>> PostDocument(DocumentCreationDto document)
         {
-            _context.Documents.Add(document);
-            await _context.SaveChangesAsync();
+            var newDocument = await _serviceManager.DocumentService.CreateAsync(document);
 
-            return CreatedAtAction("GetDocument", new { id = document.Id }, document);
+            return CreatedAtAction("GetDocument", new { id = newDocument.Id }, document);
         }
 
         // DELETE: api/Documents/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteDocument(int id)
         {
-            var document = await _context.Documents.FindAsync(id);
-            if (document == null)
-            {
-                return NotFound();
-            }
-
-            _context.Documents.Remove(document);
-            await _context.SaveChangesAsync();
-
+            await _serviceManager.DocumentService.DeleteAsync(id);
             return NoContent();
         }
 
         private bool DocumentExists(int id)
         {
-            return _context.Documents.Any(e => e.Id == id);
+            return _serviceManager.DocumentService.GetByIdAsync(id)!=null;
         }
     }
 }

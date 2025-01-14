@@ -23,7 +23,6 @@ public abstract class ServiceBase<TEntity, TDto, TCreationDto>
     protected abstract void CreateEntity(TEntity entity);
     protected abstract void UpdateEntity(TEntity entity);
     protected abstract void DeleteEntity(TEntity entity);
-    protected abstract Task<TEntity> FindEntityByIdAsync(int id);
     protected abstract Task<bool> ValidateEntityExistsAsync(int id);
 
     public virtual async Task<IEnumerable<TDto>> GetAllAsync()
@@ -43,8 +42,8 @@ public abstract class ServiceBase<TEntity, TDto, TCreationDto>
         var entity = _mapper.Map<TEntity>(creationDto);
         CreateEntity(entity);
         await _uow.CompleteASync();
-        var createdEntity = await FindEntityByIdAsync(EF.Property<int>(entity, "Id"));
-        return _mapper.Map<TDto>(createdEntity);
+        //var createdEntity = await GetEntityByIdAsync(EF.Property<int>(entity, "Id"));
+        return _mapper.Map<TDto>(entity);
     }
 
     public virtual async Task<TDto> UpdateAsync(int id, TDto dto)
