@@ -16,7 +16,7 @@
 	  <PackageReference Include="System.Text.Json" Version="8.0.3" />
   </ItemGroup>
 
-  <ItemGroup>
+	<ItemGroup>
     <ProjectReference Include="..\LMS.Shared\LMS.Shared.csproj" />
   </ItemGroup>
 
