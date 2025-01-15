@@ -43,10 +43,5 @@
     {
         var httpClient = HttpClientFactory.CreateClient("LmsAPIClient");
         Course = await httpClient.GetFromJsonAsync<CourseDto>($"api/courses/{CourseId}");
-
-//        if (Course.Id != CourseId)
-//        {
-//            Course = (await _apiService.CallApiAsync<CourseDto>($"api/courses/{CourseId}"));
-//        }
     }
 }
