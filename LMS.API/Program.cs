@@ -1,7 +1,7 @@
 using Domain.Models.Entites; // Ensure this namespace is included
 using LMS.API.Extensions;
 using LMS.Infrastructure.Data;
-using LMS.Presemtation;
+using LMS.Presentation;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -42,7 +42,7 @@ public class Program
         .AddEntityFrameworkStores<LmsContext>()
         .AddDefaultTokenProviders();
 
-        builder.Services.Configure<PasswordHasherOptions>(options => options.IterationCount = 10000);
+        builder.Services.Configure<PasswordHasherOptions>(options => options.IterationCount = 100000);
 
         var app = builder.Build();
 

@@ -29,12 +29,28 @@ public static class ServiceExtensions
     {
         services.AddScoped<IServiceManager, ServiceManager>();
         services.AddScoped<IAuthService, AuthService>();
+        services.AddScoped<ICourseService, CourseService>();
+        services.AddScoped<IModuleService, ModuleService>();
+        services.AddScoped<IActivityService, ActivityService>();
+        services.AddScoped<IDocumentService, DocumentService>();
+        services.AddScoped<IUserCourseService, UserCourseService>();
+
         services.AddLazy<IAuthService>();
+        services.AddLazy<ICourseService>();
+        services.AddLazy<IModuleService>();
+        services.AddLazy<IActivityService>();
+        services.AddLazy<IDocumentService>();
+        services.AddLazy<IUserCourseService>();
     }
 
     public static void ConfigureRepositories(this IServiceCollection services)
     {
         services.AddScoped<IUnitOfWork, UnitOfWork>();
+        services.AddScoped<ICourseRepo, CourseRepo>();
+        services.AddScoped<IModuleRepo, ModuleRepo>();
+        services.AddScoped<IActivityRepo, ActivityRepo>();
+        services.AddScoped<IDocumentRepo, DocumentRepo>();
+        services.AddScoped<IUserCourseRepo, UserCourseRepo>();
     }   
 
     public static void ConfigureOpenApi(this IServiceCollection services) =>

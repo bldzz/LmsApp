@@ -16,12 +16,16 @@ namespace Domain.Models.Entites
 
         [Required]
         [MaxLength(255)]
+        [MinLength(3)]
         public string CourseName { get; set; }
 
         public string Description { get; set; }
 
         [Required]
         public DateTime StartDate { get; set; }
+        
+        [Required]
+        public DateTime EndDate { get; set; }
 
         public ICollection<Module> Modules { get; set; } // One-to-Many with Modules
         public ICollection<UserCourse> UserCourses { get; set; } // Many-to-Many with Users
