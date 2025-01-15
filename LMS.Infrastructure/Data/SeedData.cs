@@ -25,7 +25,7 @@ public static class SeedData
             userManager = serviceProvider.GetRequiredService<UserManager<ApplicationUser>>() ?? throw new ArgumentNullException(nameof(userManager));
             roleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole>>() ?? throw new ArgumentNullException(nameof(roleManager));
 
-            try
+            try //TODO: något går fel här när man seedar ny databas
             {
                 // Seed roles
                 await CreateRolesAsync(new[] { adminRole, "Student", "Teacher" });

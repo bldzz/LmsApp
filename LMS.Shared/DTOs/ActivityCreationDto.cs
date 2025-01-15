@@ -1,31 +1,30 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace LMS.Shared.DTOs;
-
-public record ActivityDto()
+namespace LMS.Shared.DTOs
 {
-    [Required]
-    public int Id { get; set; }
-    
+    public record ActivityCreationDto
+    {
     [Required]
     [MaxLength(50)]
     public string Type { get; set; }
     
     [Required]
     [MaxLength(255)]
-    public string ActivityName { get; set; }
+    public string Name { get; set; }
     
     [Required]
-    public DateTime StartDate { get; set; }
+    public DateTime StartTime { get; set; }
     
     [Required]
-    public DateTime EndDate { get; set; }
+    public DateTime EndTime { get; set; }
     
     [Required]
     public int ModuleId { get; set; }
     
     [Required]
+    public List<int> DocumentIds { get; set; } = new List<int>();
+
     public string? Description { get; init; }
 
-    public List<DocumentDto> Documents { get; set; } = new List<DocumentDto>();
+    }
 }

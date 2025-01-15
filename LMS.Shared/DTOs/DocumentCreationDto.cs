@@ -1,13 +1,17 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace LMS.Shared.DTOs;
-
-public record DocumentDto()
+namespace LMS.Shared.DTOs
 {
-    public string Id { get; set; }
+    public record DocumentCreationDto
+    {
+    [Required]
     public string UserId { get; set; }
-    public DateTime? UploadTime { get; set; }
+    
     public int? CourseId { get; set; }
+    
     public int? ModuleId { get; set; }
+    
     public Guid? ActivityId { get; set; }
+
+    }
 }
