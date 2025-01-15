@@ -29,5 +29,6 @@ public class ClientApiService(IHttpClientFactory httpClientFactory, NavigationMa
 
         var responseDtos = await JsonSerializer.DeserializeAsync<TResponse>(await response.Content.ReadAsStreamAsync(), _jsonSerializerOptions, CancellationToken.None);
         return responseDtos;
+
     }
 }
