@@ -42,7 +42,6 @@ public abstract class ServiceBase<TEntity, TDto, TCreationDto>
         var entity = _mapper.Map<TEntity>(creationDto);
         CreateEntity(entity);
         await _uow.CompleteASync();
-        //var createdEntity = await GetEntityByIdAsync(EF.Property<int>(entity, "Id"));
         return _mapper.Map<TDto>(entity);
     }
 
