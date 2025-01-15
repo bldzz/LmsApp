@@ -4,5 +4,5 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace LMS.Presemtation;
+namespace LMS.Presentation;
 public static class AssemblyReference { }

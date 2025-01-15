@@ -7,13 +7,15 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <!--<PackageReference Include="Fluent.Infrastructure" Version="2.0.0-beta-01" />-->
-    <PackageReference Include="Microsoft.Extensions.Identity.Stores" Version="8.0.11" />
-    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="8.0.7" />
+    <Compile Remove="Entities\**" />
+    <EmbeddedResource Remove="Entities\**" />
+    <None Remove="Entities\**" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Entities\" />
+    <!--<PackageReference Include="Fluent.Infrastructure" Version="2.0.0-beta-01" />-->
+    <PackageReference Include="Microsoft.Extensions.Identity.Stores" Version="8.0.11" />
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="8.0.7" />
   </ItemGroup>
 
 </Project>

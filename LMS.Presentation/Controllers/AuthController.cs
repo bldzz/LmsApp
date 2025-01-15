@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Services.Contracts;
 
-namespace LMS.Presemtation.Controllers;
+namespace LMS.Presentation.Controllers;
 [Route("api/auth")]
 [ApiController]
 public class AuthController : ControllerBase

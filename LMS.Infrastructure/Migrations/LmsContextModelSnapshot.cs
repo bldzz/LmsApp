@@ -23,12 +23,13 @@ namespace LMS.Infrastructure.Migrations
 
             modelBuilder.Entity("Domain.Models.Entites.Activity", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Description")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("EndTime")
@@ -167,6 +168,9 @@ namespace LMS.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<DateTime>("EndDate")
+                        .HasColumnType("datetime2");
+
                     b.Property<DateTime>("StartDate")
                         .HasColumnType("datetime2");
 
@@ -183,8 +187,8 @@ namespace LMS.Infrastructure.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<Guid?>("ActivityId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<int?>("ActivityId")
+                        .HasColumnType("int");
 
                     b.Property<int?>("CourseId")
                         .HasColumnType("int");
@@ -232,7 +236,6 @@ namespace LMS.Infrastructure.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("Description")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("EndDate")
@@ -308,19 +311,19 @@ namespace LMS.Infrastructure.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "46bd41d2-6153-43ad-820b-774b095e5895",
+                            Id = "1217fb71-b7c4-4387-a6c6-4213d80ce977",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "a988b02a-fc81-44ea-8c32-5aa7288b6c51",
+                            Id = "8d26a735-c5e8-49b5-945e-a7b861a20555",
                             Name = "Teacher",
                             NormalizedName = "TEACHER"
                         },
                         new
                         {
-                            Id = "dd2283a9-791f-4a1e-ad5f-71eee1eb7ec6",
+                            Id = "95b0b2aa-f320-49bf-9da3-3bcfa75504ec",
                             Name = "Student",
                             NormalizedName = "STUDENT"
                         });

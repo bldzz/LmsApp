@@ -18,7 +18,7 @@ namespace Domain.Models.Entites
         [MaxLength(255)]
         public string ModuleName { get; set; }
 
-        public string Description { get; set; }
+        public string? Description { get; set; }
 
         [Required]
         public DateTime StartDate { get; set; }
@@ -28,10 +28,9 @@ namespace Domain.Models.Entites
 
         [Required]
         public int CourseId { get; set; } // Foreign Key to Course
-        public Course Course { get; set; }
+        public Course? Course { get; set; }
 
-        public ICollection<Activity> Activities { get; set; } // One-to-Many with Activities
-        public ICollection<Document> Documents { get; set; } // One-to-Many with Documents
+        public ICollection<Activity>? Activities { get; set; } // One-to-Many with Activities
+        public ICollection<Document>? Documents { get; set; } // One-to-Many with Documents
     }
-
 }

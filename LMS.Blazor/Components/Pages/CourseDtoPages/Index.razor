@@ -1,0 +1,38 @@
+﻿@page "/coursedtos"
+@using Microsoft.EntityFrameworkCore
+@using Microsoft.AspNetCore.Components.QuickGrid
+@using LMS.Shared.DTOs
+@using LMS.Blazor.Data
+@implements IAsyncDisposable
+@inject IDbContextFactory<LMS.Blazor.Data.ApplicationDbContext> DbFactory
+
+<PageTitle>Index</PageTitle>
+
+<h1>Index</h1>
+
+<p>
+    <a href="coursedtos/create">Create New</a>
+</p>
+
+<QuickGrid Class="table" Items="context.CourseDto">
+    <PropertyColumn Property="coursedto => coursedto.CourseName" />
+    <PropertyColumn Property="coursedto => coursedto.StartDate" />
+    <PropertyColumn Property="coursedto => coursedto.Modules" />
+
+    <TemplateColumn Context="coursedto">
+        <a href="@($"coursedtos/edit?id={coursedto.Id}")">Edit</a> |
+        <a href="@($"coursedtos/details?id={coursedto.Id}")">Details</a> |
+        <a href="@($"coursedtos/delete?id={coursedto.Id}")">Delete</a>
+    </TemplateColumn>
+</QuickGrid>
+
+@code {
+    private ApplicationDbContext context = default!;
+
+    protected override void OnInitialized()
+    {
+        context = DbFactory.CreateDbContext();
+    }
+
+    public async ValueTask DisposeAsync() => await context.DisposeAsync();
+}
