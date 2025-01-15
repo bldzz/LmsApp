@@ -26,7 +26,7 @@ public class CourseService : ICourseService
 
     public async Task<CourseDto> GetCourseAsync(int id)
     {
-        var course = await _uow.CourseRepo.FindByCondition(c => c.Id == id).SingleAsync();
+        var course = await _uow.CourseRepo.GetCourseByIdAsync(id);
         return _mapper.Map<CourseDto>(course);
     }
 
