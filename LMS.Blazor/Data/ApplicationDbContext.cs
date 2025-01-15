@@ -1,6 +1,7 @@
-using Domain.Models.Entites;
+﻿using Domain.Models.Entites;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using LMS.Shared.DTOs;
 
 namespace LMS.Blazor.Data;
 
@@ -22,4 +23,6 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
     {
         throw new InvalidOperationException("Use context in API project!!!");
     }
+
+    public DbSet<LMS.Shared.DTOs.CourseDto> CourseDto { get; set; } = default!;
 }

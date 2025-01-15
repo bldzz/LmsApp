@@ -1,0 +1,63 @@
+﻿@page "/coursedtos/delete"
+@using Microsoft.EntityFrameworkCore
+@using LMS.Shared.DTOs
+@inject IDbContextFactory<LMS.Blazor.Data.ApplicationDbContext> DbFactory
+@inject NavigationManager NavigationManager
+
+<PageTitle>Delete</PageTitle>
+
+<h1>Delete</h1>
+
+<p>Are you sure you want to delete this?</p>
+<div>
+    <h2>CourseDto</h2>
+    <hr />
+    @if (coursedto is null)
+    {
+        <p><em>Loading...</em></p>
+    }
+    else {
+        <dl class="row">
+            <dt class="col-sm-2">CourseName</dt>
+            <dd class="col-sm-10">@coursedto.CourseName</dd>
+        </dl>
+        <dl class="row">
+            <dt class="col-sm-2">StartDate</dt>
+            <dd class="col-sm-10">@coursedto.StartDate</dd>
+        </dl>
+        <dl class="row">
+            <dt class="col-sm-2">ModuleIds</dt>
+            <dd class="col-sm-10">@coursedto.Modules</dd>
+        </dl>
+        <EditForm method="post" Model="coursedto" OnValidSubmit="DeleteCourseDto" FormName="delete" Enhance>
+            <button type="submit" class="btn btn-danger" disabled="@(coursedto is null)">Delete</button> |
+            <a href="/coursedtos">Back to List</a>
+        </EditForm>
+    }
+</div>
+
+@code {
+    private CourseDto? coursedto;
+
+    [SupplyParameterFromQuery]
+    private int Id { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        using var context = DbFactory.CreateDbContext();
+        coursedto = await context.CourseDto.FirstOrDefaultAsync(m => m.Id == Id);
+
+        if (coursedto is null)
+        {
+            NavigationManager.NavigateTo("notfound");
+        }
+    }
+
+    private async Task DeleteCourseDto()
+    {
+        using var context = DbFactory.CreateDbContext();
+        context.CourseDto.Remove(coursedto!);
+        await context.SaveChangesAsync();
+        NavigationManager.NavigateTo("/coursedtos");
+    }
+}

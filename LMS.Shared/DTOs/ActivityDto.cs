@@ -13,19 +13,19 @@ public record ActivityDto()
     
     [Required]
     [MaxLength(255)]
-    public string Name { get; set; }
+    public string ActivityName { get; set; }
     
     [Required]
-    public DateTime StartTime { get; set; }
+    public DateTime StartDate { get; set; }
     
     [Required]
-    public DateTime EndTime { get; set; }
+    public DateTime EndDate { get; set; }
     
     [Required]
     public int ModuleId { get; set; }
     
     [Required]
-    public List<int> DocumentIds { get; set; } = new List<int>();
-
     public string? Description { get; init; }
+
+    public List<DocumentDto> Documents { get; set; } = new List<DocumentDto>();
 }

@@ -1,0 +1,49 @@
+﻿@using LMS.Shared.DTOs
+
+<h3>@Course.CourseName</h3>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th></th>
+            <th></th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var module in Course.Modules)
+        {
+            <tr>
+                <td><a href="/module/@module.Id">@module.ModuleName</a></td>
+                <td>@module.StartDate</td>
+                <td>@module.EndDate</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@code {
+    [Parameter]
+    public int CourseId { get; set; }
+    public CourseDto Course = new CourseDto();
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (Course.Id != CourseId)
+        {
+            Course = new CourseDto
+                {
+                    Id = 3,
+                    CourseName = "C# Software Developer Fullstack",
+                    StartDate = DateTime.Now.AddDays(7),
+                    Modules = new List<ModuleDto>
+                    {
+                        new ModuleDto{ Id = 1, ModuleName = "HTML", StartDate = DateTime.Now.AddDays(7), EndDate = DateTime.Now.AddDays(8), CourseId = 1, Activities = new List<ActivityDto>()},
+                        new ModuleDto{ Id = 2, ModuleName = "Javascript", StartDate = DateTime.Now.AddDays(9), EndDate = DateTime.Now.AddDays(10), CourseId = 1, Activities = new List<ActivityDto>()},
+                        new ModuleDto{ Id = 3, ModuleName = "Blazor", StartDate = DateTime.Now.AddDays(11), EndDate = DateTime.Now.AddDays(12), CourseId = 1, Activities = new List<ActivityDto>()},
+                        new ModuleDto{ Id = 4, ModuleName = "Azure", StartDate = DateTime.Now.AddDays(13), EndDate = DateTime.Now.AddDays(14), CourseId = 1, Activities = new List<ActivityDto>()}
+                    }
+                };
+        }
+    }
+}

@@ -1,0 +1,23 @@
+﻿@page "/course/{CourseId:int}"
+@using Microsoft.AspNetCore.Authorization
+@using Microsoft.AspNetCore.Components.Authorization
+@attribute [Authorize]
+
+<div id="content" class="container">
+    <div class="row">
+        <div id="courseModules" class="col-12 col-sm-8">
+            <LMS.Blazor.Client.Components.CourseModuleList CourseId="CourseId" />
+        </div>
+        <div id="courseSide" class="col-12 col-sm-4">
+            <LMS.Blazor.Client.Components.CourseDescription CourseId="CourseId" />
+            <LMS.Blazor.Client.Components.CourseStudents CourseId="CourseId" />
+            <LMS.Blazor.Client.Components.CourseDocuments CourseId="CourseId" />
+        </div>
+    </div>
+</div>
+
+
+@code {
+    [Parameter]
+    public int CourseId { get; set; }
+}

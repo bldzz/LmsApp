@@ -1,0 +1,42 @@
+﻿@using LMS.Shared.DTOs
+
+<h3>CourseStudents</h3>
+
+@foreach (var Student in Course.Students)
+{
+    @if (Student.CourseId == CourseId)
+    { 
+        @Student.Name<br>
+    }
+}
+
+@code {
+    [Parameter]
+    public int CourseId { get; set; }
+    public CourseDto Course = new CourseDto();
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (Course.Id != CourseId)
+        {
+            Course = new CourseDto
+                {
+                    Id = 3,
+                    Students = new List<UserDto>
+                    {
+                        new UserDto{ Id = 1, Name = "Peter Parker", CourseId = 1 },
+                        new UserDto{ Id = 1, Name = "Clark Kent", CourseId = 1 },
+                        new UserDto{ Id = 1, Name = "Matt Murdock", CourseId = 1 },
+                        new UserDto{ Id = 1, Name = "Steven Rogers", CourseId = 1 },
+                        new UserDto{ Id = 1, Name = "Peter Quill", CourseId = 1 },
+                        new UserDto{ Id = 1, Name = "Jessica Jones", CourseId = 1 },
+                        new UserDto{ Id = 1, Name = "Anthony Stark", CourseId = 1 },
+                        new UserDto{ Id = 1, Name = "Bruce Wayne", CourseId = 1 },
+                        new UserDto{ Id = 1, Name = "James Howlett", CourseId = 1 },
+                        new UserDto{ Id = 1, Name = "Natalia Romanova", CourseId = 1 },
+                        new UserDto{ Id = 1, Name = "Reed Richards", CourseId = 1 }
+                    }
+                };
+        }
+    }
+}
