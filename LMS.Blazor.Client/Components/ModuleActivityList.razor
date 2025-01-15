@@ -57,4 +57,22 @@
                 };
         }
     }
+    @rendermode InteractiveWebAssembly
+
+    @using LMS.Blazor.Client.Services
+    @using LMS.Shared.DTOs
+    @using Microsoft.AspNetCore.Authorization
+    @using Microsoft.AspNetCore.Components.Authorization
+
+    [Inject]
+    private IApiService _apiService { get; set; } = default!;
+    [Inject]
+    private AuthenticationStateProvider AuthenticationStateProvider { get; set; } = default!;
+
+    private List<CourseDto>? demo;
+
+    private async Task CallAPIAsync()
+    {
+        demo = (await _apiService.CallApiAsync<IEnumerable<CourseDto>>("api/demoauth"))?.ToList() ?? [];
+    }
 }
