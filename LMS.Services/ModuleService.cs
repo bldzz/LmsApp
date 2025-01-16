@@ -24,12 +24,12 @@ namespace LMS.Services
 
         protected override async Task<IEnumerable<Module>> GetAllEntitiesAsync()
         {
-            return await _uow.ModuleRepo.FindAll().ToListAsync();
+            return await _uow.ModuleRepo.GetAllModulesAsync();
         }
 
-        protected override async Task<Module> GetEntityByIdAsync(int id)
+        protected override async Task<Module?> GetEntityByIdAsync(int id)
         {
-            return await _uow.ModuleRepo.FindByCondition(m => m.Id == id).SingleAsync();
+            return await _uow.ModuleRepo.GetModuleByIdAsync(id);
         }
 
         protected override void UpdateEntity(Module entity)
