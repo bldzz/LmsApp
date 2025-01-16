@@ -5,5 +5,5 @@ namespace LMS.Blazor.Client.Services;
 
 public interface IApiService
 {
-    Task<IEnumerable<DemoDto>> CallApiAsync();
+    Task<TResponse?> CallApiAsync<TResponse>(string endpoint);
 }
