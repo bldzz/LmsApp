@@ -7,7 +7,8 @@ var builder = WebAssemblyHostBuilder.CreateDefault(args);
 // Register API service for calls originating from WASM
 builder.Services.AddHttpClient<IApiService, ClientApiService>("BffClient", cfg =>
 {
-    cfg.BaseAddress = new Uri(builder.HostEnvironment.BaseAddress); // Dynamic base address
+    cfg.BaseAddress = new Uri("https://localhost:7224");
+    //cfg.BaseAddress = new Uri(builder.HostEnvironment.BaseAddress); // Dynamic base address
 });
 
 // Scoped AuthenticationStateProvider

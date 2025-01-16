@@ -5,7 +5,7 @@
 @using Microsoft.AspNetCore.Authorization
 @using Microsoft.AspNetCore.Components.Authorization
 
-@inject IHttpClientFactory HttpClientFactory
+@attribute [Authorize]
 
 <h3>@Course.CourseName</h3>
 
@@ -41,7 +41,8 @@
 
     protected override async Task OnInitializedAsync()
     {
-        var httpClient = HttpClientFactory.CreateClient("LmsAPIClient");
-        Course = await httpClient.GetFromJsonAsync<CourseDto>($"api/courses/{CourseId}");
+        Course = (await _apiService.GetAsync<CourseDto>($"api/courses/{CourseId}"));
+        //var httpClient = HttpClientFactory.CreateClient("LmsAPIClient");
+        //Course = await httpClient.GetFromJsonAsync<CourseDto>($"api/courses/{CourseId}");
     }
 }
