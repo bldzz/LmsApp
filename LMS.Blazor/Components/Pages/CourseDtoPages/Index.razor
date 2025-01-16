@@ -1,38 +1,67 @@
 ﻿@page "/coursedtos"
-@using Microsoft.EntityFrameworkCore
-@using Microsoft.AspNetCore.Components.QuickGrid
 @using LMS.Shared.DTOs
-@using LMS.Blazor.Data
-@implements IAsyncDisposable
-@inject IDbContextFactory<LMS.Blazor.Data.ApplicationDbContext> DbFactory
+@using LMS.Blazor.Client.Services
+@inject IApiService ApiService
+@inject NavigationManager NavigationManager
 
-<PageTitle>Index</PageTitle>
+<PageTitle>Courses</PageTitle>
 
-<h1>Index</h1>
+<h1>Courses</h1>
 
 <p>
-    <a href="coursedtos/create">Create New</a>
+    <a class="btn btn-primary" href="/coursedtos/create">Create New Course</a>
 </p>
 
-<QuickGrid Class="table" Items="context.CourseDto">
-    <PropertyColumn Property="coursedto => coursedto.CourseName" />
-    <PropertyColumn Property="coursedto => coursedto.StartDate" />
-    <PropertyColumn Property="coursedto => coursedto.Modules" />
-
-    <TemplateColumn Context="coursedto">
-        <a href="@($"coursedtos/edit?id={coursedto.Id}")">Edit</a> |
-        <a href="@($"coursedtos/details?id={coursedto.Id}")">Details</a> |
-        <a href="@($"coursedtos/delete?id={coursedto.Id}")">Delete</a>
-    </TemplateColumn>
-</QuickGrid>
+@if (courses == null)
+{
+    <p><em>Loading...</em></p>
+}
+else if (!courses.Any())
+{
+    <p>No courses found.</p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Course Name</th>
+                <th>Start Date</th>
+                <th>Number of Modules</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var course in courses)
+            {
+                <tr>
+                    <td>@course.CourseName</td>
+                    <td>@course.StartDate.ToShortDateString()</td>
+                    <td>@course.Modules.Count</td>
+                    <td>
+                        <a class="btn btn-sm btn-secondary" href="@($"coursedtos/edit?id={course.Id}")">Edit</a>
+                        <a class="btn btn-sm btn-info" href="@($"coursedtos/details?id={course.Id}")">Details</a>
+                        <a class="btn btn-sm btn-danger" href="@($"coursedtos/delete?id={course.Id}")">Delete</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
 
 @code {
-    private ApplicationDbContext context = default!;
+    private List<CourseDto>? courses;
 
-    protected override void OnInitialized()
+    protected override async Task OnInitializedAsync()
     {
-        context = DbFactory.CreateDbContext();
+        try
+        {
+            // Fetch courses using the ProxyController via ApiService
+            courses = (await ApiService.CallApiAsync<List<CourseDto>>("api/courses")).ToList();
+        }
+        catch (Exception ex)
+        {
+            Console.Error.WriteLine($"Error loading courses: {ex.Message}");
+        }
     }
-
-    public async ValueTask DisposeAsync() => await context.DisposeAsync();
 }

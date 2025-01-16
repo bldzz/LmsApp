@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace LMS.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class Init : Migration
+    public partial class NewInit : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -73,11 +73,10 @@ namespace LMS.Infrastructure.Migrations
                     RefreshTokenExpireTime = table.Column<DateTime>(type: "datetime2", nullable: false),
                     FirstName = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     LastName = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    Email = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false),
-                    RoleId = table.Column<string>(type: "nvarchar(450)", nullable: true),
                     CurrentCourseId = table.Column<int>(type: "int", nullable: true),
                     UserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     NormalizedUserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
+                    Email = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     NormalizedEmail = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     EmailConfirmed = table.Column<bool>(type: "bit", nullable: false),
                     PasswordHash = table.Column<string>(type: "nvarchar(max)", nullable: true),
@@ -93,11 +92,6 @@ namespace LMS.Infrastructure.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_AspNetUsers", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_AspNetUsers_AspNetRoles_RoleId",
-                        column: x => x.RoleId,
-                        principalTable: "AspNetRoles",
-                        principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_AspNetUsers_Courses_CurrentCourseId",
                         column: x => x.CurrentCourseId,
@@ -249,7 +243,7 @@ namespace LMS.Infrastructure.Migrations
                     Name = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false),
                     StartTime = table.Column<DateTime>(type: "datetime2", nullable: false),
                     EndTime = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     ModuleId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
@@ -309,9 +303,9 @@ namespace LMS.Infrastructure.Migrations
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
                 values: new object[,]
                 {
-                    { "1b5d159c-2f76-4847-8e73-f038a6c0c63f", null, "Teacher", "TEACHER" },
-                    { "20759171-c867-4a91-ab83-7c5045eadc9e", null, "Admin", "ADMIN" },
-                    { "8b888c39-d0da-4135-ab30-40cba9a9a7de", null, "Student", "STUDENT" }
+                    { "6f5f06be-43c3-40ff-a98b-2d3589b6c78c", null, "Student", "STUDENT" },
+                    { "8034ddec-40c4-4ed4-bd2e-8aae688c844b", null, "Teacher", "TEACHER" },
+                    { "8c06a00a-219a-4124-b70a-01358b77ec29", null, "Admin", "ADMIN" }
                 });
 
             migrationBuilder.CreateIndex(
@@ -356,11 +350,6 @@ namespace LMS.Infrastructure.Migrations
                 name: "IX_AspNetUsers_CurrentCourseId",
                 table: "AspNetUsers",
                 column: "CurrentCourseId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_AspNetUsers_RoleId",
-                table: "AspNetUsers",
-                column: "RoleId");
 
             migrationBuilder.CreateIndex(
                 name: "UserNameIndex",
@@ -432,6 +421,9 @@ namespace LMS.Infrastructure.Migrations
                 name: "UserCourses");
 
             migrationBuilder.DropTable(
+                name: "AspNetRoles");
+
+            migrationBuilder.DropTable(
                 name: "Activities");
 
             migrationBuilder.DropTable(
@@ -439,9 +431,6 @@ namespace LMS.Infrastructure.Migrations
 
             migrationBuilder.DropTable(
                 name: "Modules");
-
-            migrationBuilder.DropTable(
-                name: "AspNetRoles");
 
             migrationBuilder.DropTable(
                 name: "Courses");

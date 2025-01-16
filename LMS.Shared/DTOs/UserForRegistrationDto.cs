@@ -14,4 +14,7 @@ public record UserForRegistrationDto
 
     [Required(ErrorMessage = "Password is required")]
     public string Password { get; init; }
+
+
+    public string Role { get; set; } = string.Empty;
 }

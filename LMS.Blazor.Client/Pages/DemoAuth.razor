@@ -1,4 +1,4 @@
-﻿@page "/demoauth"
+﻿@* @page "/demoauth"
 @rendermode InteractiveWebAssembly
 
 @using LMS.Blazor.Client.Services
@@ -42,17 +42,22 @@ else
 
 
 @code {
-
     [Inject]
     private IApiService _apiService { get; set; } = default!;
     [Inject]
     private AuthenticationStateProvider AuthenticationStateProvider { get; set; } = default!;
 
-    private List<DemoDto>? demo; 
+    private List<DemoDto>? demo;
 
     private async Task CallAPIAsync()
     {
-        demo = (await _apiService.CallApiAsync())
+        // Specify the endpoint to call
+        string endpoint = "api/demoauth";
+
+        // Call the API and assign the result
+        demo = (await _apiService.CallApiAsync<DemoDto>(endpoint))
             .ToList();
-    } 
+    }
 }
+
+ *@

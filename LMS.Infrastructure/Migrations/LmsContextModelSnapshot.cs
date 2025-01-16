@@ -75,7 +75,6 @@ namespace LMS.Infrastructure.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("Email")
-                        .IsRequired()
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
 
@@ -121,9 +120,6 @@ namespace LMS.Infrastructure.Migrations
                     b.Property<DateTime>("RefreshTokenExpireTime")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("RoleId")
-                        .HasColumnType("nvarchar(450)");
-
                     b.Property<string>("SecurityStamp")
                         .HasColumnType("nvarchar(max)");
 
@@ -145,8 +141,6 @@ namespace LMS.Infrastructure.Migrations
                         .IsUnique()
                         .HasDatabaseName("UserNameIndex")
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
-
-                    b.HasIndex("RoleId");
 
                     b.ToTable("AspNetUsers", (string)null);
                 });
@@ -311,19 +305,19 @@ namespace LMS.Infrastructure.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "1217fb71-b7c4-4387-a6c6-4213d80ce977",
+                            Id = "8c06a00a-219a-4124-b70a-01358b77ec29",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "8d26a735-c5e8-49b5-945e-a7b861a20555",
+                            Id = "8034ddec-40c4-4ed4-bd2e-8aae688c844b",
                             Name = "Teacher",
                             NormalizedName = "TEACHER"
                         },
                         new
                         {
-                            Id = "95b0b2aa-f320-49bf-9da3-3bcfa75504ec",
+                            Id = "6f5f06be-43c3-40ff-a98b-2d3589b6c78c",
                             Name = "Student",
                             NormalizedName = "STUDENT"
                         });
@@ -452,13 +446,7 @@ namespace LMS.Infrastructure.Migrations
                         .WithMany()
                         .HasForeignKey("CurrentCourseId");
 
-                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", "Role")
-                        .WithMany()
-                        .HasForeignKey("RoleId");
-
                     b.Navigation("CurrentCourse");
-
-                    b.Navigation("Role");
                 });
 
             modelBuilder.Entity("Domain.Models.Entites.Document", b =>

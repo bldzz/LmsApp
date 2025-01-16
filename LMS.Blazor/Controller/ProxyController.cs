@@ -71,3 +71,86 @@ public class ProxyController : ControllerBase
         return StatusCode((int)response.StatusCode, await response.Content.ReadAsStringAsync());
     }
 }
+
+
+//using Azure.Core;
+//using Azure;
+//using LMS.Blazor.Services;
+//using Microsoft.AspNetCore.Mvc;
+//using System.Net.Http.Headers;
+//using System.Security.Claims;
+
+//[Route("proxy-endpoint")]
+//[ApiController]
+//public class ProxyController : ControllerBase
+//{
+//    private readonly IHttpClientFactory _httpClientFactory;
+//    private readonly ITokenStorage _tokenService;
+//    private readonly ILogger<ProxyController> _logger;
+
+//    public ProxyController(IHttpClientFactory httpClientFactory, ITokenStorage tokenService, ILogger<ProxyController> logger)
+//    {
+//        _httpClientFactory = httpClientFactory;
+//        _tokenService = tokenService;
+//        _logger = logger;
+//    }
+
+//    [HttpGet, HttpPost, HttpPut, HttpDelete, HttpPatch]
+//    public async Task<IActionResult> Proxy([FromQuery] string endpoint)
+//    {
+//        if (string.IsNullOrEmpty(endpoint) || !IsAllowedEndpoint(endpoint))
+//            return BadRequest("Invalid or forbidden endpoint.");
+
+//        var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+//        if (userId == null) return Unauthorized();
+
+//        var accessToken = await _tokenService.GetAccessTokenAsync(userId);
+
+
+
+//        if (await _tokenService.IsTokenExpiredAsync(userId))
+//        {
+//            var refreshToken = await _tokenService.GetRefreshTokenAsync(userId);
+//            accessToken = await _tokenService.RefreshAccessTokenAsync(refreshToken);
+//            if (string.IsNullOrEmpty(accessToken)) return Unauthorized();
+//        }
+
+
+
+
+//        var client = _httpClientFactory.CreateClient("LmsAPIClient");
+//        client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
+
+//        var targetUri = new Uri($"{client.BaseAddress}{endpoint}{Request.QueryString}");
+//        var requestMessage = new HttpRequestMessage(new HttpMethod(Request.Method), targetUri);
+
+//        if (Request.Method != HttpMethod.Get.Method && Request.ContentLength > 0)
+//            requestMessage.Content = new StreamContent(Request.Body);
+
+//        foreach (var header in Request.Headers)
+//        {
+//            if (!header.Key.Equals("Host", StringComparison.OrdinalIgnoreCase))
+//                requestMessage.Headers.TryAddWithoutValidation(header.Key, header.Value.ToArray());
+//        }
+
+//        try
+//        {
+//            var response = await client.SendAsync(requestMessage);
+//            foreach (var header in response.Headers)
+//                Response.Headers[header.Key] = string.Join(", ", header.Value);
+
+//            return StatusCode((int)response.StatusCode, await response.Content.ReadAsStringAsync());
+//        }
+//        catch (Exception ex)
+//        {
+//            _logger.LogError(ex, "Error while proxying request to {Uri}", targetUri);
+//            return StatusCode(500, "Internal Server Error");
+//        }
+//    }
+
+//    private bool IsAllowedEndpoint(string endpoint)
+//    {
+//        var allowedEndpoints = new[] { "api/demoauth", "api/users", "api/courses" };
+//        return allowedEndpoints.Contains(endpoint);
+//    }
+//}
