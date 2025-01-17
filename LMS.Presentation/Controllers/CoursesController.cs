@@ -21,14 +21,14 @@ namespace LMS.Presentation.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<CourseDto>>> GetCourses()
         {
-            return Ok(await _serviceManager.CourseService.GetCourseAsync());
+            return Ok(await _serviceManager.CourseService.GetAllAsync());
         }
 
         // GET: api/Courses/5
         [HttpGet("{id}")]
         public async Task<ActionResult<CourseDto>> GetCourse(int id)
         {
-            var course = await _serviceManager.CourseService.GetCourseAsync(id);
+            var course = await _serviceManager.CourseService.GetByIdAsync(id);
 
             if (course == null)
             {
@@ -43,9 +43,8 @@ namespace LMS.Presentation.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> PutCourse(int id, CourseDto course)
         {
-            await _serviceManager.CourseService.PutCourse(id, course);
-
-            return NoContent(); //TODO: måste fixa error handling
+            await _serviceManager.CourseService.UpdateAsync(id, course);
+            return NoContent();
         }
 
         // POST: api/Courses
@@ -53,7 +52,7 @@ namespace LMS.Presentation.Controllers
         [HttpPost]
         public async Task<ActionResult<Course>> PostCourse(CourseCreationDto course)
         {
-            var newCourse = await _serviceManager.CourseService.PostCourse(course);
+            var newCourse = await _serviceManager.CourseService.CreateAsync(course);
 
             return CreatedAtAction("GetCourse", new { id = newCourse.Id }, course);
         }
@@ -62,13 +61,13 @@ namespace LMS.Presentation.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteCourse(int id)
         {
-            await _serviceManager.CourseService.DeleteCourse(id);
+            await _serviceManager.CourseService.DeleteAsync(id);
             return NoContent();
         }
 
         private bool CourseExists(int id)
         {
-            return _serviceManager.CourseService.GetCourseAsync(id)!=null;
+            return _serviceManager.CourseService.GetByIdAsync(id)!=null;
         }
     }
 }
