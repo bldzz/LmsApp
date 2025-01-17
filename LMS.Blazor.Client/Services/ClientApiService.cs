@@ -8,13 +8,21 @@ using System.Text.Json;
 
 namespace LMS.Blazor.Client.Services;
 
-public class ClientApiService(IHttpClientFactory httpClientFactory, NavigationManager navigationManager) : IApiService
+public class ClientApiService : IApiService
 {
-    private readonly HttpClient httpClient = httpClientFactory.CreateClient("BffClient");
 
+    private readonly HttpClient httpClient;
+    private readonly NavigationManager navigationManager;
     private readonly JsonSerializerOptions _jsonSerializerOptions = new()
     { PropertyNamingPolicy = JsonNamingPolicy.CamelCase };
 
+    public ClientApiService(HttpClient client, NavigationManager navigationManager)
+    {
+        httpClient = client;
+        this.navigationManager = navigationManager;
+        httpClient.BaseAddress = new Uri("https://localhost:7224");
+        httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+    }
 
     public async Task<TResponse?> GetAsync<TResponse>(string endpoint)
     {

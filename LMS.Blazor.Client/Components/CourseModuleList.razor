@@ -18,7 +18,7 @@
         </tr>
     </thead>
     <tbody>
-        @foreach (var module in Course.Modules)
+        @foreach (var module in Course.Modules ?? Enumerable.Empty<ModuleDto>())
         {
             <tr>
                 <td><a href="/module/@module.Id">@module.ModuleName</a></td>
@@ -30,19 +30,24 @@
 </table>
 
 @code {
+    private bool loaded;
+
     [Parameter]
     public int CourseId { get; set; }
-    public CourseDto Course = new CourseDto();
+    public CourseDto? Course = new CourseDto();
 
     [Inject]
     private IApiService _apiService { get; set; } = default!;
     [Inject]
     private AuthenticationStateProvider AuthenticationStateProvider { get; set; } = default!;
 
-    protected override async Task OnInitializedAsync()
+    protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        Course = (await _apiService.GetAsync<CourseDto>($"api/courses/{CourseId}"));
-        //var httpClient = HttpClientFactory.CreateClient("LmsAPIClient");
-        //Course = await httpClient.GetFromJsonAsync<CourseDto>($"api/courses/{CourseId}");
+        if (firstRender && !loaded)
+        {
+            loaded = true;
+            Course = (await _apiService.GetAsync<CourseDto>($"api/courses/{CourseId}")) ?? null;
+            StateHasChanged();
+        }
     }
 }

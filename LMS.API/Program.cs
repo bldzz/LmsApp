@@ -42,7 +42,7 @@ public class Program
         .AddEntityFrameworkStores<LmsContext>()
         .AddDefaultTokenProviders();
 
-        builder.Services.Configure<PasswordHasherOptions>(options => options.IterationCount = 100000);
+        builder.Services.Configure<PasswordHasherOptions>(options => options.IterationCount = 10000);
 
         var app = builder.Build();
 
