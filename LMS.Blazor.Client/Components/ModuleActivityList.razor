@@ -1,6 +1,4 @@
-﻿@using LMS.Shared.DTOs
-
-<h3>@Module.ModuleName</h3>
+﻿<h3>@Module.ModuleName</h3>
 
 <table class="table">
     <thead>
@@ -57,13 +55,7 @@
                 };
         }
     }
-    @rendermode InteractiveWebAssembly
-
-    @using LMS.Blazor.Client.Services
-    @using LMS.Shared.DTOs
-    @using Microsoft.AspNetCore.Authorization
-    @using Microsoft.AspNetCore.Components.Authorization
-
+    
     [Inject]
     private IApiService _apiService { get; set; } = default!;
     [Inject]
@@ -71,7 +63,7 @@
 
     private List<CourseDto>? demo;
 
-    private async Task CallAPIAsync()
+    private async Task CallApiAsync()
     {
         demo = (await _apiService.CallApiAsync<IEnumerable<CourseDto>>("api/demoauth"))?.ToList() ?? [];
     }
