@@ -5,14 +5,16 @@ using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 
 // Register API service for calls originating from WASM
-builder.Services.AddHttpClient<IApiService, ClientApiService>("BffClient", cfg =>
+builder.Services.AddScoped<IApiService, ClientApiService>();
+builder.Services.AddHttpClient("BffClient", cfg =>
 {
     cfg.BaseAddress = new Uri("https://localhost:7224");
     //cfg.BaseAddress = new Uri(builder.HostEnvironment.BaseAddress); // Dynamic base address
 });
 
-// Scoped AuthenticationStateProvider
-builder.Services.AddScoped<AuthenticationStateProvider, PersistentAuthenticationStateProvider>();
+builder.Services.AddSingleton<AuthenticationStateProvider,
+    PersistentAuthenticationStateProvider>();
+builder.Services.AddCascadingAuthenticationState();
 
 // Add Blazor authorization services
 builder.Services.AddOptions();
