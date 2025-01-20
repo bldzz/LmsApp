@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Services.Contracts;
 using LMS.Shared.DTOs;
+using Microsoft.AspNetCore.Authorization;
 
 namespace LMS.Presentation.Controllers
 {
@@ -23,6 +24,7 @@ namespace LMS.Presentation.Controllers
         }
 
         // GET: api/Modules/5
+        [Authorize]
         [HttpGet("{id}")]
         public async Task<ActionResult<ModuleDto>> GetModule(int id)
         {

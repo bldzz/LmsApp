@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace LMS.Infrastructure.Migrations
 {
     [DbContext(typeof(LmsContext))]
-    partial class LmsContextModelSnapshot : ModelSnapshot
+    [Migration("20250120122349_renameActivityName")]
+    partial class renameActivityName
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -37,13 +40,13 @@ namespace LMS.Infrastructure.Migrations
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime>("EndDate")
+                    b.Property<DateTime>("EndTime")
                         .HasColumnType("datetime2");
 
                     b.Property<int>("ModuleId")
                         .HasColumnType("int");
 
-                    b.Property<DateTime>("StartDate")
+                    b.Property<DateTime>("StartTime")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Type")
@@ -53,7 +56,7 @@ namespace LMS.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ModuleId", "StartDate", "EndDate")
+                    b.HasIndex("ModuleId", "StartTime", "EndTime")
                         .IsUnique();
 
                     b.ToTable("Activities");
@@ -305,19 +308,19 @@ namespace LMS.Infrastructure.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "9c552325-955d-4f01-a71e-b088cbd584e3",
+                            Id = "f3da0269-958d-4c00-b968-c69fad47c578",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "a094a624-658a-4ed6-aa96-7de8b3def65e",
+                            Id = "6cc1f921-8de4-40af-b443-5656a7540bfd",
                             Name = "Teacher",
                             NormalizedName = "TEACHER"
                         },
                         new
                         {
-                            Id = "9f38782a-6063-4e76-8e37-35c5ffc58512",
+                            Id = "92bfca65-079d-441d-a288-72e68b49747c",
                             Name = "Student",
                             NormalizedName = "STUDENT"
                         });

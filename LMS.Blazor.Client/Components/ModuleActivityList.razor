@@ -1,4 +1,13 @@
-﻿@using LMS.Shared.DTOs
+﻿@rendermode InteractiveWebAssembly
+
+@using LMS.Blazor.Client.Services
+@using LMS.Shared.DTOs
+@using Microsoft.AspNetCore.Authorization
+@using Microsoft.AspNetCore.Components.Authorization
+
+@attribute [Authorize]
+
+<a href="/course/@Module.CourseId">Back</a>
 
 <h3>@Module.ModuleName</h3>
 
@@ -19,7 +28,7 @@
                 <td><h4>@activity.ActivityName</h4></td>
                 <td>@activity.StartDate</td>
                 <td>@activity.EndDate</td>
-                <td>3 Files</td>
+                <td>@activity.Documents.Count() Files</td>
                 <td><button>Upload File</button></td>
             </tr>
             <tr>
@@ -34,27 +43,44 @@
 </table>
 
 @code {
+    private bool loaded;
+
     [Parameter]
     public int ModuleId { get; set; }
     public ModuleDto Module = new ModuleDto();
 
-    protected override async Task OnInitializedAsync()
+    [Inject]
+    private IApiService _apiService { get; set; } = default!;
+    [Inject]
+    private AuthenticationStateProvider AuthenticationStateProvider { get; set; } = default!;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        if (Module.Id != ModuleId)
+        if (firstRender && !loaded)
         {
-            Module = new ModuleDto
-                {
-                    Id = 3,
-                    ModuleName = "HTML, the basics of web development.",
-                    StartDate = DateTime.Now.AddDays(7),
-                    Activities = new List<ActivityDto>
-                    {
-                        new ActivityDto{ Id = 1, ActivityName = "Presentation", Description = "This is a description of the presentation activity", StartDate = DateTime.Now.AddDays(7), EndDate = DateTime.Now.AddDays(8), ModuleId = 1, Documents = new List<DocumentDto>()},
-                        new ActivityDto{ Id = 2, ActivityName = "Demo", Description = "This is a description of the demo activity", StartDate = DateTime.Now.AddDays(9), EndDate = DateTime.Now.AddDays(10), ModuleId = 1, Documents = new List<DocumentDto>()},
-                        new ActivityDto{ Id = 3, ActivityName = "Exercise", Description = "This is a description of the exercise activity", StartDate = DateTime.Now.AddDays(11), EndDate = DateTime.Now.AddDays(12), ModuleId = 1, Documents = new List<DocumentDto>()},
-                        new ActivityDto{ Id = 4, ActivityName = "Project", Description = "This is a description of the project activity", StartDate = DateTime.Now.AddDays(13), EndDate = DateTime.Now.AddDays(14), ModuleId = 1, Documents = new List<DocumentDto>()}
-                    }
-                };
+            loaded = true;
+            Module = (await _apiService.GetAsync<ModuleDto>($"api/modules/{ModuleId}")) ?? null;
+            StateHasChanged();
         }
     }
+
+    // protected override async Task OnInitializedAsync()
+    // {
+    //     if (Module.Id != ModuleId)
+    //     {
+    //         Module = new ModuleDto
+    //             {
+    //                 Id = 3,
+    //                 ModuleName = "HTML, the basics of web development.",
+    //                 StartDate = DateTime.Now.AddDays(7),
+    //                 Activities = new List<ActivityDto>
+    //                 {
+    //                     new ActivityDto{ Id = 1, ActivityName = "Presentation", Description = "This is a description of the presentation activity", StartDate = DateTime.Now.AddDays(7), EndDate = DateTime.Now.AddDays(8), ModuleId = 1, Documents = new List<DocumentDto>()},
+    //                     new ActivityDto{ Id = 2, ActivityName = "Demo", Description = "This is a description of the demo activity", StartDate = DateTime.Now.AddDays(9), EndDate = DateTime.Now.AddDays(10), ModuleId = 1, Documents = new List<DocumentDto>()},
+    //                     new ActivityDto{ Id = 3, ActivityName = "Exercise", Description = "This is a description of the exercise activity", StartDate = DateTime.Now.AddDays(11), EndDate = DateTime.Now.AddDays(12), ModuleId = 1, Documents = new List<DocumentDto>()},
+    //                     new ActivityDto{ Id = 4, ActivityName = "Project", Description = "This is a description of the project activity", StartDate = DateTime.Now.AddDays(13), EndDate = DateTime.Now.AddDays(14), ModuleId = 1, Documents = new List<DocumentDto>()}
+    //                 }
+    //             };
+    //     }
+    // }
 }

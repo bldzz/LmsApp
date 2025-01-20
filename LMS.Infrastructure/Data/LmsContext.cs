@@ -89,7 +89,7 @@ public class LmsContext : IdentityDbContext<ApplicationUser, IdentityRole, strin
 
         // Ensure activities within the same module do not overlap
         modelBuilder.Entity<Activity>()
-            .HasIndex(a => new { a.ModuleId, a.StartTime, a.EndTime })
+            .HasIndex(a => new { a.ModuleId, a.StartDate, a.EndDate })
             .IsUnique();
     }
 }
