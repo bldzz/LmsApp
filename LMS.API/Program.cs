@@ -1,4 +1,4 @@
-using Domain.Models.Entites; // Ensure this namespace is included
+using Domain.Models.Entites;
 using LMS.API.Extensions;
 using LMS.Infrastructure.Data;
 using LMS.Presentation;
@@ -46,12 +46,26 @@ public class Program
 
         var app = builder.Build();
 
+        // Seed data asynchronously before starting the app
+        using (var scope = app.Services.CreateScope())
+        {
+            try
+            {
+                await SeedData.SeedDataAsync(app);
+            }
+            catch (Exception ex)
+            {
+                // Log or handle exceptions during seeding
+                Console.WriteLine($"An error occurred while seeding the database: {ex.Message}");
+                throw;
+            }
+        }
+
         // Configure the HTTP request pipeline
         if (app.Environment.IsDevelopment())
         {
             app.UseSwagger();
             app.UseSwaggerUI();
-            await app.SeedDataAsync(); // Ensure SeedDataAsync is updated to use ApplicationUser
         }
 
         app.UseHttpsRedirection();
@@ -63,6 +77,6 @@ public class Program
 
         app.MapControllers();
 
-        app.Run();
+        await app.RunAsync();
     }
 }

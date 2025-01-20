@@ -19,7 +19,7 @@ public abstract class ServiceBase<TEntity, TDto, TCreationDto>
     }
 
     protected abstract Task<IEnumerable<TEntity>> GetAllEntitiesAsync();
-    protected abstract Task<TEntity> GetEntityByIdAsync(int id);
+    protected abstract Task<TEntity?> GetEntityByIdAsync(int id);
     protected abstract void CreateEntity(TEntity entity);
     protected abstract void UpdateEntity(TEntity entity);
     protected abstract void DeleteEntity(TEntity entity);

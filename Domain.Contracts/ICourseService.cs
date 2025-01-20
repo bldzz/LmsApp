@@ -1,12 +1,14 @@
 ﻿using LMS.Shared.DTOs;
+using Microsoft.AspNetCore.JsonPatch;
 
 namespace Domain.Contracts;
 
 public interface ICourseService
 {
-    Task<IEnumerable<CourseDto>> GetCourseAsync();
-    Task<CourseDto> GetCourseAsync(int id);
-    Task<CourseDto> PostCourse(CourseCreationDto dto);  
-    Task<CourseDto> PutCourse(int id, CourseDto dto);
-    Task<CourseDto> DeleteCourse(int id);
+        Task<IEnumerable<CourseDto>> GetAllAsync();
+        Task<CourseDto> GetByIdAsync(int id);
+        Task<CourseDto> CreateAsync(CourseCreationDto creationDto);
+        Task<CourseDto> UpdateAsync(int id, CourseDto dto);
+        Task<CourseDto> DeleteAsync(int id);
+        Task<CourseDto> PatchAsync(int id, JsonPatchDocument<CourseDto> patchDoc);
 }

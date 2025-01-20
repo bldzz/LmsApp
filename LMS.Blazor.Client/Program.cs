@@ -26,6 +26,6 @@ try
 }
 catch (Exception ex)
 {
-    Console.Error.WriteLine($"An error occurred during startup: {ex.Message}");
+    await Console.Error.WriteLineAsync($"An error occurred during startup: {ex.Message}");
     throw;
 }
