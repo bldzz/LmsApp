@@ -1,4 +1,6 @@
-﻿<h3>@Module.ModuleName</h3>
+﻿@using LMS.Shared.DTOs
+
+<h3>@Module.ModuleName</h3>
 
 <table class="table">
     <thead>
@@ -54,17 +56,5 @@
                     }
                 };
         }
-    }
-    
-    [Inject]
-    private IApiService _apiService { get; set; } = default!;
-    [Inject]
-    private AuthenticationStateProvider AuthenticationStateProvider { get; set; } = default!;
-
-    private List<CourseDto>? demo;
-
-    private async Task CallApiAsync()
-    {
-        demo = (await _apiService.CallApiAsync<IEnumerable<CourseDto>>("api/demoauth"))?.ToList() ?? [];
     }
 }

@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Domain.Models.Entites;
 using Services.Contracts;
 using LMS.Shared.DTOs;
+using Microsoft.AspNetCore.Authorization;
 
 namespace LMS.Presentation.Controllers
 {
@@ -25,6 +26,7 @@ namespace LMS.Presentation.Controllers
         }
 
         // GET: api/Courses/5
+        [Authorize]
         [HttpGet("{id}")]
         public async Task<ActionResult<CourseDto>> GetCourse(int id)
         {

@@ -1,4 +1,5 @@
 ﻿using Domain.Models.Entites;
+using LMS.Blazor;
 using LMS.Blazor.Client.Services;
 using LMS.Blazor.Components;
 using LMS.Blazor.Components.Account;
@@ -57,11 +58,11 @@ builder.Services.AddIdentityCore<ApplicationUser>(options =>
 builder.Services.AddSingleton<IEmailSender<ApplicationUser>, IdentityNoOpEmailSender>();
 
 builder.Services.AddHttpClient("LmsAPIClient", cfg =>
-     {
-         cfg.BaseAddress = new Uri(
-            builder.Configuration["LmsAPIBaseAddress"] ??
-                throw new Exception("LmsAPIBaseAddress is missing."));
-     });
+{
+    cfg.BaseAddress = new Uri(
+       builder.Configuration["LmsAPIBaseAddress"] ??
+           throw new Exception("LmsAPIBaseAddress is missing."));
+});
 
 builder.Services.Configure<PasswordHasherOptions>(options => options.IterationCount = 10000);
 
@@ -79,13 +80,15 @@ else
     app.UseExceptionHandler("/Error", createScopeForErrors: true);
     // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
-    app.UseMigrationsEndPoint();
 }
 
 app.UseHttpsRedirection();
 
 app.UseStaticFiles();
 app.UseAntiforgery();
+
+app.UseAuthentication();
+app.UseAuthorization();
 
 app.MapRazorComponents<App>()
     .AddInteractiveServerRenderMode()
