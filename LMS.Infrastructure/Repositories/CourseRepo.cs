@@ -17,7 +17,34 @@ namespace LMS.Infrastructure.Repositories
             var query = FindAll(parameters.TrackChanges);
 
             if (parameters.IncludeModules)
-                query = query.Include(c => c.Modules);
+            {
+                if (parameters.CascadeIncludeActivities)
+                {
+                    if (parameters.CascadeIncludeActivityDocs && parameters.CascadeIncludeModuleDocs)
+                        query = query.Include(c => c.Modules)
+                            .ThenInclude(m => m.Documents)
+                            .Include(c => c.Modules)
+                            .ThenInclude(m => m.Activities)
+                            .ThenInclude(a => a.Documents);
+                    else if (parameters.CascadeIncludeActivityDocs)
+                        query = query.Include(c => c.Modules)
+                            .ThenInclude(m => m.Activities)
+                            .ThenInclude(a => a.Documents);
+                    else if (parameters.CascadeIncludeModuleDocs)
+                        query = query.Include(c => c.Modules)
+                            .ThenInclude(m => m.Documents)
+                            .Include(c => c.Modules)
+                            .ThenInclude(m => m.Activities);
+                    else
+                        query = query.Include(c => c.Modules)
+                            .ThenInclude(m => m.Activities);
+                }
+                else if (parameters.CascadeIncludeModuleDocs)
+                    query = query.Include(c => c.Modules)
+                        .ThenInclude(m => m.Documents);
+                else
+                    query = query.Include(c => c.Modules);
+            }
 
             if (parameters.IncludeDocuments)
                 query = query.Include(c => c.Documents);
