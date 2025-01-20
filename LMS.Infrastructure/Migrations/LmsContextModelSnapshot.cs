@@ -305,19 +305,19 @@ namespace LMS.Infrastructure.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "61e57b8b-e67b-4a45-b773-700fec203703",
+                            Id = "ec0fa1ed-98f2-4d7c-9f50-3243949dc45d",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "713d3078-9e62-4f0d-be5d-6de192bfdbef",
+                            Id = "17ec3249-1095-4531-86a4-72e68d6620cc",
                             Name = "Teacher",
                             NormalizedName = "TEACHER"
                         },
                         new
                         {
-                            Id = "22e53da2-873e-44ef-872e-c36424e5821d",
+                            Id = "91783140-84c8-4e74-ae5d-baeb4facd33e",
                             Name = "Student",
                             NormalizedName = "STUDENT"
                         });
