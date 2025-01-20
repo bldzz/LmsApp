@@ -1,5 +1,5 @@
-﻿using LMS.Shared;
-using LMS.Shared.DTOs;
+﻿using LMS.Shared.DTOs;
+using LMS.Shared.ParamaterContainers;
 using Microsoft.AspNetCore.JsonPatch;
 
 namespace Domain.Contracts;

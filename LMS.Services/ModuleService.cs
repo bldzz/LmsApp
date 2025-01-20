@@ -1,13 +1,13 @@
 ﻿using AutoMapper;
 using Domain.Contracts;
 using Domain.Models.Entites;
-using LMS.Shared;
 using LMS.Shared.DTOs;
+using LMS.Shared.ParamaterContainers;
 using Microsoft.EntityFrameworkCore;
 
 namespace LMS.Services
 {
-    public class ModuleService : ServiceBase<Module, ModuleDto, ModuleCreationDto>, IModuleService
+    public class ModuleService : ServiceBase<Module, ModuleDto, ModuleCreationDto, GetModulesParameters>, IModuleService
     {
         public ModuleService(IMapper mapper, IUnitOfWork unitOfWork) : base(mapper, unitOfWork)
         {
@@ -23,9 +23,9 @@ namespace LMS.Services
             _uow.ModuleRepo.Delete(entity);
         }
 
-        protected override async Task<IEnumerable<Module>> GetAllEntitiesAsync(GetCoursesParameters parameters)
+        protected override async Task<IEnumerable<Module>> GetAllEntitiesAsync(GetModulesParameters parameters)
         {
-            return await _uow.ModuleRepo.GetAllModulesAsync();
+            return await _uow.ModuleRepo.GetAllModulesAsync(parameters);
         }
 
         protected override async Task<Module?> GetEntityByIdAsync(int id)

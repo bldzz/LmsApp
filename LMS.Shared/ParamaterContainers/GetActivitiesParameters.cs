@@ -1,6 +1,6 @@
-﻿namespace LMS.Shared
+﻿namespace LMS.Shared.ParamaterContainers
 {
-    public class GetCoursesParameters
+    public class GetActivitiesParameters
     {
         public bool TrackChanges { get; set; } = false;
         public bool IncludeModules { get; set; } = false;

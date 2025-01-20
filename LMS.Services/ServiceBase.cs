@@ -5,10 +5,11 @@ using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.EntityFrameworkCore;
 
 namespace LMS.Services;
-public abstract class ServiceBase<TEntity, TDto, TCreationDto>
-   where TEntity : class
-   where TDto : class
-   where TCreationDto : class
+public abstract class ServiceBase<TEntity, TDto, TCreationDto, TParameters>
+    where TEntity : class
+    where TDto : class
+    where TCreationDto : class
+    where TParameters : class
 {
     protected readonly IMapper _mapper;
     protected readonly IUnitOfWork _uow;
@@ -19,14 +20,14 @@ public abstract class ServiceBase<TEntity, TDto, TCreationDto>
         _uow = unitOfWork;
     }
 
-    protected abstract Task<IEnumerable<TEntity>> GetAllEntitiesAsync(GetCoursesParameters parameters);
+    protected abstract Task<IEnumerable<TEntity>> GetAllEntitiesAsync(TParameters parameters);
     protected abstract Task<TEntity?> GetEntityByIdAsync(int id);
     protected abstract void CreateEntity(TEntity entity);
     protected abstract void UpdateEntity(TEntity entity);
     protected abstract void DeleteEntity(TEntity entity);
     protected abstract Task<bool> ValidateEntityExistsAsync(int id);
 
-    public virtual async Task<IEnumerable<TDto>> GetAllAsync(GetCoursesParameters parameters)
+    public virtual async Task<IEnumerable<TDto>> GetAllAsync(TParameters parameters)
     {
         var entities = await GetAllEntitiesAsync(parameters);
         return _mapper.Map<IEnumerable<TDto>>(entities);

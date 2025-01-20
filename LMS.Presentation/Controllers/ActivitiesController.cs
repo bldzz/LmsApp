@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Services.Contracts;
 using LMS.Shared.DTOs;
-using LMS.Shared;
+using LMS.Shared.ParamaterContainers;
 
 namespace LMS.Presentation.Controllers
 {
@@ -18,7 +18,7 @@ namespace LMS.Presentation.Controllers
 
         // GET: api/Activities
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<ActivityDto>>> GetActivities(GetCoursesParameters parameters)
+        public async Task<ActionResult<IEnumerable<ActivityDto>>> GetActivities([FromQuery] GetActivitiesParameters parameters)
         {
             return Ok(await _serviceManager.ActivityService.GetAllAsync(parameters));
         }

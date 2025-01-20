@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Domain.Models.Entites;
 using Services.Contracts;
 using LMS.Shared.DTOs;
-using LMS.Shared;
+using LMS.Shared.ParamaterContainers;
 
 namespace LMS.Presentation.Controllers
 {

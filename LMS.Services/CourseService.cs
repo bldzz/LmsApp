@@ -1,13 +1,13 @@
 ﻿using AutoMapper;
 using Domain.Contracts;
 using Domain.Models.Entites;
-using LMS.Shared;
 using LMS.Shared.DTOs;
+using LMS.Shared.ParamaterContainers;
 using Microsoft.EntityFrameworkCore;
 
 namespace LMS.Services
 {
-    public class CourseService : ServiceBase<Course, CourseDto, CourseCreationDto>, ICourseService
+    public class CourseService : ServiceBase<Course, CourseDto, CourseCreationDto, GetCoursesParameters>, ICourseService
     {
         public CourseService(IMapper mapper, IUnitOfWork unitOfWork) : base(mapper, unitOfWork)
         {

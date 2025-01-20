@@ -1,7 +1,7 @@
 ﻿using Domain.Contracts;
 using Domain.Models.Entites;
 using LMS.Infrastructure.Data;
-using LMS.Shared;
+using LMS.Shared.ParamaterContainers;
 using Microsoft.EntityFrameworkCore;
 
 namespace LMS.Infrastructure.Repositories

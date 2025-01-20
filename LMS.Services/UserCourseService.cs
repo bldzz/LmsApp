@@ -3,11 +3,11 @@ using Domain.Contracts;
 using LMS.Shared.DTOs;
 using Domain.Models.Entites;
 using Microsoft.EntityFrameworkCore;
-using LMS.Shared;
+using LMS.Shared.ParamaterContainers;
 
 namespace LMS.Services
 {
-    public class UserCourseService : ServiceBase<UserCourse, UserCourseDto, UserCourseCreationDto>, IUserCourseService
+    public class UserCourseService : ServiceBase<UserCourse, UserCourseDto, UserCourseCreationDto, GetCoursesParameters>, IUserCourseService
     {
         public UserCourseService(IMapper mapper, IUnitOfWork unitOfWork) : base(mapper, unitOfWork)
         {

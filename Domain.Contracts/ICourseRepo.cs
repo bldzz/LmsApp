@@ -1,5 +1,5 @@
 ﻿using Domain.Models.Entites;
-using LMS.Shared;
+using LMS.Shared.ParamaterContainers;
 
 namespace Domain.Contracts;
 
