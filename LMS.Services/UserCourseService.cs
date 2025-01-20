@@ -3,6 +3,7 @@ using Domain.Contracts;
 using LMS.Shared.DTOs;
 using Domain.Models.Entites;
 using Microsoft.EntityFrameworkCore;
+using LMS.Shared;
 
 namespace LMS.Services
 {
@@ -22,7 +23,7 @@ namespace LMS.Services
             _uow.UserCourseRepo.Delete(entity);
         }
 
-        protected override async Task<IEnumerable<UserCourse>> GetAllEntitiesAsync()
+        protected override async Task<IEnumerable<UserCourse>> GetAllEntitiesAsync(GetCoursesParameters parameters)
         {
             return await _uow.UserCourseRepo.FindAll().ToListAsync();
         }

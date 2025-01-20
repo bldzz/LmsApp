@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Domain.Contracts;
 using Domain.Models.Entites;
+using LMS.Shared;
 using LMS.Shared.DTOs;
 using Microsoft.EntityFrameworkCore;
 
@@ -22,7 +23,7 @@ namespace LMS.Services
             _uow.ModuleRepo.Delete(entity);
         }
 
-        protected override async Task<IEnumerable<Module>> GetAllEntitiesAsync()
+        protected override async Task<IEnumerable<Module>> GetAllEntitiesAsync(GetCoursesParameters parameters)
         {
             return await _uow.ModuleRepo.GetAllModulesAsync();
         }

@@ -1,6 +1,7 @@
 ﻿using Domain.Contracts;
 using Domain.Models.Entites;
 using LMS.Infrastructure.Data;
+using LMS.Shared;
 using Microsoft.EntityFrameworkCore;
 
 namespace LMS.Infrastructure.Repositories
@@ -11,15 +12,35 @@ namespace LMS.Infrastructure.Repositories
         {
         }
 
-        // Get all courses with related data (eager loading)
-        public async Task<IEnumerable<Course>> GetAllCoursesAsync(bool trackChanges = false)
+        public async Task<IEnumerable<Course>> GetAllCoursesAsync(GetCoursesParameters parameters)
         {
-            return await FindAll(trackChanges)
-                .Include(c => c.Modules)
-                .Include(c => c.UserCourses)
-                    .ThenInclude(uc => uc.User)
-                .Include(c => c.Documents)
-                .ToListAsync();
+            var query = FindAll(parameters.TrackChanges);
+
+            if (parameters.IncludeModules)
+                query = query.Include(c => c.Modules);
+
+            if (parameters.IncludeDocuments)
+                query = query.Include(c => c.Documents);
+
+            if (parameters.IncludeUsers)
+                query = query.Include(c => c.UserCourses)
+                            .ThenInclude(uc => uc.User);
+
+            var totalCount = await query.CountAsync();
+
+            if (!string.IsNullOrWhiteSpace(parameters.SearchTerm))
+                query = query.Where(c => c.CourseName.Contains(parameters.SearchTerm));
+
+            if (parameters.StartDate.HasValue)
+                query = query.Where(c => c.StartDate >= parameters.StartDate.Value);
+
+            if (parameters.EndDate.HasValue)
+                query = query.Where(c => c.EndDate <= parameters.EndDate.Value);
+
+            query = query.Skip((parameters.PageNumber - 1) * parameters.PageSize)
+                         .Take(parameters.PageSize);
+
+            return await query.ToListAsync(); //TODO: return total count
         }
 
         // Get a course by ID with related data (eager loading)

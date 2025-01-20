@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Domain.Models.Entites;
 using Services.Contracts;
 using LMS.Shared.DTOs;
+using LMS.Shared;
 
 namespace LMS.Presentation.Controllers
 {
@@ -19,9 +20,9 @@ namespace LMS.Presentation.Controllers
 
         // GET: api/Courses
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<CourseDto>>> GetCourses()
+        public async Task<ActionResult<IEnumerable<CourseDto>>> GetCourses([FromQuery] GetCoursesParameters parameters)
         {
-            return Ok(await _serviceManager.CourseService.GetAllAsync());
+            return Ok(await _serviceManager.CourseService.GetAllAsync(parameters));
         }
 
         // GET: api/Courses/5

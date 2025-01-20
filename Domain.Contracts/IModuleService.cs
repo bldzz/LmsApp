@@ -1,11 +1,12 @@
-﻿using LMS.Shared.DTOs;
+﻿using LMS.Shared;
+using LMS.Shared.DTOs;
 using Microsoft.AspNetCore.JsonPatch;
 
 namespace Domain.Contracts
 {
     public interface IModuleService
     {
-        Task<IEnumerable<ModuleDto>> GetAllAsync();
+        Task<IEnumerable<ModuleDto>> GetAllAsync(GetCoursesParameters parameters);
         Task<ModuleDto> GetByIdAsync(int id);
         Task<ModuleDto> CreateAsync(ModuleCreationDto creationDto);
         Task<ModuleDto> UpdateAsync(int id, ModuleDto dto);
