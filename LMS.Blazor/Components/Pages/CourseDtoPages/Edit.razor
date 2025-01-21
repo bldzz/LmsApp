@@ -1,4 +1,4 @@
-﻿@page "/coursedtos/edit"
+﻿@* @page "/coursedtos/edit"
 @using Microsoft.EntityFrameworkCore
 @using LMS.Shared.DTOs
 @inject IDbContextFactory<LMS.Blazor.Data.ApplicationDbContext> DbFactory
@@ -118,3 +118,4 @@ else
         return context.CourseDto.Any(e => e.Id == id);
     }
 }
+ *@

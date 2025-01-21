@@ -24,5 +24,5 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
         throw new InvalidOperationException("Use context in API project!!!");
     }
 
-    public DbSet<LMS.Shared.DTOs.CourseDto> CourseDto { get; set; } = default!;
+    //public DbSet<LMS.Shared.DTOs.CourseDto> CourseDto { get; set; } = default!;
 }

@@ -1,49 +1,67 @@
-﻿@using LMS.Shared.DTOs
+﻿@using LMS.Blazor.Client.Services
+@using LMS.Shared.DTOs
+@using Microsoft.AspNetCore.Authorization
+@using Microsoft.AspNetCore.Components.Authorization
 
-<h3>@Course.CourseName</h3>
+@attribute [Authorize]
 
-<table class="table">
-    <thead>
-        <tr>
-            <th></th>
-            <th></th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var module in Course.Modules)
-        {
+<h3>@Course?.CourseName ?? "Loading..."</h3>
+
+@if (Course != null)
+{
+    <table class="table">
+        <thead>
             <tr>
-                <td><a href="/module/@module.Id">@module.ModuleName</a></td>
-                <td>@module.StartDate</td>
-                <td>@module.EndDate</td>
+                <th>Module Name</th>
+                <th>Start Date</th>
+                <th>End Date</th>
             </tr>
-        }
-    </tbody>
-</table>
+        </thead>
+        <tbody>
+            @foreach (var module in Course.Modules ?? Enumerable.Empty<ModuleDto>())
+            {
+                <tr>
+                    <td><a href="/module/@module.Id">@module.ModuleName</a></td>
+                    <td>@module.StartDate.ToShortDateString()</td>
+                    <td>@module.EndDate.ToShortDateString()</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+else
+{
+    <p><em>Loading course details...</em></p>
+}
 
 @code {
+    private bool loaded;
+    private CourseDto? Course;
+
     [Parameter]
     public int CourseId { get; set; }
-    public CourseDto Course = new CourseDto();
 
-    protected override async Task OnInitializedAsync()
+    [Inject]
+    private IApiService ApiService { get; set; } = default!;
+
+    [Inject]
+    private AuthenticationStateProvider AuthenticationStateProvider { get; set; } = default!;
+
+    protected async Task OnAfterRenderAsync()
     {
-        if (Course.Id != CourseId)
+        try
         {
-            Course = new CourseDto
-                {
-                    Id = 3,
-                    CourseName = "C# Software Developer Fullstack",
-                    StartDate = DateTime.Now.AddDays(7),
-                    Modules = new List<ModuleDto>
-                    {
-                        new ModuleDto{ Id = 1, ModuleName = "HTML", StartDate = DateTime.Now.AddDays(7), EndDate = DateTime.Now.AddDays(8), CourseId = 1, Activities = new List<ActivityDto>()},
-                        new ModuleDto{ Id = 2, ModuleName = "Javascript", StartDate = DateTime.Now.AddDays(9), EndDate = DateTime.Now.AddDays(10), CourseId = 1, Activities = new List<ActivityDto>()},
-                        new ModuleDto{ Id = 3, ModuleName = "Blazor", StartDate = DateTime.Now.AddDays(11), EndDate = DateTime.Now.AddDays(12), CourseId = 1, Activities = new List<ActivityDto>()},
-                        new ModuleDto{ Id = 4, ModuleName = "Azure", StartDate = DateTime.Now.AddDays(13), EndDate = DateTime.Now.AddDays(14), CourseId = 1, Activities = new List<ActivityDto>()}
-                    }
-                };
+            Course = await ApiService.CallApiAsync<object, CourseDto>($"api/courses/{CourseId}", HttpMethod.Get);
+        }
+        catch (Exception ex)
+        {
+            Console.Error.WriteLine($"Error fetching course data: {ex.Message}");
+            Course = null;
+        }
+        finally
+        {
+            loaded = true;
+            StateHasChanged();
         }
     }
 }
