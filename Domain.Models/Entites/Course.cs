@@ -19,7 +19,7 @@ namespace Domain.Models.Entites
         [MinLength(3)]
         public string CourseName { get; set; }
 
-        public string Description { get; set; }
+        public string? Description { get; set; }
 
         [Required]
         public DateTime StartDate { get; set; }
@@ -27,7 +27,7 @@ namespace Domain.Models.Entites
         [Required]
         public DateTime EndDate { get; set; }
 
-        public ICollection<Module> Modules { get; set; } // One-to-Many with Modules
+        public ICollection<Module> Modules { get; set; } = new List<Module>(); // One-to-Many with Modules
         public ICollection<UserCourse> UserCourses { get; set; } // Many-to-Many with Users
 
         public ICollection<Document> Documents { get; set; } // Documents related to Course

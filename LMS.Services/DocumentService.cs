@@ -2,11 +2,12 @@
 using Domain.Contracts;
 using Domain.Models.Entites;
 using LMS.Shared.DTOs;
+using LMS.Shared.ParamaterContainers;
 using Microsoft.EntityFrameworkCore;
 
 namespace LMS.Services
 {
-    public class DocumentService : ServiceBase<Document, DocumentDto, DocumentCreationDto>, IDocumentService
+    public class DocumentService : ServiceBase<Document, DocumentDto, DocumentCreationDto, GetDocumentsParameters>, IDocumentService
     {
         public DocumentService(IMapper mapper, IUnitOfWork unitOfWork) : base(mapper, unitOfWork)
         {
@@ -22,7 +23,7 @@ namespace LMS.Services
             _uow.DocumentRepo.Delete(entity);
         }
 
-        protected override async Task<IEnumerable<Document>> GetAllEntitiesAsync()
+        protected override async Task<IEnumerable<Document>> GetAllEntitiesAsync(GetDocumentsParameters parameters)
         {
             return await _uow.DocumentRepo.GetAllDocumentsAsync();
         }
