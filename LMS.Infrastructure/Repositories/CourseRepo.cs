@@ -16,56 +16,15 @@ namespace LMS.Infrastructure.Repositories
         {
             var query = FindAll(parameters.TrackChanges);
 
-            if (parameters.IncludeModules)
-            {
-                if (parameters.CascadeIncludeActivities)
-                {
-                    if (parameters.CascadeIncludeActivityDocs && parameters.CascadeIncludeModuleDocs)
-                        query = query.Include(c => c.Modules)
-                            .ThenInclude(m => m.Documents)
-                            .Include(c => c.Modules)
-                            .ThenInclude(m => m.Activities)
-                            .ThenInclude(a => a.Documents);
-                    else if (parameters.CascadeIncludeActivityDocs)
-                        query = query.Include(c => c.Modules)
-                            .ThenInclude(m => m.Activities)
-                            .ThenInclude(a => a.Documents);
-                    else if (parameters.CascadeIncludeModuleDocs)
-                        query = query.Include(c => c.Modules)
-                            .ThenInclude(m => m.Documents)
-                            .Include(c => c.Modules)
-                            .ThenInclude(m => m.Activities);
-                    else
-                        query = query.Include(c => c.Modules)
-                            .ThenInclude(m => m.Activities);
-                }
-                else if (parameters.CascadeIncludeModuleDocs)
-                    query = query.Include(c => c.Modules)
-                        .ThenInclude(m => m.Documents);
-                else
-                    query = query.Include(c => c.Modules);
-            }
+            query = IncludeModulesWithDocumentsAndActivities(query, parameters);
+            query = IncludeDocuments(query, parameters);
+            query = IncludeUsers(query, parameters);
 
-            if (parameters.IncludeDocuments)
-                query = query.Include(c => c.Documents);
-
-            if (parameters.IncludeUsers)
-                query = query.Include(c => c.UserCourses)
-                            .ThenInclude(uc => uc.User);
+            query = ApplySearchFilters(query, parameters);
+            query = ApplyDateFilters(query, parameters);
+            query = ApplyPagination(query, parameters);
 
             var totalCount = await query.CountAsync();
-
-            if (!string.IsNullOrWhiteSpace(parameters.SearchTerm))
-                query = query.Where(c => c.CourseName.Contains(parameters.SearchTerm));
-
-            if (parameters.StartDate.HasValue)
-                query = query.Where(c => c.StartDate >= parameters.StartDate.Value);
-
-            if (parameters.EndDate.HasValue)
-                query = query.Where(c => c.EndDate <= parameters.EndDate.Value);
-
-            query = query.Skip((parameters.PageNumber - 1) * parameters.PageSize)
-                         .Take(parameters.PageSize);
 
             return await query.ToListAsync(); //TODO: return total count
         }
@@ -102,6 +61,80 @@ namespace LMS.Infrastructure.Repositories
         public async Task<bool> CourseExistsAsync(int courseId)
         {
             return await FindByCondition(c => c.Id == courseId).AnyAsync();
+        }
+
+        //static methods to check the query parameters. split out for readability
+        private static IQueryable<Course> IncludeModulesWithDocumentsAndActivities(IQueryable<Course> query, GetCoursesParameters parameters)
+        {
+            if (!parameters.IncludeModules) return query;
+
+            if (parameters.CascadeIncludeActivities)
+            {
+                if (parameters.CascadeIncludeActivityDocs && parameters.CascadeIncludeModuleDocs)
+                    return query.Include(c => c.Modules)
+                               .ThenInclude(m => m.Documents)
+                               .Include(c => c.Modules)
+                               .ThenInclude(m => m.Activities)
+                               .ThenInclude(a => a.Documents);
+
+                if (parameters.CascadeIncludeActivityDocs)
+                    return query.Include(c => c.Modules)
+                               .ThenInclude(m => m.Activities)
+                               .ThenInclude(a => a.Documents);
+
+                if (parameters.CascadeIncludeModuleDocs)
+                    return query.Include(c => c.Modules)
+                               .ThenInclude(m => m.Documents)
+                               .Include(c => c.Modules)
+                               .ThenInclude(m => m.Activities);
+
+                return query.Include(c => c.Modules)
+                           .ThenInclude(m => m.Activities);
+            }
+
+            if (parameters.CascadeIncludeModuleDocs)
+                return query.Include(c => c.Modules)
+                           .ThenInclude(m => m.Documents);
+
+            return query.Include(c => c.Modules);
+        }
+        private static IQueryable<Course> IncludeDocuments(IQueryable<Course> query, GetCoursesParameters parameters)
+        {
+            return parameters.IncludeDocuments
+                ? query.Include(c => c.Documents)
+                : query;
+        }
+
+        private static IQueryable<Course> IncludeUsers(IQueryable<Course> query, GetCoursesParameters parameters)
+        {
+            return parameters.IncludeUsers
+                ? query.Include(c => c.UserCourses)
+                       .ThenInclude(uc => uc.User)
+                : query;
+        }
+
+        private static IQueryable<Course> ApplySearchFilters(IQueryable<Course> query, GetCoursesParameters parameters)
+        {
+            return !string.IsNullOrWhiteSpace(parameters.SearchTerm)
+                ? query.Where(c => c.CourseName.Contains(parameters.SearchTerm))
+                : query;
+        }
+
+        private static IQueryable<Course> ApplyDateFilters(IQueryable<Course> query, GetCoursesParameters parameters)
+        {
+            if (parameters.StartDate.HasValue)
+                query = query.Where(c => c.StartDate >= parameters.StartDate.Value);
+
+            if (parameters.EndDate.HasValue)
+                query = query.Where(c => c.EndDate <= parameters.EndDate.Value);
+
+            return query;
+        }
+
+        private static IQueryable<Course> ApplyPagination(IQueryable<Course> query, GetCoursesParameters parameters)
+        {
+            return query.Skip((parameters.PageNumber - 1) * parameters.PageSize)
+                        .Take(parameters.PageSize);
         }
     }
 }
