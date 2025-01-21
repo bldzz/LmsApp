@@ -35,6 +35,7 @@
     [Parameter]
     public int CourseId { get; set; }
     public CourseDto? course = new CourseDto();
+    public List<CourseDto> courseList;
 
     [Inject]
     private IApiService _apiService { get; set; } = default!;
@@ -47,6 +48,7 @@
         {
             loaded = true;
             course = (await _apiService.GetAsync<CourseDto>($"api/courses/{CourseId}")) ?? null;
+            //courseList = (await _apiService.GetAsync<IEnumerable<CourseDto>>($"api/courses/?includemodules=true&includeusers=true&includedocuments=true"))?.ToList() ?? [];
             StateHasChanged();
         }
     }
