@@ -30,7 +30,7 @@ namespace Domain.Models.Entites
         public int CourseId { get; set; } // Foreign Key to Course
         public Course? Course { get; set; }
 
-        public ICollection<Activity>? Activities { get; set; } // One-to-Many with Activities
-        public ICollection<Document>? Documents { get; set; } // One-to-Many with Documents
+        public ICollection<Activity> Activities { get; set; } = new List<Activity>(); // One-to-Many with Activities
+        public ICollection<Document> Documents { get; set; } = new List<Document>(); // One-to-Many with Documents
     }
 }
