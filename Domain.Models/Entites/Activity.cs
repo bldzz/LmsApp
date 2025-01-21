@@ -19,13 +19,13 @@ namespace Domain.Models.Entites
 
         [Required]
         [MaxLength(255)]
-        public string Name { get; set; }
+        public string ActivityName { get; set; }
 
         [Required]
-        public DateTime StartTime { get; set; }
+        public DateTime StartDate { get; set; }
 
         [Required]
-        public DateTime EndTime { get; set; }
+        public DateTime EndDate { get; set; }
 
         public string? Description { get; set; }
 
@@ -37,7 +37,7 @@ namespace Domain.Models.Entites
         
         public bool IsValidTimeRange()
         {
-            return EndTime > StartTime;
+            return EndDate > StartDate;
         }
     }
 }
