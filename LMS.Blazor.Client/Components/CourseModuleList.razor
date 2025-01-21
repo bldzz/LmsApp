@@ -48,7 +48,7 @@
         {
             loaded = true;
             course = (await _apiService.GetAsync<CourseDto>($"api/courses/{CourseId}")) ?? null;
-            //courseList = (await _apiService.GetAsync<IEnumerable<CourseDto>>($"api/courses/?includemodules=true&includeusers=true&includedocuments=true"))?.ToList() ?? [];
+            //courseList = (await _apiService.GetAsync<IEnumerable<CourseDto>>($"api/courses/?includemodules=true&includeusers=true&includedocuments=true&cascadeincludeactivities=true"))?.ToList() ?? [];
             StateHasChanged();
         }
     }

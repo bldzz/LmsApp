@@ -11,8 +11,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace LMS.Infrastructure.Migrations
 {
     [DbContext(typeof(LmsContext))]
-    [Migration("20250120160358_UpdatedRoles")]
-    partial class UpdatedRoles
+    [Migration("20250121083451_strul")]
+    partial class strul
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -32,21 +32,21 @@ namespace LMS.Infrastructure.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<string>("ActivityName")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
+
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime>("EndTime")
+                    b.Property<DateTime>("EndDate")
                         .HasColumnType("datetime2");
 
                     b.Property<int>("ModuleId")
                         .HasColumnType("int");
 
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(255)
-                        .HasColumnType("nvarchar(255)");
-
-                    b.Property<DateTime>("StartTime")
+                    b.Property<DateTime>("StartDate")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Type")
@@ -56,7 +56,7 @@ namespace LMS.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ModuleId", "StartTime", "EndTime")
+                    b.HasIndex("ModuleId", "StartDate", "EndDate")
                         .IsUnique();
 
                     b.ToTable("Activities");
@@ -162,7 +162,6 @@ namespace LMS.Infrastructure.Migrations
                         .HasColumnType("nvarchar(255)");
 
                     b.Property<string>("Description")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("EndDate")
@@ -308,19 +307,19 @@ namespace LMS.Infrastructure.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "ec0fa1ed-98f2-4d7c-9f50-3243949dc45d",
+                            Id = "c9b9a8e4-15df-4068-bb27-5198ad63dd89",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "17ec3249-1095-4531-86a4-72e68d6620cc",
+                            Id = "b6370147-7b79-4fd8-a2bb-3f79fc543ee4",
                             Name = "Teacher",
                             NormalizedName = "TEACHER"
                         },
                         new
                         {
-                            Id = "91783140-84c8-4e74-ae5d-baeb4facd33e",
+                            Id = "bace08f5-c518-4b60-a082-13a7f6841858",
                             Name = "Student",
                             NormalizedName = "STUDENT"
                         });
