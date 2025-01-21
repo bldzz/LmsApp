@@ -43,5 +43,35 @@ namespace LMS.Services
             var entity = await _uow.CourseRepo.FindByCondition(m => m.Id == id).SingleOrDefaultAsync();
             return entity != null;
         }
+
+        public async Task AddUserAsync(int courseId, string userId)
+        {
+            //var course = await _uow.CourseRepo.GetCourseByIdAsync(courseId);
+            //if (course == null)
+            //    throw new KeyNotFoundException(); //TODO: improve error handling
+            //// Check if user exists
+            //var user = await _uow.UserRepo.GetUserAsync(userId);
+            //if (user == null)
+            //    throw new KeyNotFoundException(); //TODO: improve error handling
+
+            //var existingUserCourse = await _uow.UserCourseRepo.FindExistingRelationship(courseId, userId);
+
+            //if (existingUserCourse != null)
+            //    throw new AccessViolationException(); //TODO: improve error handling
+
+            //var userCourse = new UserCourse
+            //{
+            //    UserId = userId,
+            //    CourseId = courseId
+            //};
+
+            //_uow.UserCourses.Add(userCourse);
+            //await _uow.CompleteASync();
+            _uow.UserCourseRepo.Create(new UserCourse { UserId = userId, CourseId = courseId });
+            _uow.CompleteASync();
+
+            return;
+        }
+
     }
 }

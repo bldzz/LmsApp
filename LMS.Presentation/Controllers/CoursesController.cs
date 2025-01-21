@@ -66,6 +66,13 @@ namespace LMS.Presentation.Controllers
             return NoContent();
         }
 
+        [HttpPost("{courseId}/users/{userId}")]
+        public async Task<IActionResult> AddUserToCourse(int courseId, string userId)
+        {
+            await _serviceManager.CourseService.AddUserAsync(courseId, userId);
+            return Ok("User was enrolled in course");
+        }
+
         private bool CourseExists(int id)
         {
             return _serviceManager.CourseService.GetByIdAsync(id)!=null;
