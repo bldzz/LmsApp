@@ -1,6 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace LMS.Shared.DTOs;
+﻿namespace LMS.Shared.DTOs;
 
 public record DocumentDto()
 {
@@ -10,4 +8,5 @@ public record DocumentDto()
     public int? CourseId { get; set; }
     public int? ModuleId { get; set; }
     public Guid? ActivityId { get; set; }
+    public string FilePath { get; set; } = string.Empty;
 }
