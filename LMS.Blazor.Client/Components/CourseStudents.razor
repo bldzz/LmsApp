@@ -1,18 +1,23 @@
-﻿@using LMS.Shared.DTOs
+﻿@rendermode InteractiveWebAssembly
+@using LMS.Shared.DTOs
 
-<h3>CourseStudents</h3>
+<div>
+    <h3>CourseStudents</h3>
 
-@foreach (var Student in Course.Students)
-{
-    @if (Student.CourseId == CourseId)
-    { 
-        @Student.Name<br>
+    @foreach (var Student in UserList)
+    {
+        @if (Student.CourseId == CourseId)
+        { 
+            @Student.Name<br>
+        }
     }
-}
+</div>
 
 @code {
     [Parameter]
     public int CourseId { get; set; }
+    [Parameter]
+    public List<ApplicationUserDto> UserList { get; set; }
     public CourseDto Course = new CourseDto();
 
     protected override async Task OnInitializedAsync()
@@ -22,19 +27,19 @@
             Course = new CourseDto
                 {
                     Id = 3,
-                    Students = new List<ApplicationUserDto>
+                    Users = new List<ApplicationUserDto>
                     {
-                        new ApplicationUserDto{ Id = 1, Name = "Peter Parker", CourseId = CourseId },
-                        new ApplicationUserDto{ Id = 2, Name = "Clark Kent", CourseId = CourseId },
-                        new ApplicationUserDto{ Id = 3, Name = "Matt Murdock", CourseId = CourseId },
-                        new ApplicationUserDto{ Id = 4, Name = "Steven Rogers", CourseId = CourseId },
-                        new ApplicationUserDto{ Id = 5, Name = "Peter Quill", CourseId = CourseId },
-                        new ApplicationUserDto{ Id = 6, Name = "Jessica Jones", CourseId = CourseId },
-                        new ApplicationUserDto{ Id = 7, Name = "Anthony Stark", CourseId = CourseId },
-                        new ApplicationUserDto{ Id = 8, Name = "Bruce Wayne", CourseId = CourseId },
-                        new ApplicationUserDto{ Id = 9, Name = "James Howlett", CourseId = CourseId },
-                        new ApplicationUserDto{ Id = 10, Name = "Natalia Romanova", CourseId = CourseId },
-                        new ApplicationUserDto{ Id = 11, Name = "Reed Richards", CourseId = CourseId }
+                        new ApplicationUserDto{ Id = "1a", Name = "Peter Parker", CourseId = CourseId },
+                        new ApplicationUserDto{ Id = "2a", Name = "Clark Kent", CourseId = CourseId },
+                        new ApplicationUserDto{ Id = "3a", Name = "Matt Murdock", CourseId = CourseId },
+                        new ApplicationUserDto{ Id = "4a", Name = "Steven Rogers", CourseId = CourseId },
+                        new ApplicationUserDto{ Id = "5a", Name = "Peter Quill", CourseId = CourseId },
+                        new ApplicationUserDto{ Id = "6a", Name = "Jessica Jones", CourseId = CourseId },
+                        new ApplicationUserDto{ Id = "7a", Name = "Anthony Stark", CourseId = CourseId },
+                        new ApplicationUserDto{ Id = "8a", Name = "Bruce Wayne", CourseId = CourseId },
+                        new ApplicationUserDto{ Id = "9a", Name = "James Howlett", CourseId = CourseId },
+                        new ApplicationUserDto{ Id = "10a", Name = "Natalia Romanova", CourseId = CourseId },
+                        new ApplicationUserDto{ Id = "11a", Name = "Reed Richards", CourseId = CourseId }
                     }
                 };
         }

@@ -9,55 +9,28 @@
 <div id="content" class="container">
     <div class="row">
         <div id="courseModules" class="col-12 col-sm-8">
-            <table class="table">
-                <thead>
-                    <tr>
-                        <th></th>
-                        <th></th>
-                        <th></th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @if (courseList.Count > 0)
-                    {
-                        @foreach (var course in courseList ?? Enumerable.Empty<CourseDto>())
-                        {
-                            @if (course.Id != CourseId) continue;
-                            <tr class="course">
-                                <td>@course.CourseName</td>
-                                <td>@course.StartDate</td>
-                                <td>@course.EndDate</td>
-                            </tr>
-                            @foreach (var module in course.Modules ?? Enumerable.Empty<ModuleDto>())
-                            {
-                                <tr class="module">
-                                    <td><a href="/module/@module.Id">@module.ModuleName</a></td>
-                                    <td>@module.StartDate</td>
-                                    <td>@module.EndDate</td>
-                                </tr>
-                                @foreach (var activity in module.Activities ?? Enumerable.Empty<ActivityDto>())
-                                {
-                                    <tr class="activity">
-                                        <td>@activity.ActivityName</td>
-                                        <td>@activity.StartDate</td>
-                                        <td>@activity.EndDate</td>
-                                    </tr>
-                                }
-                            }
-                        }
-                    }
-                </tbody>
-            </table>
+            <h3>@course.CourseName</h3>
+
+            @if (course.Modules.Count > 0)
+            {
+                <LMS.Blazor.Client.Components.CourseModuleList CourseId="CourseId" ModuleList="course.Modules" />
+            }
+            
         </div>
         <div id="courseSide" class="col-12 col-sm-4">
-            <div>
-                @if (courseList.Count > 0)
-                {
-                    <p>@courseList.FirstOrDefault().Description</p>
-                }
-            </div>
-            <LMS.Blazor.Client.Components.CourseStudents CourseId="CourseId" />
-            <LMS.Blazor.Client.Components.CourseDocuments CourseId="CourseId" />
+
+            @if (!string.IsNullOrEmpty(course.Description))
+            {
+                <LMS.Blazor.Client.Components.CourseDescription CourseId="CourseId" Course="course" />
+            }
+            @if (course.Users.Count > 0)
+            {
+                <LMS.Blazor.Client.Components.CourseStudents CourseId="CourseId" UserList="course.Users" />
+            }
+            @if (course.Documents.Count > 0)
+            {
+                <LMS.Blazor.Client.Components.CourseDocuments CourseId="CourseId" DocsList="course.Documents" />
+            }
         </div>
     </div>
 </div>
@@ -80,8 +53,8 @@
         if (firstRender && !loaded)
         {
             loaded = true;
-            //course = (await _apiService.GetAsync<CourseDto>($"api/courses/{CourseId}")) ?? null;
-            courseList = (await _apiService.GetAsync<IEnumerable<CourseDto>>($"api/courses?includemodules=true&cascadeincludeactivities=true"))?.ToList() ?? [];
+            course = (await _apiService.GetAsync<CourseDto>($"api/courses/{CourseId}")) ?? null;
+            //courseList = (await _apiService.GetAsync<IEnumerable<CourseDto>>($"api/courses?includemodules=true&cascadeincludeactivities=true&includeusers=true"))?.ToList() ?? [];
             StateHasChanged();
         }
     }

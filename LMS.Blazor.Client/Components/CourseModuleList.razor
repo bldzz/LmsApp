@@ -1,70 +1,36 @@
 ﻿@rendermode InteractiveWebAssembly
-
-@using LMS.Blazor.Client.Services
 @using LMS.Shared.DTOs
-@using Microsoft.AspNetCore.Authorization
-@using Microsoft.AspNetCore.Components.Authorization
 
 @attribute [Authorize]
 
-<table class="table">
-    <thead>
-        <tr>
-            <th></th>
-            <th></th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var course in courseList ?? Enumerable.Empty<CourseDto>())
-        {
-            @if (course.Id != CourseId) continue;
-            <tr class="course">
-                <td>@course.CourseName</td>
-                <td>@course.StartDate</td>
-                <td>@course.EndDate</td>
-            </tr>
-            @foreach (var module in course.Modules ?? Enumerable.Empty<ModuleDto>())
-            {
-                <tr class="module">
-                    <td><a href="/module/@module.Id">@module.ModuleName</a></td>
-                    <td>@module.StartDate</td>
-                    <td>@module.EndDate</td>
-                </tr>
-                @foreach (var activity in module.Activities ?? Enumerable.Empty<ActivityDto>())
+<div class="accordion" id="Moduleaccordion">
+    @foreach (var module in ModuleList ?? Enumerable.Empty<ModuleDto>())
+    {
+        <div class="accordion-item">
+            <h2 class="accordion-header">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="@($"#collapseM{module.Id}")" aria-expanded="false" aria-controls="@($"collapseM{module.Id}")">
+                    <a href="/module/@module.Id">@module.ModuleName</a>
+                </button>
+            </h2>
+        </div>
+        <div id="@($"collapseM{module.Id}")" class="accordion-collapse collapse">
+            <div class="accordion-body">
+                @module.Description <br />
+                Start: @module.StartDate <br />
+                End: @module.EndDate
+
+                @if (module.Activities.Count > 0)
                 {
-                    <tr class="activity">
-                        <td>@activity.ActivityName</td>
-                        <td>@activity.StartDate</td>
-                        <td>@activity.EndDate</td>
-                    </tr>
+                    <LMS.Blazor.Client.Components.ModuleActivityList ModuleId="module.Id" ActivityList="module.Activities" />
                 }
-            }
-        }
-    </tbody>
-</table>
+            </div>
+        </div>
+    }
+</div>
 
 @code {
-    private bool loaded;
-
     [Parameter]
     public int CourseId { get; set; }
-    public CourseDto? Coursedto = new CourseDto();
-    public List<CourseDto> courseList = new List<CourseDto>();
-
-    [Inject]
-    private IApiService _apiService { get; set; } = default!;
-    [Inject]
-    private AuthenticationStateProvider AuthenticationStateProvider { get; set; } = default!;
-
-    protected override async Task OnAfterRenderAsync(bool firstRender)
-    {
-        if (firstRender && !loaded)
-        {
-            loaded = true;
-            //Course = (await _apiService.GetAsync<CourseDto>($"api/courses/{CourseId}")) ?? null;
-            courseList = (await _apiService.GetAsync<IEnumerable<CourseDto>>($"api/courses?includemodules=true&cascadeincludeactivities=true"))?.ToList() ?? [];
-            StateHasChanged();
-        }
-    }
+    [Parameter]
+    public List<ModuleDto> ModuleList { get; set; }
 }

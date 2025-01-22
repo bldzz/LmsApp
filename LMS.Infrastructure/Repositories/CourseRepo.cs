@@ -3,6 +3,7 @@ using Domain.Models.Entites;
 using LMS.Infrastructure.Data;
 using LMS.Shared.ParamaterContainers;
 using Microsoft.EntityFrameworkCore;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace LMS.Infrastructure.Repositories
 {
@@ -34,6 +35,7 @@ namespace LMS.Infrastructure.Repositories
         {
             var course = await FindByCondition(c => c.Id == courseId, trackChanges)
                 .Include(c => c.Modules)
+                .ThenInclude(m => m.Activities)
                 .Include(c => c.UserCourses)
                 .ThenInclude(uc => uc.User)
                 .Include(c => c.Documents)

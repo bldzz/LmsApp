@@ -1,10 +1,23 @@
-﻿@using LMS.Shared.DTOs
+﻿@rendermode InteractiveWebAssembly
+@using LMS.Shared.DTOs
 
-<h3>CourseDocuments</h3>
+<div>
+    <h3>CourseDocuments</h3>
+
+    <ul>
+    @foreach (var Document in DocsList)
+    {
+        @if (Document.CourseId == CourseId)
+        {
+            <li><a href="#">@Document.Name</a></li>
+        }
+    }
+    </ul>
+</div>
 
 @code {
     [Parameter]
     public int CourseId { get; set; }
-    public CourseDto Course = new CourseDto();
-
+    [Parameter]
+    public List<DocumentDto> DocsList { get; set; }
 }
