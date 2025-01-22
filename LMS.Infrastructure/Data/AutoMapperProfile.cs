@@ -25,7 +25,8 @@ public class AutoMapperProfile : Profile
 
         CreateMap<Document, DocumentDto>();
         CreateMap<DocumentDto, Document>();
-        CreateMap<DocumentCreationDto, Document>();
+        CreateMap<DocumentCreationDto, Document>()
+            .ForMember(dest => dest.FilePath, opt => opt.Ignore()); // FilePath will be handled separately
         
         CreateMap<Activity, ActivityDto>();
         CreateMap<ActivityDto, Activity>();
