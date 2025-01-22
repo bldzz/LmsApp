@@ -109,5 +109,21 @@ namespace LMS.Services
                 throw new InvalidOperationException("An error occurred while downloading the document.", ex);
             }
         }
+        
+        public async Task DownloadAndSaveAsync(int id)
+        {
+            // Call DownloadDocumentAsync to get the file
+            var (fileStream, fileName, contentType) = await DownloadDocumentAsync(id);
+
+            // Get the user's Downloads folder path
+            string downloadsFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "Downloads");
+            string destinationPath = Path.Combine(downloadsFolder, fileName);
+
+            // Save the file to the Downloads folder
+            using (var file = new FileStream(destinationPath, FileMode.Create, FileAccess.Write))
+            {
+                await fileStream.CopyToAsync(file);
+            }
+        }
     }
 }

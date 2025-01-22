@@ -12,5 +12,6 @@ namespace Domain.Contracts
         Task<DocumentDto> DeleteAsync(int id);
         Task<DocumentDto> PatchAsync(int id, JsonPatchDocument<DocumentDto> patchDoc);
         Task<(MemoryStream FileStream, string FileName, string ContentType)> DownloadDocumentAsync(int id);
+        Task DownloadAndSaveAsync(int id);
     }
 }
