@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using Microsoft.AspNetCore.Http;
 
 namespace LMS.Shared.DTOs
 {
@@ -12,6 +13,8 @@ namespace LMS.Shared.DTOs
     public int? ModuleId { get; set; }
     
     public Guid? ActivityId { get; set; }
-
+    
+    [Required]
+    public IFormFile File { get; set; }
     }
 }
