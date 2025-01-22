@@ -2,59 +2,30 @@
 
 <h3>@Module.ModuleName</h3>
 
-<table class="table">
-    <thead>
-        <tr>
-            <th></th>
-            <th></th>
-            <th></th>
-            <th></th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var activity in Module.Activities)
-        {
-            <tr>
-                <td><h4>@activity.ActivityName</h4></td>
-                <td>@activity.StartDate</td>
-                <td>@activity.EndDate</td>
-                <td>3 Files</td>
-                <td><button>Upload File</button></td>
-            </tr>
-            <tr>
-                <td>@activity.Description</td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-            </tr>
-        }
-    </tbody>
-</table>
+<div class="accordion" id="@($"Activityaccordion{ModuleId}")">
+    @foreach (var activity in ActivityList ?? Enumerable.Empty<ActivityDto>())
+    {
+        <div class="accordion-item">
+            <h2 class="accordion-header">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="@($"#collapseA{activity.Id}")" aria-expanded="false" aria-controls="@($"collapseA{activity.Id}")">
+                    @activity.ActivityName
+                </button>
+            </h2>
+        </div>
+        <div id="@($"collapseA{activity.Id}")" class="accordion-collapse collapse">
+            <div class="accordion-body">
+                @activity.Description <br />
+                Start: @activity.StartDate <br />
+                End: @activity.EndDate
+            </div>
+        </div>
+    }
+</div>
 
 @code {
     [Parameter]
     public int ModuleId { get; set; }
+    [Parameter]
+    public List<ActivityDto> ActivityList { get; set; }
     public ModuleDto Module = new ModuleDto();
-
-    protected override async Task OnInitializedAsync()
-    {
-        if (Module.Id != ModuleId)
-        {
-            Module = new ModuleDto
-                {
-                    Id = 3,
-                    ModuleName = "HTML, the basics of web development.",
-                    StartDate = DateTime.Now.AddDays(7),
-                    Activities = new List<ActivityDto>
-                    {
-                        new ActivityDto{ Id = 1, ActivityName = "Presentation", Description = "This is a description of the presentation activity", StartDate = DateTime.Now.AddDays(7), EndDate = DateTime.Now.AddDays(8), ModuleId = 1, Documents = new List<DocumentDto>()},
-                        new ActivityDto{ Id = 2, ActivityName = "Demo", Description = "This is a description of the demo activity", StartDate = DateTime.Now.AddDays(9), EndDate = DateTime.Now.AddDays(10), ModuleId = 1, Documents = new List<DocumentDto>()},
-                        new ActivityDto{ Id = 3, ActivityName = "Exercise", Description = "This is a description of the exercise activity", StartDate = DateTime.Now.AddDays(11), EndDate = DateTime.Now.AddDays(12), ModuleId = 1, Documents = new List<DocumentDto>()},
-                        new ActivityDto{ Id = 4, ActivityName = "Project", Description = "This is a description of the project activity", StartDate = DateTime.Now.AddDays(13), EndDate = DateTime.Now.AddDays(14), ModuleId = 1, Documents = new List<DocumentDto>()}
-                    }
-                };
-        }
-    }
 }

@@ -1,11 +1,12 @@
 ﻿using LMS.Shared.DTOs;
+using LMS.Shared.ParamaterContainers;
 using Microsoft.AspNetCore.JsonPatch;
 
 namespace Domain.Contracts
 {
     public interface IDocumentService
     {
-        Task<IEnumerable<DocumentDto>> GetAllAsync();
+        Task<IEnumerable<DocumentDto>> GetAllAsync(GetDocumentsParameters parameters);
         Task<DocumentDto> GetByIdAsync(int id);
         Task<DocumentDto> CreateAsync(DocumentCreationDto creationDto);
         Task<DocumentDto> UpdateAsync(int id, DocumentDto dto);

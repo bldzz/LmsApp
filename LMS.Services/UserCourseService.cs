@@ -3,10 +3,11 @@ using Domain.Contracts;
 using LMS.Shared.DTOs;
 using Domain.Models.Entites;
 using Microsoft.EntityFrameworkCore;
+using LMS.Shared.ParamaterContainers;
 
 namespace LMS.Services
 {
-    public class UserCourseService : ServiceBase<UserCourse, UserCourseDto, UserCourseCreationDto>, IUserCourseService
+    public class UserCourseService : ServiceBase<UserCourse, UserCourseDto, UserCourseCreationDto, GetCoursesParameters>, IUserCourseService
     {
         public UserCourseService(IMapper mapper, IUnitOfWork unitOfWork) : base(mapper, unitOfWork)
         {
@@ -22,7 +23,7 @@ namespace LMS.Services
             _uow.UserCourseRepo.Delete(entity);
         }
 
-        protected override async Task<IEnumerable<UserCourse>> GetAllEntitiesAsync()
+        protected override async Task<IEnumerable<UserCourse>> GetAllEntitiesAsync(GetCoursesParameters parameters)
         {
             return await _uow.UserCourseRepo.FindAll().ToListAsync();
         }

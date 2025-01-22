@@ -1,4 +1,7 @@
-﻿@page "/course/{CourseId:int}"
+﻿@rendermode InteractiveWebAssembly
+@page "/course/{CourseId:int}"
+@using LMS.Blazor.Client.Services
+@using LMS.Shared.DTOs
 @using Microsoft.AspNetCore.Authorization
 @using Microsoft.AspNetCore.Components.Authorization
 @attribute [Authorize]
@@ -6,18 +9,53 @@
 <div id="content" class="container">
     <div class="row">
         <div id="courseModules" class="col-12 col-sm-8">
-            <LMS.Blazor.Client.Components.CourseModuleList CourseId="CourseId" />
+            <h3>@course.CourseName</h3>
+
+            @if (course.Modules.Count > 0)
+            {
+                <LMS.Blazor.Client.Components.CourseModuleList CourseId="CourseId" ModuleList="course.Modules" />
+            }
+            
         </div>
         <div id="courseSide" class="col-12 col-sm-4">
-            <LMS.Blazor.Client.Components.CourseDescription CourseId="CourseId" />
-            <LMS.Blazor.Client.Components.CourseStudents CourseId="CourseId" />
-            <LMS.Blazor.Client.Components.CourseDocuments CourseId="CourseId" />
+
+            @if (!string.IsNullOrEmpty(course.Description))
+            {
+                <LMS.Blazor.Client.Components.CourseDescription CourseId="CourseId" Course="course" />
+            }
+            @if (course.Users.Count > 0)
+            {
+                <LMS.Blazor.Client.Components.CourseStudents CourseId="CourseId" UserList="course.Users" />
+            }
+            @if (course.Documents.Count > 0)
+            {
+                <LMS.Blazor.Client.Components.CourseDocuments CourseId="CourseId" DocsList="course.Documents" />
+            }
         </div>
     </div>
 </div>
 
-
 @code {
+    private bool loaded;
+
     [Parameter]
     public int CourseId { get; set; }
+    public CourseDto? course = new CourseDto();
+    public List<CourseDto> courseList = new List<CourseDto>();
+
+    [Inject]
+    private IApiService _apiService { get; set; } = default!;
+    [Inject]
+    private AuthenticationStateProvider AuthenticationStateProvider { get; set; } = default!;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender && !loaded)
+        {
+            loaded = true;
+            course = (await _apiService.GetAsync<CourseDto>($"api/courses/{CourseId}")) ?? null;
+            //courseList = (await _apiService.GetAsync<IEnumerable<CourseDto>>($"api/courses?includemodules=true&cascadeincludeactivities=true&includeusers=true"))?.ToList() ?? [];
+            StateHasChanged();
+        }
+    }
 }

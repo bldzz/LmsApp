@@ -1,23 +1,15 @@
-﻿@using LMS.Shared.DTOs
+﻿@rendermode InteractiveWebAssembly
+@using LMS.Shared.DTOs
 
-<h3>CourseDescription</h3>
+<div>
+    <h3>CourseDescription</h3>
 
-<p>@Course.Description</p>
+    <p>@course.Description</p>
+</div>
 
 @code {
     [Parameter]
     public int CourseId { get; set; }
-    public CourseDto Course = new CourseDto();
-
-    protected override async Task OnInitializedAsync()
-    {
-        if (Course.Id != CourseId)
-        {
-            Course = new CourseDto
-                {
-                    Id = 3,
-                    Description = "Master C# for fullstack development, covering backend, frontend, databases, and best practices."
-                };
-        }
-    }
+    [Parameter]
+    public CourseDto? course { get; set; }
 }

@@ -4,6 +4,7 @@ using Domain.Models.Entites;
 using Services.Contracts;
 using LMS.Shared.DTOs;
 using Microsoft.AspNetCore.Authorization;
+using LMS.Shared.ParamaterContainers;
 
 namespace LMS.Presentation.Controllers
 {
@@ -20,9 +21,9 @@ namespace LMS.Presentation.Controllers
 
         // GET: api/Courses
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<CourseDto>>> GetCourses()
+        public async Task<ActionResult<IEnumerable<CourseDto>>> GetCourses([FromQuery] GetCoursesParameters parameters)
         {
-            return Ok(await _serviceManager.CourseService.GetAllAsync());
+            return Ok(await _serviceManager.CourseService.GetAllAsync(parameters));
         }
 
         // GET: api/Courses/5
@@ -65,6 +66,13 @@ namespace LMS.Presentation.Controllers
         {
             await _serviceManager.CourseService.DeleteAsync(id);
             return NoContent();
+        }
+
+        [HttpPost("{courseId}/users/{userId}")]
+        public async Task<IActionResult> AddUserToCourse(int courseId, string userId)
+        {
+            await _serviceManager.CourseService.AddUserAsync(courseId, userId);
+            return Ok("User was enrolled in course");
         }
 
         private bool CourseExists(int id)

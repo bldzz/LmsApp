@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Services.Contracts;
 using LMS.Shared.DTOs;
+using LMS.Shared.ParamaterContainers;
 
 namespace LMS.Presentation.Controllers
 {
@@ -17,9 +18,9 @@ namespace LMS.Presentation.Controllers
 
         // GET: api/Modules
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<ModuleDto>>> GetModules()
+        public async Task<ActionResult<IEnumerable<ModuleDto>>> GetModules([FromQuery] GetModulesParameters parameters)
         {
-            return Ok(await _serviceManager.ModuleService.GetAllAsync());
+            return Ok(await _serviceManager.ModuleService.GetAllAsync(parameters));
         }
 
         // GET: api/Modules/5
