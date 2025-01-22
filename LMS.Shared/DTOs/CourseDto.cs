@@ -21,5 +21,5 @@ public record CourseDto
 
     public List<ModuleDto> Modules { get; set; } = new List<ModuleDto>();
     public List<DocumentDto> Documents { get; set; } = new List<DocumentDto>();
-    public List<UserDto> Students { get; set; } = new List<UserDto>();
+    public List<ApplicationUserDto> Users { get; set; } = new List<ApplicationUserDto>();
 }

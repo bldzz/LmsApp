@@ -2,10 +2,10 @@
 
 namespace LMS.Shared.DTOs;
 
-public record UserDto()
+public record ApplicationUserDto()
 {
     [Required]
-    public int Id { get; set; }
+    public string Id { get; set; }
 
     [Required] 
     public string Name { get; set; }
