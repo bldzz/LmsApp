@@ -29,9 +29,7 @@ namespace LMS.Presentation.Controllers
             var document = await _serviceManager.DocumentService.GetByIdAsync(id);
 
             if (document == null)
-            {
                 return NotFound(new { message = $"Document with ID {id} not found." });
-            }
 
             return Ok(document);
         }
@@ -82,31 +80,20 @@ namespace LMS.Presentation.Controllers
         [HttpGet("{id}/download")]
         public async Task<IActionResult> DownloadDocument(int id)
         {
-            var document = await _serviceManager.DocumentService.GetByIdAsync(id);
-
-            if (document == null || string.IsNullOrEmpty(document.FilePath))
-                return NotFound(new { message = $"Document with ID {id} not found or does not have an associated file." });
-
             try
             {
-                var memoryStream = new MemoryStream();
-
-                using (var stream = new FileStream(document.FilePath, FileMode.Open, FileAccess.Read))
-                {
-                    await stream.CopyToAsync(memoryStream);
-                }
-
-                memoryStream.Position = 0;
-
-                var contentType = "application/octet-stream"; // Default content type; adjust as needed.
-                var fileName = Path.GetFileName(document.FilePath);
-
-                return File(memoryStream, contentType, fileName);
+                var (fileStream, fileName, contentType) = await _serviceManager.DocumentService.DownloadDocumentAsync(id);
+                return File(fileStream, contentType, fileName);
             }
-            catch (Exception ex)
+            catch (KeyNotFoundException ex)
             {
-                return StatusCode(500, new { message = "An error occurred while downloading the document.", details = ex.Message });
+                return NotFound(new { message = ex.Message });
+            }
+            catch (InvalidOperationException ex)
+            {
+                return StatusCode(500, new { message = ex.Message });
             }
         }
+
     }
 }

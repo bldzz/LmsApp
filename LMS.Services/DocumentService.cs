@@ -80,5 +80,34 @@ namespace LMS.Services
 
             return _mapper.Map<DocumentDto>(document);
         }
+        
+        public async Task<(MemoryStream FileStream, string FileName, string ContentType)> DownloadDocumentAsync(int id)
+        {
+            // Fetch document from database
+            var document = await _uow.DocumentRepo.GetDocumentByIdAsync(id);
+            if (document == null || string.IsNullOrEmpty(document.FilePath))
+                throw new KeyNotFoundException($"Document with ID {id} not found or does not have an associated file.");
+
+            try
+            {
+                // Read file from file system
+                var memoryStream = new MemoryStream();
+                using (var stream = new FileStream(document.FilePath, FileMode.Open, FileAccess.Read))
+                {
+                    await stream.CopyToAsync(memoryStream);
+                }
+
+                memoryStream.Position = 0; // Reset stream position for reading
+
+                var contentType = "application/octet-stream"; // Default content type; adjust as needed
+                var fileName = Path.GetFileName(document.FilePath);
+
+                return (memoryStream, fileName, contentType);
+            }
+            catch (Exception ex)
+            {
+                throw new InvalidOperationException("An error occurred while downloading the document.", ex);
+            }
+        }
     }
 }
