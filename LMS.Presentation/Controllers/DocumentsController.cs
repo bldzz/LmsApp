@@ -18,7 +18,7 @@ namespace LMS.Presentation.Controllers
 
         // GET: api/Documents
         [HttpGet]
-        [Authorize(Roles = "Admin, Teacher")]
+        // [Authorize(Roles = "Admin, Teacher")]
         public async Task<ActionResult<IEnumerable<DocumentDto>>> GetDocuments()
         {
             return Ok(await _serviceManager.DocumentService.GetAllAsync());
@@ -26,7 +26,7 @@ namespace LMS.Presentation.Controllers
 
         // GET: api/Documents/5
         [HttpGet("{id}")]
-        [Authorize(Roles = "Admin, Teacher")]
+        // [Authorize(Roles = "Admin, Teacher")]
         public async Task<ActionResult<DocumentDto>> GetDocument(int id)
         {
             var document = await _serviceManager.DocumentService.GetByIdAsync(id);
@@ -39,7 +39,7 @@ namespace LMS.Presentation.Controllers
 
         // PUT: api/Documents/5
         [HttpPut("{id}")]
-        [Authorize(Roles = "Admin, Teacher")]
+        // [Authorize(Roles = "Admin, Teacher")]
         public async Task<IActionResult> PutDocument(int id, DocumentDto document)
         {
             await _serviceManager.DocumentService.UpdateAsync(id, document);
@@ -48,7 +48,7 @@ namespace LMS.Presentation.Controllers
 
         // POST: api/Documents/upload
         [HttpPost("upload")]
-        [Authorize(Roles = "Admin, Teacher")]
+        // [Authorize(Roles = "Admin, Teacher")]
         public async Task<ActionResult<DocumentDto>> UploadDocument([FromForm] DocumentCreationDto document)
         {
             try
@@ -64,7 +64,7 @@ namespace LMS.Presentation.Controllers
 
         // DELETE: api/Documents/5
         [HttpDelete("{id}")]
-        [Authorize(Roles = "Admin, Teacher")]
+        // [Authorize(Roles = "Admin, Teacher")]
         public async Task<IActionResult> DeleteDocument(int id)
         {
             try
@@ -84,21 +84,37 @@ namespace LMS.Presentation.Controllers
 
         // GET: api/Documents/5/download
         [HttpGet("{id}/download")]
-        [Authorize(Roles = "Admin, Teacher, Student")]
         public async Task<IActionResult> DownloadDocument(int id)
         {
             try
             {
-                var (fileStream, fileName, contentType) = await _serviceManager.DocumentService.DownloadDocumentAsync(id);
-                return File(fileStream, contentType, fileName);
+                // Retrieve the document entity using GetEntityByIdAsync
+                var document = await _serviceManager.DocumentService.GetByIdAsync(id);
+
+                if (document == null)
+                {
+                    return NotFound(new { message = "Document not found." });
+                }
+
+                // Ensure the file exists on the server
+                if (string.IsNullOrEmpty(document.FilePath) || !System.IO.File.Exists(document.FilePath))
+                {
+                    return NotFound(new { message = "File not found on the server." });
+                }
+
+                // Read the file content into a byte array
+                var fileBytes = await System.IO.File.ReadAllBytesAsync(document.FilePath);
+
+                // Return the file with appropriate content type and filename
+                return File(fileBytes, "application/octet-stream", Path.GetFileName(document.FilePath));
             }
             catch (KeyNotFoundException ex)
             {
                 return NotFound(new { message = ex.Message });
             }
-            catch (InvalidOperationException ex)
+            catch (Exception ex)
             {
-                return StatusCode(500, new { message = ex.Message });
+                return StatusCode(500, new { message = "An error occurred while downloading the document.", details = ex.Message });
             }
         }
 
