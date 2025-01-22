@@ -1,0 +1,40 @@
+﻿@page "/courselist"
+@rendermode InteractiveWebAssembly
+@using LMS.Blazor.Client.Services
+@using LMS.Shared.DTOs
+@using Microsoft.AspNetCore.Authorization
+@using Microsoft.AspNetCore.Components.Authorization
+@attribute [Authorize]
+
+<div id="content" class="container">
+    <div class="row">
+        <div id="courseModules" class="col-12 col-sm-8">
+            <h3>TeacherCourseList</h3>
+
+                @if (courseList.Count > 0)
+            {
+                <LMS.Blazor.Client.Components.CourseList FullCourseList="courseList" />
+            }
+        </div>
+    </div>
+</div>
+
+@code {
+    private bool loaded;
+    public List<CourseDto> courseList = new List<CourseDto>();
+
+    [Inject]
+    private IApiService _apiService { get; set; } = default!;
+    [Inject]
+    private AuthenticationStateProvider AuthenticationStateProvider { get; set; } = default!;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender && !loaded)
+        {
+            loaded = true;
+            courseList = (await _apiService.GetAsync<IEnumerable<CourseDto>>($"api/courses?includemodules=true&cascadeincludeactivities=true&includeusers=true"))?.ToList() ?? [];
+            StateHasChanged();
+        }
+    }
+}

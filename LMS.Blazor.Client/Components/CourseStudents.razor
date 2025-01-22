@@ -19,29 +19,4 @@
     [Parameter]
     public List<ApplicationUserDto> UserList { get; set; }
     public CourseDto Course = new CourseDto();
-
-    protected override async Task OnInitializedAsync()
-    {
-        if (Course.Id != CourseId)
-        {
-            Course = new CourseDto
-                {
-                    Id = 3,
-                    Users = new List<ApplicationUserDto>
-                    {
-                        new ApplicationUserDto{ Id = "1a", Name = "Peter Parker", CourseId = CourseId },
-                        new ApplicationUserDto{ Id = "2a", Name = "Clark Kent", CourseId = CourseId },
-                        new ApplicationUserDto{ Id = "3a", Name = "Matt Murdock", CourseId = CourseId },
-                        new ApplicationUserDto{ Id = "4a", Name = "Steven Rogers", CourseId = CourseId },
-                        new ApplicationUserDto{ Id = "5a", Name = "Peter Quill", CourseId = CourseId },
-                        new ApplicationUserDto{ Id = "6a", Name = "Jessica Jones", CourseId = CourseId },
-                        new ApplicationUserDto{ Id = "7a", Name = "Anthony Stark", CourseId = CourseId },
-                        new ApplicationUserDto{ Id = "8a", Name = "Bruce Wayne", CourseId = CourseId },
-                        new ApplicationUserDto{ Id = "9a", Name = "James Howlett", CourseId = CourseId },
-                        new ApplicationUserDto{ Id = "10a", Name = "Natalia Romanova", CourseId = CourseId },
-                        new ApplicationUserDto{ Id = "11a", Name = "Reed Richards", CourseId = CourseId }
-                    }
-                };
-        }
-    }
 }

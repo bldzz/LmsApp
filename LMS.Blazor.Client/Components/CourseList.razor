@@ -1,0 +1,50 @@
+﻿@rendermode InteractiveWebAssembly
+@using LMS.Shared.DTOs
+
+@attribute [Authorize]
+
+<div class="accordion" id="Courseaccordion">
+    @foreach (var course in FullCourseList ?? Enumerable.Empty<CourseDto>())
+    {
+        <div class="accordion-item">
+            <h2 class="accordion-header">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="@($"#collapseC{course.Id}")" aria-expanded="false" aria-controls="@($"collapseC{course.Id}")">
+                    <a href="/course/@course.Id">@course.CourseName</a>
+                </button>
+            </h2>
+            @if (isTeacher)
+            {
+                <div class="icon-list"><a href="#" alt="Add new Module to @course.CourseName"><i data-feather="folder-plus"></i></a><a href="#" alt="Add new Student to @course.CourseName"><i data-feather="user-plus"></i></a><a href="#" alt="Add new Document to @course.CourseName"><i data-feather="file-plus"></i></a></div>
+            }
+        </div>
+        <div id="@($"collapseC{course.Id}")" class="accordion-collapse collapse">
+            <div class="accordion-body">
+                @course.Description <br />
+                Start: @course.StartDate <br />
+                End: @course.EndDate
+
+                @if (course.Modules.Count > 0)
+                {
+                    <LMS.Blazor.Client.Components.CourseModuleList CourseId="course.Id" ModuleList="course.Modules" />
+                }
+            </div>
+        </div>
+    }
+</div>
+<script>
+    feather.replace();
+</script>
+
+@code {
+    private bool isTeacher;
+    [Parameter]
+    public List<CourseDto> FullCourseList { get; set; }
+    [Inject]
+    private AuthenticationStateProvider AuthenticationStateProvider { get; set; } = default!;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        isTeacher = authState.User.IsInRole("Teacher");
+    }
+}

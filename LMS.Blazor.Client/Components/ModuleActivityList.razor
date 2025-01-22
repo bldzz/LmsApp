@@ -1,7 +1,5 @@
 ﻿@using LMS.Shared.DTOs
 
-<h3>@Module.ModuleName</h3>
-
 <div class="accordion" id="@($"Activityaccordion{ModuleId}")">
     @foreach (var activity in ActivityList ?? Enumerable.Empty<ActivityDto>())
     {
@@ -14,6 +12,12 @@
         </div>
         <div id="@($"collapseA{activity.Id}")" class="accordion-collapse collapse">
             <div class="accordion-body">
+                @if (isTeacher)
+                {
+                    <ul>
+                        <li><a href="#">Remove @activity.ActivityName from Module</a></li>
+                    </ul>
+                }
                 @activity.Description <br />
                 Start: @activity.StartDate <br />
                 End: @activity.EndDate
@@ -23,9 +27,17 @@
 </div>
 
 @code {
+    private bool isTeacher;
     [Parameter]
     public int ModuleId { get; set; }
     [Parameter]
     public List<ActivityDto> ActivityList { get; set; }
-    public ModuleDto Module = new ModuleDto();
+    [Inject]
+    private AuthenticationStateProvider AuthenticationStateProvider { get; set; } = default!;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        isTeacher = authState.User.IsInRole("Teacher");
+    }
 }

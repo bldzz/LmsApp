@@ -8,6 +8,7 @@ using System.Security.Claims;
 using Microsoft.AspNetCore.Components.Web;
 using LMS.Blazor.Client.Models;
 using Domain.Models.Entites;
+using static System.Formats.Asn1.AsnWriter;
 
 namespace LMS.Blazor.Services;
 
@@ -86,8 +87,12 @@ internal sealed class PersistingRevalidatingAuthenticationStateProvider : Revali
 
         if (principal.Identity?.IsAuthenticated == true)
         {
+            await using var scope = scopeFactory.CreateAsyncScope();
+            var userManager = scope.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>>();
             var userId = principal.FindFirst(options.ClaimsIdentity.UserIdClaimType)?.Value;
             var email = principal.FindFirst(options.ClaimsIdentity.EmailClaimType)?.Value;
+            var user = await userManager.FindByIdAsync(userId);
+            var roles = await userManager.GetRolesAsync(user);
 
             if (userId != null && email != null)
             {
@@ -95,6 +100,7 @@ internal sealed class PersistingRevalidatingAuthenticationStateProvider : Revali
                 {
                     UserId = userId,
                     Email = email,
+                    Roles = roles
                 });
             }
         }

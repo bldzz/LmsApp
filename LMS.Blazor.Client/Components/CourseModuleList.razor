@@ -15,6 +15,14 @@
         </div>
         <div id="@($"collapseM{module.Id}")" class="accordion-collapse collapse">
             <div class="accordion-body">
+                @if (isTeacher)
+                {
+                    <ul>
+                        <li><a href="#">Remove @module.ModuleName from Course</a></li>
+                        <li><a href="#">Add Activity to Module</a></li>
+                        <li><a href="#">Add Document to Module</a></li>
+                    </ul>
+                }
                 @module.Description <br />
                 Start: @module.StartDate <br />
                 End: @module.EndDate
@@ -29,8 +37,17 @@
 </div>
 
 @code {
+    private bool isTeacher;
     [Parameter]
     public int CourseId { get; set; }
     [Parameter]
     public List<ModuleDto> ModuleList { get; set; }
+    [Inject]
+    private AuthenticationStateProvider AuthenticationStateProvider { get; set; } = default!;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        isTeacher = authState.User.IsInRole("Teacher");
+    }
 }
