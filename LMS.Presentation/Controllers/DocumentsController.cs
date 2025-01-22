@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Services.Contracts;
 using LMS.Shared.DTOs;
+using Microsoft.AspNetCore.Authorization;
 
 namespace LMS.Presentation.Controllers
 {
@@ -17,6 +18,7 @@ namespace LMS.Presentation.Controllers
 
         // GET: api/Documents
         [HttpGet]
+        [Authorize(Roles = "Admin, Teacher")]
         public async Task<ActionResult<IEnumerable<DocumentDto>>> GetDocuments()
         {
             return Ok(await _serviceManager.DocumentService.GetAllAsync());
@@ -24,6 +26,7 @@ namespace LMS.Presentation.Controllers
 
         // GET: api/Documents/5
         [HttpGet("{id}")]
+        [Authorize(Roles = "Admin, Teacher")]
         public async Task<ActionResult<DocumentDto>> GetDocument(int id)
         {
             var document = await _serviceManager.DocumentService.GetByIdAsync(id);
@@ -36,6 +39,7 @@ namespace LMS.Presentation.Controllers
 
         // PUT: api/Documents/5
         [HttpPut("{id}")]
+        [Authorize(Roles = "Admin, Teacher")]
         public async Task<IActionResult> PutDocument(int id, DocumentDto document)
         {
             await _serviceManager.DocumentService.UpdateAsync(id, document);
@@ -44,6 +48,7 @@ namespace LMS.Presentation.Controllers
 
         // POST: api/Documents/upload
         [HttpPost("upload")]
+        [Authorize(Roles = "Admin, Teacher")]
         public async Task<ActionResult<DocumentDto>> UploadDocument([FromForm] DocumentCreationDto document)
         {
             try
@@ -59,6 +64,7 @@ namespace LMS.Presentation.Controllers
 
         // DELETE: api/Documents/5
         [HttpDelete("{id}")]
+        [Authorize(Roles = "Admin, Teacher")]
         public async Task<IActionResult> DeleteDocument(int id)
         {
             try
@@ -78,6 +84,7 @@ namespace LMS.Presentation.Controllers
 
         // GET: api/Documents/5/download
         [HttpGet("{id}/download")]
+        [Authorize(Roles = "Admin, Teacher, Student")]
         public async Task<IActionResult> DownloadDocument(int id)
         {
             try
