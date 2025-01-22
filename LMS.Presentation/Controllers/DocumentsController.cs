@@ -30,14 +30,13 @@ namespace LMS.Presentation.Controllers
 
             if (document == null)
             {
-                return NotFound();
+                return NotFound(new { message = $"Document with ID {id} not found." });
             }
 
             return Ok(document);
         }
 
         // PUT: api/Documents/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
         public async Task<IActionResult> PutDocument(int id, DocumentDto document)
         {
@@ -45,27 +44,69 @@ namespace LMS.Presentation.Controllers
             return NoContent();
         }
 
-        // POST: api/Documents
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPost]
-        public async Task<ActionResult<DocumentDto>> PostDocument(DocumentCreationDto document)
+        // POST: api/Documents/upload
+        [HttpPost("upload")]
+        public async Task<ActionResult<DocumentDto>> UploadDocument([FromForm] DocumentCreationDto document)
         {
-            var newDocument = await _serviceManager.DocumentService.CreateAsync(document);
-
-            return CreatedAtAction("GetDocument", new { id = newDocument.Id }, document);
+            try
+            {
+                var newDocument = await _serviceManager.DocumentService.CreateAsync(document);
+                return CreatedAtAction("GetDocument", new { id = newDocument.Id }, newDocument);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = "An error occurred while uploading the document.", details = ex.Message });
+            }
         }
 
         // DELETE: api/Documents/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteDocument(int id)
         {
-            await _serviceManager.DocumentService.DeleteAsync(id);
-            return NoContent();
+            try
+            {
+                await _serviceManager.DocumentService.DeleteAsync(id);
+                return NoContent();
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(new { message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = "An error occurred while deleting the document.", details = ex.Message });
+            }
         }
 
-        private bool DocumentExists(int id)
+        // GET: api/Documents/5/download
+        [HttpGet("{id}/download")]
+        public async Task<IActionResult> DownloadDocument(int id)
         {
-            return _serviceManager.DocumentService.GetByIdAsync(id)!=null;
+            var document = await _serviceManager.DocumentService.GetByIdAsync(id);
+
+            if (document == null || string.IsNullOrEmpty(document.FilePath))
+                return NotFound(new { message = $"Document with ID {id} not found or does not have an associated file." });
+
+            try
+            {
+                var memoryStream = new MemoryStream();
+
+                using (var stream = new FileStream(document.FilePath, FileMode.Open, FileAccess.Read))
+                {
+                    await stream.CopyToAsync(memoryStream);
+                }
+
+                memoryStream.Position = 0;
+
+                var contentType = "application/octet-stream"; // Default content type; adjust as needed.
+                var fileName = Path.GetFileName(document.FilePath);
+
+                return File(memoryStream, contentType, fileName);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = "An error occurred while downloading the document.", details = ex.Message });
+            }
         }
     }
 }
