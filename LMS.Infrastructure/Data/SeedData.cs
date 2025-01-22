@@ -162,11 +162,27 @@ public static class SeedData
         await db.SaveChangesAsync();
 
         // Seed documents
+        var existingDocuments = await db.Documents.ToListAsync();
+        db.Documents.RemoveRange(existingDocuments);
+        await db.SaveChangesAsync();
+        
+        string documentsPath = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile) + @"\Documents\LMS";
+        Directory.CreateDirectory(documentsPath);
+        
         var documents = new List<Document>();
         foreach (var module in modules)
         {
             for (int i = 1; i <= 3; i++) // Each module has 3 documents
             {
+                // Generate a unique file name for each document
+                string fileName = $"Document_{module.ModuleName.Replace(" ", "_")}_{i}.txt";
+                string filePath = Path.Combine(documentsPath, fileName);
+
+                // Create the dummy file with some content
+                string fileContent = $"This is the content of {fileName} for module {module.ModuleName}.";
+                await File.WriteAllTextAsync(filePath, fileContent);
+
+                // Create the document entity
                 var document = new Document
                 {
                     ModuleId = module.Id,
@@ -174,7 +190,7 @@ public static class SeedData
                     Description = faker.Lorem.Sentence(),
                     UploadTime = DateTime.UtcNow,
                     UserId = users[faker.Random.Int(0, users.Count - 1)].Id, // Assign to a random user
-                    FilePath = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile)
+                    FilePath = filePath // Save the file path in the database
                 };
 
                 documents.Add(document);
