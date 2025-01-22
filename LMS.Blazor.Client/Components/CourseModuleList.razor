@@ -7,8 +7,6 @@
 
 @attribute [Authorize]
 
-<h3>@Course.CourseName</h3>
-
 <table class="table">
     <thead>
         <tr>
@@ -18,13 +16,30 @@
         </tr>
     </thead>
     <tbody>
-        @foreach (var module in Course.Modules ?? Enumerable.Empty<ModuleDto>())
+        @foreach (var course in courseList ?? Enumerable.Empty<CourseDto>())
         {
-            <tr>
-                <td><a href="/module/@module.Id">@module.ModuleName</a></td>
-                <td>@module.StartDate</td>
-                <td>@module.EndDate</td>
+            @if (course.Id != CourseId) continue;
+            <tr class="course">
+                <td>@course.CourseName</td>
+                <td>@course.StartDate</td>
+                <td>@course.EndDate</td>
             </tr>
+            @foreach (var module in course.Modules ?? Enumerable.Empty<ModuleDto>())
+            {
+                <tr class="module">
+                    <td><a href="/module/@module.Id">@module.ModuleName</a></td>
+                    <td>@module.StartDate</td>
+                    <td>@module.EndDate</td>
+                </tr>
+                @foreach (var activity in module.Activities ?? Enumerable.Empty<ActivityDto>())
+                {
+                    <tr class="activity">
+                        <td>@activity.ActivityName</td>
+                        <td>@activity.StartDate</td>
+                        <td>@activity.EndDate</td>
+                    </tr>
+                }
+            }
         }
     </tbody>
 </table>
@@ -34,7 +49,7 @@
 
     [Parameter]
     public int CourseId { get; set; }
-    public CourseDto? Course = new CourseDto();
+    public CourseDto? Coursedto = new CourseDto();
     public List<CourseDto> courseList = new List<CourseDto>();
 
     [Inject]

@@ -1,4 +1,7 @@
-﻿@page "/course/{CourseId:int}"
+﻿@rendermode InteractiveWebAssembly
+@page "/course/{CourseId:int}"
+@using LMS.Blazor.Client.Services
+@using LMS.Shared.DTOs
 @using Microsoft.AspNetCore.Authorization
 @using Microsoft.AspNetCore.Components.Authorization
 @attribute [Authorize]
@@ -6,18 +9,80 @@
 <div id="content" class="container">
     <div class="row">
         <div id="courseModules" class="col-12 col-sm-8">
-            <LMS.Blazor.Client.Components.CourseModuleList CourseId="CourseId" />
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th></th>
+                        <th></th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (courseList.Count > 0)
+                    {
+                        @foreach (var course in courseList ?? Enumerable.Empty<CourseDto>())
+                        {
+                            @if (course.Id != CourseId) continue;
+                            <tr class="course">
+                                <td>@course.CourseName</td>
+                                <td>@course.StartDate</td>
+                                <td>@course.EndDate</td>
+                            </tr>
+                            @foreach (var module in course.Modules ?? Enumerable.Empty<ModuleDto>())
+                            {
+                                <tr class="module">
+                                    <td><a href="/module/@module.Id">@module.ModuleName</a></td>
+                                    <td>@module.StartDate</td>
+                                    <td>@module.EndDate</td>
+                                </tr>
+                                @foreach (var activity in module.Activities ?? Enumerable.Empty<ActivityDto>())
+                                {
+                                    <tr class="activity">
+                                        <td>@activity.ActivityName</td>
+                                        <td>@activity.StartDate</td>
+                                        <td>@activity.EndDate</td>
+                                    </tr>
+                                }
+                            }
+                        }
+                    }
+                </tbody>
+            </table>
         </div>
         <div id="courseSide" class="col-12 col-sm-4">
-            <LMS.Blazor.Client.Components.CourseDescription CourseId="CourseId" />
+            <div>
+                @if (courseList.Count > 0)
+                {
+                    <p>@courseList.FirstOrDefault().Description</p>
+                }
+            </div>
             <LMS.Blazor.Client.Components.CourseStudents CourseId="CourseId" />
             <LMS.Blazor.Client.Components.CourseDocuments CourseId="CourseId" />
         </div>
     </div>
 </div>
 
-
 @code {
+    private bool loaded;
+
     [Parameter]
     public int CourseId { get; set; }
+    public CourseDto? course = new CourseDto();
+    public List<CourseDto> courseList = new List<CourseDto>();
+
+    [Inject]
+    private IApiService _apiService { get; set; } = default!;
+    [Inject]
+    private AuthenticationStateProvider AuthenticationStateProvider { get; set; } = default!;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender && !loaded)
+        {
+            loaded = true;
+            //course = (await _apiService.GetAsync<CourseDto>($"api/courses/{CourseId}")) ?? null;
+            courseList = (await _apiService.GetAsync<IEnumerable<CourseDto>>($"api/courses?includemodules=true&cascadeincludeactivities=true"))?.ToList() ?? [];
+            StateHasChanged();
+        }
+    }
 }

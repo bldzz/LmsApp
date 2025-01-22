@@ -1,23 +1,35 @@
-﻿@using LMS.Shared.DTOs
+﻿@rendermode InteractiveWebAssembly
+
+@using LMS.Blazor.Client.Services
+@using LMS.Shared.DTOs
+@using Microsoft.AspNetCore.Authorization
+@using Microsoft.AspNetCore.Components.Authorization
+
+@attribute [Authorize]
 
 <h3>CourseDescription</h3>
 
-<p>@Course.Description</p>
+<p>@course.Description</p>
 
 @code {
+    private bool loaded;
+
     [Parameter]
     public int CourseId { get; set; }
-    public CourseDto Course = new CourseDto();
+    public CourseDto? course = new CourseDto();
 
-    protected override async Task OnInitializedAsync()
+    [Inject]
+    private IApiService _apiService { get; set; } = default!;
+    [Inject]
+    private AuthenticationStateProvider AuthenticationStateProvider { get; set; } = default!;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        if (Course.Id != CourseId)
+        if (firstRender && !loaded)
         {
-            Course = new CourseDto
-                {
-                    Id = 3,
-                    Description = "Master C# for fullstack development, covering backend, frontend, databases, and best practices."
-                };
+            loaded = true;
+            course = (await _apiService.GetAsync<CourseDto>($"api/courses/{CourseId}")) ?? null;
+            StateHasChanged();
         }
     }
 }
