@@ -173,7 +173,8 @@ public static class SeedData
                     Name = $"Document {i} for {module.ModuleName}",
                     Description = faker.Lorem.Sentence(),
                     UploadTime = DateTime.UtcNow,
-                    UserId = users[faker.Random.Int(0, users.Count - 1)].Id // Assign to a random user
+                    UserId = users[faker.Random.Int(0, users.Count - 1)].Id, // Assign to a random user
+                    FilePath = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile)
                 };
 
                 documents.Add(document);
