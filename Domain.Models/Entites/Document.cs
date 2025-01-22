@@ -24,15 +24,18 @@ namespace Domain.Models.Entites
         public ApplicationUser User { get; set; }
 
         // Foreign Key to Course
-        public int? CourseId { get; set; } // Nullable FK for Course
-        public Course? Course { get; set; } // Nullable navigation property
+        public int? CourseId { get; set; }
+        public Course? Course { get; set; }
 
         // Foreign Key to Module
-        public int? ModuleId { get; set; } // Nullable FK for Module
-        public Module? Module { get; set; } // Nullable navigation property
+        public int? ModuleId { get; set; }
+        public Module? Module { get; set; }
 
         // Foreign Key to Activity
-        public int? ActivityId { get; set; } // Nullable FK for Activity
-        public Activity? Activity { get; set; } // Nullable navigation property
+        public int? ActivityId { get; set; }
+        public Activity? Activity { get; set; }
+
+        [Required]
+        public string FilePath { get; set; } = string.Empty;
     }
 }
