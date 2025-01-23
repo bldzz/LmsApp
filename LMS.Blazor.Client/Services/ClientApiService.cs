@@ -46,7 +46,6 @@ public class ClientApiService : IApiService
 
     private async Task<TResponse?> CallApiAsync<TRequest, TResponse>(string endpoint, HttpMethod httpMethod, TRequest? dto)
     {
-        httpClient.BaseAddress = new Uri("https://localhost:7224");
         var request = new HttpRequestMessage(httpMethod, $"proxy-endpoint/{endpoint}");
         request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 

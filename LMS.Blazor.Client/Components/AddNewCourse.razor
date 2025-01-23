@@ -62,6 +62,13 @@
 
     private async Task AddCourseDto()
     {
-        var response = (await _apiService.PostAsync<CourseCreationDto, CourseCreationDto>("api/courses", NewCourseDto));
+        try
+        {
+            var response = (await _apiService.PostAsync<CourseCreationDto, CourseCreationDto>("api/courses", NewCourseDto));
+        }
+        catch(Exception ex)
+        {
+            Console.WriteLine($"Error: {ex.Message}");
+        }
     }
 }

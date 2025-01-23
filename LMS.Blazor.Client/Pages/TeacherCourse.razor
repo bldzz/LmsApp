@@ -30,7 +30,6 @@
 
 @code {
     private bool isTeacher;
-    private bool loaded;
     public List<CourseDto> courseList = new List<CourseDto>();
 
     [Inject]
@@ -42,15 +41,14 @@
     {
         var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
         isTeacher = authState.User.IsInRole("Teacher");
-    }
-
-    protected override async Task OnAfterRenderAsync(bool firstRender)
-    {
-        if (firstRender && !loaded)
+        try
         {
-            loaded = true;
             courseList = (await _apiService.GetAsync<IEnumerable<CourseDto>>($"api/courses?includemodules=true&cascadeincludeactivities=true&includeusers=true"))?.ToList() ?? [];
             StateHasChanged();
+        }
+        catch (Exception ex)
+        {
+
         }
     }
 }
