@@ -1,4 +1,5 @@
 ﻿@rendermode InteractiveWebAssembly
+@inject NavigationManager NavigationManager
 
 <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#CreateStudentModal">
     <i class="bi bi-person-plus-fill"></i>
@@ -11,16 +12,47 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                ...
+
+                <EditForm Model="@NewStudentDto" OnValidSubmit="AddStudentDto">
+                    <DataAnnotationsValidator />
+                    <ValidationSummary class="text-danger" />
+
+                    <div class="mb-3">
+                        <label for="userid" class="form-label">User Id:</label>
+                        <InputText id="userid" @bind-Value="NewStudentDto.UserId" class="form-control" />
+                        <ValidationMessage For="() => NewStudentDto.UserId" class="text-danger" />
+                    </div>
+
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary">Create Module</button>
+                </EditForm>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary">Save changes</button>
             </div>
         </div>
     </div>
 </div>
 
 @code {
+    [Parameter]
+    public int courseId { get; set; }
+    private UserCourseCreationDto NewStudentDto { get; set; } = new UserCourseCreationDto();
+    [Inject]
+    private IApiService _apiService { get; set; } = default!;
+    [Inject]
+    private AuthenticationStateProvider AuthenticationStateProvider { get; set; } = default!;
 
+    private async Task AddStudentDto()
+    {
+        try
+        {
+            NewStudentDto.CourseId = courseId;
+            var response = (await _apiService.PostAsync<UserCourseCreationDto, UserCourseCreationDto>("api/usercourses", NewStudentDto));
+            NavigationManager.NavigateTo("/courselist", forceLoad: true);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error: {ex.Message}");
+        }
+    }
 }
