@@ -10,22 +10,16 @@
 
         // Extract filename from Content-Disposition header
         const contentDisposition = response.headers.get("Content-Disposition");
-        let filename = "DownloadedDocument"; // Default filename
+        const filename = getFilenameFromContentDisposition(contentDisposition);
 
-        if (contentDisposition) {
-            // Match both standard and UTF-8 encoded filenames using RegExp.exec()
-            const regex = /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/;
-            const match = regex.exec(contentDisposition);
-            if (match?.[1]) {
-                filename = match[1].replace(/['"]/g, ''); // Remove quotes
-            }
-        }
+        console.log("Content-Disposition Header:", contentDisposition);
+        console.log("Extracted Filename:", filename);
 
         // Create a Blob URL and trigger download
         const blobUrl = URL.createObjectURL(blob);
         const a = document.createElement("a");
         a.href = blobUrl;
-        a.download = decodeURIComponent(filename); // Decode URI components for proper filenames
+        a.download = filename;
 
         document.body.appendChild(a);
         a.click();
@@ -50,3 +44,27 @@ document.getElementById("downloadButton").addEventListener("click", () => {
 
     downloadDocument(documentId);
 });
+
+function getFilenameFromContentDisposition(contentDisposition) {
+    if (!contentDisposition) {
+        console.warn("Content-Disposition header is missing.");
+        return "DownloadedDocument"; // Default filename
+    }
+
+    // Regex to handle both `filename*=` (UTF-8) and `filename=`
+    const regex = /filename\*=UTF-8''([^;]+)|filename="([^"]+)"|filename=([^;]+)/i;
+    const match = regex.exec(contentDisposition);
+
+    if (match) {
+        // Use UTF-8 encoded filename if available, otherwise fallback to standard filename
+        const utf8Filename = match[1];
+        const quotedFilename = match[2];
+        const unquotedFilename = match[3];
+
+        // Decode URI-encoded UTF-8 filename or return the standard one
+        return decodeURIComponent(utf8Filename || quotedFilename || unquotedFilename);
+    }
+
+    console.warn("Filename could not be extracted from Content-Disposition header.");
+    return "DownloadedDocument"; // Default fallback filename
+}
