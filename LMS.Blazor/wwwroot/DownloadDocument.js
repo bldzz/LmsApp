@@ -1,59 +1,52 @@
 ﻿async function downloadDocument(documentId) {
     try {
-        // Fetch the file from the API
         const response = await fetch(`https://localhost:7044/api/Documents/${documentId}/download`);
 
-        if (!response?.ok) { // Use optional chaining for concise null/undefined checks
-            throw new Error(`Failed to download document: ${response?.statusText || "Unknown error"}`);
+        if (!response.ok) {
+            throw new Error(`Failed to download document: ${response.statusText}`);
         }
 
-        // Convert response to a Blob
         const blob = await response.blob();
 
-        // Create a temporary URL for the Blob
-        const blobUrl = URL.createObjectURL(blob);
-
-        // Create an anchor element to trigger the download
-        const a = document.createElement("a");
-        a.href = blobUrl;
-
-        // Set the filename for the downloaded file
+        // Extract filename from Content-Disposition header
         const contentDisposition = response.headers.get("Content-Disposition");
         let filename = "DownloadedDocument"; // Default filename
 
-        if (contentDisposition?.includes("filename=")) { // Use optional chaining for safety
-            const match = /filename="?(.+?)"?$/.exec(contentDisposition); // Use RegExp.exec() for better handling
-            if (match) {
-                filename = match[1];
+        if (contentDisposition) {
+            // Match both standard and UTF-8 encoded filenames using RegExp.exec()
+            const regex = /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/;
+            const match = regex.exec(contentDisposition);
+            if (match?.[1]) {
+                filename = match[1].replace(/['"]/g, ''); // Remove quotes
             }
         }
 
-        a.download = filename;
+        // Create a Blob URL and trigger download
+        const blobUrl = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = blobUrl;
+        a.download = decodeURIComponent(filename); // Decode URI components for proper filenames
 
-        // Append the anchor to the body, trigger click, and remove it
         document.body.appendChild(a);
         a.click();
-        document.body.removeChild(a);
 
-        // Revoke the Blob URL after use
+        document.body.removeChild(a);
         URL.revokeObjectURL(blobUrl);
 
-        console.log("File downloaded successfully!");
+        console.log(`File "${filename}" downloaded successfully!`);
     } catch (error) {
         console.error("Error downloading document:", error);
     }
 }
 
+// Attach event listener to button
 document.getElementById("downloadButton").addEventListener("click", () => {
-    // Get the value from the input field
     const documentId = document.getElementById("documentId").value;
 
-    // Check if the input is valid
     if (!documentId) {
         alert("Please enter a valid Document ID.");
         return;
     }
 
-    // Call the downloadDocument function with the entered ID
     downloadDocument(documentId);
 });
