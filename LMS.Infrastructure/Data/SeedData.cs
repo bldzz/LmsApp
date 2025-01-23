@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Domain.Models.Entites;
+using Microsoft.AspNetCore.StaticFiles;
 
 namespace LMS.Infrastructure.Data;
 
@@ -169,6 +170,8 @@ public static class SeedData
         string documentsPath = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile) + @"\Documents\LMS";
         Directory.CreateDirectory(documentsPath);
         
+        var provider = new FileExtensionContentTypeProvider();
+        
         var documents = new List<Document>();
         foreach (var module in modules)
         {
@@ -181,6 +184,12 @@ public static class SeedData
                 // Create the dummy file with some content
                 string fileContent = $"This is the content of {fileName} for module {module.ModuleName}.";
                 await File.WriteAllTextAsync(filePath, fileContent);
+                
+                if (!provider.TryGetContentType(filePath, out string contentType))
+                {
+                    contentType = "application/octet-stream";
+                }
+
 
                 // Create the document entity
                 var document = new Document
@@ -190,7 +199,8 @@ public static class SeedData
                     Description = faker.Lorem.Sentence(),
                     UploadTime = DateTime.UtcNow,
                     UserId = users[faker.Random.Int(0, users.Count - 1)].Id, // Assign to a random user
-                    FilePath = filePath // Save the file path in the database
+                    FilePath = filePath, // Save the file path in the database
+                    ContentType = contentType,
                 };
 
                 documents.Add(document);
