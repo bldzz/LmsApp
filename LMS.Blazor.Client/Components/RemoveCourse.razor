@@ -1,7 +1,7 @@
 ﻿@rendermode InteractiveWebAssembly
 
-<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#RemoveCourseModal">
-    <i data-feather="trash-2"></i>
+<button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#RemoveCourseModal">
+    <i class="bi bi-trash"></i>
 </button>
 <div class="modal fade" id="RemoveCourseModal" tabindex="-1" aria-labelledby="RemoveCourseModalLabel" aria-hidden="true">
     <div class="modal-dialog">
@@ -20,10 +20,6 @@
         </div>
     </div>
 </div>
-
-<script>
-    feather.replace();
-</script>
 
 @code {
 

@@ -18,9 +18,16 @@
                 @if (isTeacher)
                 {
                     <div class="icon-list">
-                        <LMS.Blazor.Client.Components.AddNewModule />
+                        <a href="@($"/course/{course.Id}")">
+                            <button type="button" class="btn btn-success">
+                                <i class="bi bi-box-arrow-in-right"></i>
+                            </button>
+                        </a>
+                        <LMS.Blazor.Client.Components.AddNewModule CourseId="course.Id"/>
                         <LMS.Blazor.Client.Components.AddNewStudent />
                         <LMS.Blazor.Client.Components.AddNewDocument />
+                        <LMS.Blazor.Client.Components.EditCourse />
+                        <LMS.Blazor.Client.Components.RemoveCourse />
                     </div>
                 }
                 @course.Description <br />
