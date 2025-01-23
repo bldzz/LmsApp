@@ -19,7 +19,7 @@ public static class SeedData
             var serviceProvider = scope.ServiceProvider;
             var db = serviceProvider.GetRequiredService<LmsContext>();
 
-            if (await db.Users.AnyAsync()) return;
+            if (await db.Users.AnyAsync()) return; // Exit if users already exist
 
             _userManager = serviceProvider.GetRequiredService<UserManager<ApplicationUser>>() 
                            ?? throw new InvalidOperationException("UserManager service is not available.");
@@ -28,14 +28,15 @@ public static class SeedData
 
             try
             {
-                // Seed roles
-                await CreateRolesAsync(new[] { "Admin", "Student", "Teacher" });
+                // Step 1: Seed roles
+                await CreateRolesAsync();
 
-                // Generate users and assign roles
-                var users = await GenerateUsersAsync(5);
+                // Step 2: Generate users and assign roles
+                var users = await GenerateUsersAsync();
 
-                // Seed courses, modules, and documents
+                // Step 3: Seed courses, modules, and documents
                 await SeedCoursesAndModulesAsync(db, users);
+
                 await db.SaveChangesAsync();
             }
             catch (DbUpdateException ex)
@@ -49,51 +50,74 @@ public static class SeedData
         }
     }
 
-    private static async Task CreateRolesAsync(string[] roleNames)
+    private static async Task CreateRolesAsync()
     {
-        foreach (var roleName in roleNames)
+        var initialRoles = new[] { "Admin", "Student", "Teacher", "Principal" };
+
+        foreach (var roleName in initialRoles)
         {
-            if (await _roleManager.RoleExistsAsync(roleName)) continue;
-
-            var role = new IdentityRole { Name = roleName, NormalizedName = roleName.ToUpper() };
-            var result = await _roleManager.CreateAsync(role);
-
-            if (!result.Succeeded)
-                throw new InvalidOperationException($"Failed to create role '{roleName}': {string.Join("\n", result.Errors.Select(e => e.Description))}");
+            if (!await _roleManager.RoleExistsAsync(roleName))
+            {
+                var result = await _roleManager.CreateAsync(new IdentityRole(roleName));
+                if (!result.Succeeded)
+                {
+                    throw new InvalidOperationException($"Failed to create role '{roleName}': {string.Join("\n", result.Errors.Select(e => e.Description))}");
+                }
+            }
         }
     }
 
-    private static async Task<List<ApplicationUser>> GenerateUsersAsync(int nrOfUsers)
+    private static async Task<List<ApplicationUser>> GenerateUsersAsync()
     {
-        var faker = new Faker<ApplicationUser>("sv").Rules((f, e) =>
+        var faker = new Faker<ApplicationUser>("sv").Rules((faker, user) =>
         {
-            e.Email = f.Person.Email;
-            e.UserName = f.Person.Email;
-            e.FirstName = f.Name.FirstName();
-            e.LastName = f.Name.LastName();
+            user.Email = faker.Person.Email;
+            user.UserName = faker.Person.Email;
+            user.FirstName = faker.Name.FirstName();
+            user.LastName = faker.Name.LastName();
         });
 
-        var users = faker.Generate(nrOfUsers);
+        var users = faker.Generate(5);
 
-        var passWord = "BytMig123!";
-        if (string.IsNullOrEmpty(passWord))
+        var password = "BytMig123!";
+        if (string.IsNullOrEmpty(password))
             throw new InvalidOperationException("Password cannot be null or empty.");
 
-        foreach (var user in users)
+        for (int i = 0; i < users.Count; i++)
         {
-            var result = await _userManager.CreateAsync(user, passWord);
+            var user = users[i];
+            var result = await _userManager.CreateAsync(user, password);
             if (!result.Succeeded)
             {
                 throw new InvalidOperationException($"Failed to create user '{user.UserName}': {string.Join("\n", result.Errors.Select(e => e.Description))}");
             }
 
-            // Assign "Student" role to all generated users
-            await _userManager.AddToRoleAsync(user, "Student");
+            // Assign roles based on user index
+            if (i == 0)
+            {
+                // First user gets both Principal and Admin roles
+                await _userManager.AddToRoleAsync(user, "Principal");
+                await _userManager.AddToRoleAsync(user, "Admin");
+            }
+            else if (i == 1)
+            {
+                // Second user get Teacher role
+                await _userManager.AddToRoleAsync(user, "Teacher");
+            }
+            else
+            {
+                // Remaining users get Student role
+                await _userManager.AddToRoleAsync(user, "Student");
+            }
+            
+            var roles = await _userManager.GetRolesAsync(user);
+            Console.WriteLine($"User {user.UserName} has the following roles: {string.Join(", ", roles)}");
         }
 
         return users;
     }
-    
+
+
     private static async Task SeedCoursesAndModulesAsync(LmsContext db, List<ApplicationUser> users)
     {
         var faker = new Faker();

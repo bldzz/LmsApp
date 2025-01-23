@@ -34,6 +34,7 @@ public static class ServiceExtensions
         services.AddScoped<IActivityService, ActivityService>();
         services.AddScoped<IDocumentService, DocumentService>();
         services.AddScoped<IUserCourseService, UserCourseService>();
+        services.AddScoped<IRoleService, RoleService>();
 
         services.AddLazy<IAuthService>();
         services.AddLazy<ICourseService>();
@@ -41,6 +42,7 @@ public static class ServiceExtensions
         services.AddLazy<IActivityService>();
         services.AddLazy<IDocumentService>();
         services.AddLazy<IUserCourseService>();
+        services.AddLazy<IRoleService>();
     }
 
     public static void ConfigureRepositories(this IServiceCollection services)
