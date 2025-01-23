@@ -106,6 +106,8 @@ namespace LMS.Presentation.Controllers
                 var fileBytes = await System.IO.File.ReadAllBytesAsync(document.FilePath);
 
                 // Return file with proper headers
+                // Add the header using the indexer
+                Response.Headers["Access-Control-Expose-Headers"] = "Content-Disposition";
                 return File(fileBytes, document.ContentType, document.Name);
             }
             catch (Exception ex)
