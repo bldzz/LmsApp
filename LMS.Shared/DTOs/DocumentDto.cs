@@ -9,4 +9,6 @@ public record DocumentDto()
     public int? ModuleId { get; set; }
     public Guid? ActivityId { get; set; }
     public string FilePath { get; set; } = string.Empty;
+    public string ContentType { get; set; } = "application/octet-stream";
+    public string Name { get; set; } = string.Empty;
 }
