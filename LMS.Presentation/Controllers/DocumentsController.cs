@@ -88,7 +88,7 @@ namespace LMS.Presentation.Controllers
         {
             try
             {
-                // Retrieve the document entity using GetEntityByIdAsync
+                // Retrieve document details using your service or repository
                 var document = await _serviceManager.DocumentService.GetByIdAsync(id);
 
                 if (document == null)
@@ -102,21 +102,16 @@ namespace LMS.Presentation.Controllers
                     return NotFound(new { message = "File not found on the server." });
                 }
 
-                // Read the file content into a byte array
+                // Read file bytes
                 var fileBytes = await System.IO.File.ReadAllBytesAsync(document.FilePath);
 
-                // Return the file with appropriate content type and filename
-                return File(fileBytes, "application/octet-stream", Path.GetFileName(document.FilePath));
-            }
-            catch (KeyNotFoundException ex)
-            {
-                return NotFound(new { message = ex.Message });
+                // Return file with proper headers
+                return File(fileBytes, document.ContentType, document.Name);
             }
             catch (Exception ex)
             {
                 return StatusCode(500, new { message = "An error occurred while downloading the document.", details = ex.Message });
             }
         }
-
     }
 }
