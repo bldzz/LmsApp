@@ -3,6 +3,7 @@ using Domain.Contracts;
 using Domain.Models.Entites;
 using LMS.Shared.DTOs;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.StaticFiles;
 
 namespace LMS.Services
 {
@@ -99,15 +100,28 @@ namespace LMS.Services
 
                 memoryStream.Position = 0; // Reset stream position for reading
 
-                var contentType = "application/octet-stream"; // Default content type; adjust as needed
                 var fileName = Path.GetFileName(document.FilePath);
+                document.ContentType = GetContentType(document.FilePath);
 
-                return (memoryStream, fileName, contentType);
+                return (memoryStream, fileName, document.ContentType);
             }
             catch (Exception ex)
             {
                 throw new InvalidOperationException("An error occurred while downloading the document.", ex);
             }
+        }
+
+        private static string GetContentType(string filePath)
+        {
+            const string DefaultContentType = "application/octet-stream";
+            var provider = new FileExtensionContentTypeProvider();
+    
+            if (!provider.TryGetContentType(filePath, out string contentType))
+            {
+                contentType = DefaultContentType;
+            }
+
+            return contentType;
         }
     }
 }
