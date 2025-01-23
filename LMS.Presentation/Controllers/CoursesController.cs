@@ -20,6 +20,7 @@ namespace LMS.Presentation.Controllers
         }
 
         // GET: api/Courses
+        [Authorize]
         [HttpGet]
         public async Task<ActionResult<IEnumerable<CourseDto>>> GetCourses([FromQuery] GetCoursesParameters parameters)
         {
