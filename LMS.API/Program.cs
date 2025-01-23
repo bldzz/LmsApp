@@ -2,6 +2,8 @@ using Domain.Models.Entites;
 using LMS.API.Extensions;
 using LMS.Infrastructure.Data;
 using LMS.Presentation;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -31,12 +33,11 @@ public class Program
         builder.Services.ConfigureRepositories();
         builder.Services.ConfigureJwt(builder.Configuration);
         builder.Services.ConfigureCors();
-
-        // Configure Identity with ApplicationUser
-        builder.Services.AddIdentityCore<ApplicationUser>(opt =>
+        
+        builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
         {
-            opt.SignIn.RequireConfirmedAccount = false;
-            opt.User.RequireUniqueEmail = true;
+            options.SignIn.RequireConfirmedAccount = false;
+            options.User.RequireUniqueEmail = true;
         })
         .AddRoles<IdentityRole>()
         .AddEntityFrameworkStores<LmsContext>()
