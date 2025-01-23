@@ -1,0 +1,67 @@
+﻿@rendermode InteractiveWebAssembly
+
+<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#CreateCourseModal">
+    <i data-feather="plus-square"></i>
+</button>
+<div class="modal fade" id="CreateCourseModal" tabindex="-1" aria-labelledby="CreateCourseModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="CreateCourseModalLabel">Create new Course</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <EditForm Model="@NewCourseDto" OnValidSubmit="AddCourseDto">
+                    <DataAnnotationsValidator />
+                    <ValidationSummary class="text-danger" />
+
+                    <div class="mb-3">
+                        <label for="coursename" class="form-label">Course Name:</label>
+                        <InputText id="coursename" @bind-Value="NewCourseDto.CourseName" class="form-control" />
+                        <ValidationMessage For="() => NewCourseDto.CourseName" class="text-danger" />
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="description" class="form-label">Description:</label>
+                        <InputTextArea id="description" @bind-Value="NewCourseDto.Description" class="form-control" />
+                        <ValidationMessage For="() => NewCourseDto.Description" class="text-danger" />
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="startdate" class="form-label">Start Date:</label>
+                        <InputDate id="startdate" @bind-Value="NewCourseDto.StartDate" class="form-control" />
+                        <ValidationMessage For="() => NewCourseDto.StartDate" class="text-danger" />
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="enddate" class="form-label">End Date:</label>
+                        <InputDate id="enddate" @bind-Value="NewCourseDto.EndDate" class="form-control" />
+                        <ValidationMessage For="() => NewCourseDto.EndDate" class="text-danger" />
+                    </div>
+
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary">Create Course</button>
+                </EditForm>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    feather.replace();
+</script>
+
+@code {
+    private CourseCreationDto NewCourseDto { get; set; } = new CourseCreationDto();
+    [Inject]
+    private IApiService _apiService { get; set; } = default!;
+    [Inject]
+    private AuthenticationStateProvider AuthenticationStateProvider { get; set; } = default!;
+
+    private async Task AddCourseDto()
+    {
+        var response = (await _apiService.PostAsync<CourseCreationDto, CourseCreationDto>("api/courses", NewCourseDto));
+    }
+}

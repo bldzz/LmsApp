@@ -12,13 +12,17 @@
                     <a href="/course/@course.Id">@course.CourseName</a>
                 </button>
             </h2>
-            @if (isTeacher)
-            {
-                <div class="icon-list"><a href="#" alt="Add new Module to @course.CourseName"><i data-feather="folder-plus"></i></a><a href="#" alt="Add new Student to @course.CourseName"><i data-feather="user-plus"></i></a><a href="#" alt="Add new Document to @course.CourseName"><i data-feather="file-plus"></i></a></div>
-            }
         </div>
         <div id="@($"collapseC{course.Id}")" class="accordion-collapse collapse">
             <div class="accordion-body">
+                @if (isTeacher)
+                {
+                    <div class="icon-list">
+                        <LMS.Blazor.Client.Components.AddNewModule />
+                        <LMS.Blazor.Client.Components.AddNewStudent />
+                        <LMS.Blazor.Client.Components.AddNewDocument />
+                    </div>
+                }
                 @course.Description <br />
                 Start: @course.StartDate <br />
                 End: @course.EndDate
@@ -31,9 +35,6 @@
         </div>
     }
 </div>
-<script>
-    feather.replace();
-</script>
 
 @code {
     private bool isTeacher;

@@ -11,6 +11,15 @@
         <div id="courseModules" class="col-12 col-sm-8">
             <h3>TeacherCourseList</h3>
 
+            @if (isTeacher)
+            {
+                <div class="icon-list">
+                    <LMS.Blazor.Client.Components.AddNewCourse />
+                    <LMS.Blazor.Client.Components.EditCourse />
+                    <LMS.Blazor.Client.Components.RemoveCourse />
+                </div>
+            }
+
                 @if (courseList.Count > 0)
             {
                 <LMS.Blazor.Client.Components.CourseList FullCourseList="courseList" />
@@ -20,6 +29,7 @@
 </div>
 
 @code {
+    private bool isTeacher;
     private bool loaded;
     public List<CourseDto> courseList = new List<CourseDto>();
 
@@ -27,6 +37,12 @@
     private IApiService _apiService { get; set; } = default!;
     [Inject]
     private AuthenticationStateProvider AuthenticationStateProvider { get; set; } = default!;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        isTeacher = authState.User.IsInRole("Teacher");
+    }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
