@@ -1,7 +1,8 @@
 ﻿@rendermode InteractiveWebAssembly
+@inject NavigationManager NavigationManager
 
 <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#CreateCourseModal">
-    <i data-feather="plus-square"></i>
+    <i class="bi bi-calendar-plus"></i>
 </button>
 <div class="modal fade" id="CreateCourseModal" tabindex="-1" aria-labelledby="CreateCourseModalLabel" aria-hidden="true">
     <div class="modal-dialog">
@@ -49,10 +50,6 @@
     </div>
 </div>
 
-<script>
-    feather.replace();
-</script>
-
 @code {
     private CourseCreationDto NewCourseDto { get; set; } = new CourseCreationDto();
     [Inject]
@@ -65,6 +62,7 @@
         try
         {
             var response = (await _apiService.PostAsync<CourseCreationDto, CourseCreationDto>("api/courses", NewCourseDto));
+            NavigationManager.NavigateTo("/courselist", forceLoad:true);
         }
         catch(Exception ex)
         {

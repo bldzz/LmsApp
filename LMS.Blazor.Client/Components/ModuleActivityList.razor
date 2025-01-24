@@ -14,9 +14,9 @@
             <div class="accordion-body">
                 @if (isTeacher)
                 {
-                    <ul>
-                        <li><a href="#">Remove @activity.ActivityName from Module</a></li>
-                    </ul>
+                    <div class="icon-list">
+                        <LMS.Blazor.Client.Components.RemoveActivity moduleId="ModuleId" />
+                    </div>
                 }
                 @activity.Description <br />
                 Start: @activity.StartDate <br />

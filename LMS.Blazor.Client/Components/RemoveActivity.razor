@@ -2,7 +2,7 @@
 @inject NavigationManager NavigationManager
 
 <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#CreateModuleModal">
-    <i class="bi bi-bookmark-plus"></i>
+    <i class="bi bi-bookmark-dash"></i>
 </button>
 <div class="modal fade" id="CreateModuleModal" tabindex="-1" aria-labelledby="CreateModuleModalLabel" aria-hidden="true">
     <div class="modal-dialog">
@@ -22,5 +22,6 @@
 
 @code {
     [Parameter]
-    public int courseId { get; set; }
+    public int moduleId { get; set; }
+
 }

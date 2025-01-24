@@ -17,11 +17,11 @@
             <div class="accordion-body">
                 @if (isTeacher)
                 {
-                    <ul>
-                        <li><a href="#">Remove @module.ModuleName from Course</a></li>
-                        <li><a href="#">Add Activity to Module</a></li>
-                        <li><a href="#">Add Document to Module</a></li>
-                    </ul>
+                    <div class="icon-list">
+                        <LMS.Blazor.Client.Components.RemoveModule courseId="CourseId" />
+                        <LMS.Blazor.Client.Components.AddNewActivity courseId="CourseId" />
+                        <LMS.Blazor.Client.Components.AddNewDocument />
+                    </div>
                 }
                 @module.Description <br />
                 Start: @module.StartDate <br />

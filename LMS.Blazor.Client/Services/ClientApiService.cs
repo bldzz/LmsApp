@@ -44,6 +44,17 @@ public class ClientApiService : IApiService
         );
     }
 
+    public async Task<TResponse?> PutAsync<TRequest, TResponse>(
+    string endpoint,
+    TRequest dto)
+    {
+        return await CallApiAsync<TRequest, TResponse>(
+            endpoint,
+            HttpMethod.Put,
+            dto
+        );
+    }
+
     private async Task<TResponse?> CallApiAsync<TRequest, TResponse>(string endpoint, HttpMethod httpMethod, TRequest? dto)
     {
         var request = new HttpRequestMessage(httpMethod, $"proxy-endpoint/{endpoint}");
