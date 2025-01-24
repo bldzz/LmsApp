@@ -1,0 +1,110 @@
+﻿@page "/calendar"
+
+@rendermode @(new InteractiveServerRenderMode(prerender: false))
+
+@code {
+	public class CalendarItem()
+	{
+		public string Name { get; set; } = "";
+		public DateTime StartTime { get; set; }
+		public DateTime EndTime { get; set; }
+
+		public DateTime Date { get; set; }
+
+		public CalendarItem(string name, DateTime startTime, DateTime endTime):this()
+		{
+			Name = name;
+			StartTime = startTime;
+			EndTime = endTime;
+		}
+		public CalendarItem(string name, DateTime date):this()
+		{
+			Name = name;
+			Date = date;
+		}
+	}
+
+
+	string monthName = "";
+	DateTime monthStart;
+	DateTime monthEnd;
+	int monthsAway = 0;
+	int numDummyColumn = 0;
+	int month = 0;
+	int year = DateTime.Now.Year;
+	string dayName = "";
+	List<CalendarItem> items = new List<CalendarItem>();
+
+	protected override void OnInitialized()
+	{
+		items.Add(new CalendarItem("Course 1", new DateTime(2025, 1, 25), new DateTime(2025, 2, 2)));
+		items.Add(new CalendarItem("Test 1", new DateTime(2025, 2, 2)));
+		CreateMonth();
+	}
+
+	void CreateMonth()
+	{
+		month = DateTime.Now.Month + monthsAway;
+		var tempDate = DateTime.Now.AddMonths(monthsAway);
+		month = tempDate.Month;
+		year = tempDate.Year;
+
+
+		monthStart = new DateTime(year, month, 1);
+		monthEnd = monthStart.AddMonths(1).AddDays(-1);
+		monthName = monthStart.Month switch
+		{
+			1 => "January",
+			2 => "February",
+			3 => "March",
+			4 => "April",
+			5 => "May",
+			6 => "June",
+			7 => "July",
+			8 => "August",
+			9 => "September",
+			10 => "October",
+			11 => "November",
+			12 => "December",
+			_ => ""
+		};
+
+		numDummyColumn = (int)monthStart.DayOfWeek;
+	}
+}
+
+<body>
+	<button @onclick="() => { monthsAway--; CreateMonth(); }">Previous Month</button>
+	<h1>@monthName, @year</h1>
+	<button @onclick="() => { monthsAway++; CreateMonth(); }">Next Month</button>
+
+	<section style="display:grid; grid-template-columns: repeat(7, 1fr);">
+		<h5>Sunday</h5><h5>Monday</h5><h5>Tuesday</h5><h5>Wednesday</h5><h5>Thursday</h5><h5>Friday</h5><h5>Saturday</h5>
+		@for (int i = 0; i < numDummyColumn; i++)
+		{
+			<div style="border: 1px solid black; padding:10px;"></div>
+		}
+		@for (int i = 1; i <= monthEnd.Day; i++)
+		{
+			var courseStart = items.FirstOrDefault(n => n.StartTime == new DateTime(year, month, i));
+			var courseEnd = items.FirstOrDefault(n => n.EndTime == new DateTime(year, month, i));
+			var calendarItem = items.FirstOrDefault(n => n.Date == new DateTime(year, month, i));
+
+			<div style="border: 1px solid black; padding:10px;">
+				<h2>@i</h2>
+				@if (courseStart != null)
+				{
+					<p>@courseStart.Name Start</p>
+				}
+				@if (courseEnd != null)
+				{
+					<p>@courseEnd.Name End</p>
+				}
+				@if (calendarItem != null)
+				{
+					<p>@calendarItem.Name</p>
+				}
+			</div>
+		}
+	</section>
+</body>
