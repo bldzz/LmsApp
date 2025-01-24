@@ -47,13 +47,14 @@ public class CourseService : ICourseService
             throw new InvalidDataException();
         }
         var existingCourse = await _uow.CourseRepo.FindByCondition(c => c.Id == id).SingleAsync();
-        if (existingCourse == null)  throw new InvalidDataException(); 
+        if (existingCourse == null)  throw new InvalidDataException();
         existingCourse.CourseName = dto.CourseName;
+        existingCourse.Description = dto.Description;
         existingCourse.StartDate = dto.StartDate;
         existingCourse.EndDate = dto.EndDate;
         _uow.CourseRepo.Update(existingCourse);
         await _uow.CompleteASync();
-        var updatedCourse = await _uow.CourseRepo.FindByCondition(c => c.Id != id).SingleAsync();
+        var updatedCourse = await _uow.CourseRepo.FindByCondition(c => c.Id == id).SingleAsync();
         var returnDto = _mapper.Map<CourseDto>(updatedCourse);
         return returnDto;
     }

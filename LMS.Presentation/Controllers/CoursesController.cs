@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Domain.Models.Entites;
 using Services.Contracts;
 using LMS.Shared.DTOs;
+using Microsoft.AspNetCore.Http;
 
 namespace LMS.Presentation.Controllers
 {
@@ -39,14 +40,36 @@ namespace LMS.Presentation.Controllers
         }
 
         // PUT: api/Courses/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutCourse(int id, CourseDto course)
+        public async Task<IActionResult> PutCourse(int id, [FromBody] CourseDto course)
         {
-            await _serviceManager.CourseService.PutCourse(id, course);
+            // Validate the course ID in the request matches the DTO
+            if (id != course.Id)
+            {
+                return BadRequest("Course ID mismatch");
+            }
 
-            return NoContent(); //TODO: måste fixa error handling
+            try
+            {
+                // Call the service to update the course
+                var updatedCourse = await _serviceManager.CourseService.PutCourse(id, course);
+
+                // Return the updated course
+                return Ok(updatedCourse);
+            }
+            catch (InvalidDataException)
+            {
+                // If course not found or invalid data, return 404 Not Found
+                return NotFound($"Course with ID {id} not found.");
+            }
+            catch (Exception ex)
+            {
+                // Log the exception and return 500 Internal Server Error
+                Console.Error.WriteLine($"Error updating course: {ex.Message}");
+                return StatusCode(StatusCodes.Status500InternalServerError, "An error occurred while updating the course.");
+            }
         }
+
 
         // POST: api/Courses
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754

@@ -1,4 +1,61 @@
-﻿@using LMS.Blazor.Client.Services
+﻿@rendermode InteractiveWebAssembly 
+
+@using LMS.Blazor.Client.Services
+@using LMS.Shared.DTOs
+@using Microsoft.AspNetCore.Authorization
+@using Microsoft.AspNetCore.Components.Authorization
+
+@* @attribute [Authorize] *@
+
+<h3>@course.CourseName</h3>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th></th>
+            <th></th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var module in course.Modules ?? Enumerable.Empty<ModuleDto>())
+        {
+            <tr>
+                <td><a href="/module/@module.Id">@module.ModuleName</a></td>
+                <td>@module.StartDate</td>
+                <td>@module.EndDate</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@code {
+    private bool loaded;
+
+    [Parameter]
+    public int CourseId { get; set; }
+    public CourseDto? course = new CourseDto();
+    public List<CourseDto> courseList;
+
+    [Inject]
+    private IApiService _apiService { get; set; } = default!;
+    [Inject]
+    private AuthenticationStateProvider AuthenticationStateProvider { get; set; } = default!;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender && !loaded)
+        {
+            loaded = true;
+            course = (await _apiService.GetAsync<CourseDto>($"api/courses/{CourseId}")) ?? null;
+            //courseList = (await _apiService.GetAsync<IEnumerable<CourseDto>>($"api/courses/?includemodules=true&includeusers=true&includedocuments=true&cascadeincludeactivities=true"))?.ToList() ?? [];
+            StateHasChanged();
+        }
+    }
+}
+
+
+    @* @using LMS.Blazor.Client.Services
 @using LMS.Shared.DTOs
 @using Microsoft.AspNetCore.Authorization
 @using Microsoft.AspNetCore.Components.Authorization
@@ -64,4 +121,4 @@ else
             StateHasChanged();
         }
     }
-}
+} *@

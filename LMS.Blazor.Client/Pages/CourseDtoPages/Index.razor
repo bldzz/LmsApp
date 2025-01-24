@@ -1,0 +1,263 @@
+﻿@* @page "/coursedtos"
+@using LMS.Shared.DTOs
+@using LMS.Blazor.Client.Services
+@inject IApiService ApiService
+@inject NavigationManager NavigationManager
+
+<PageTitle>Courses</PageTitle>
+
+<h1>Courses</h1>
+
+<p>
+    <a class="btn btn-primary" href="/coursedtos/create">Create New Course</a>
+</p>
+
+@if (!loaded)
+{
+    <p><em>Loading...</em></p>
+}
+else if (errorOccurred)
+{
+    <p class="text-danger"><em>Failed to load courses. Please try again later.</em></p>
+}
+else if (courseList == null || !courseList.Any())
+{
+    <p>No courses found.</p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Course Name</th>
+                <th>Start Date</th>
+                <th>Number of Modules</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var course in courseList)
+            {
+                <tr>
+                    <td>@course.CourseName</td>
+                    <td>@course.StartDate</td>
+                    <td>@(course.Modules?.Count ?? 0)</td>
+                    <td>
+                        <a class="btn btn-sm btn-secondary" @onclick="() => NavigateToEdit(course.Id)">Edit</a>
+                        <a class="btn btn-sm btn-info" href="@($"coursedtos/details?id={course.Id}")">Details</a>
+                        <a class="btn btn-sm btn-danger" href="@($"coursedtos/delete?id={course.Id}")">Delete</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    private List<CourseDto>? courseList;
+    private bool loaded = false;
+    private bool errorOccurred = false;
+
+    private void NavigateToEdit(int courseId)
+    {
+        NavigationManager.NavigateTo($"/coursedtos/edit?id={courseId}");
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender && !loaded)
+        {
+            loaded = true;
+
+            try
+            {
+                // Fetch the list of courses from the API
+                courseList = (await ApiService.GetAsync<IEnumerable<CourseDto>>("api/courses"))?.ToList() ?? new List<CourseDto>();
+            }
+            catch (Exception ex)
+            {
+                Console.Error.WriteLine($"Error fetching courses: {ex.Message}");
+                errorOccurred = true;
+            }
+
+            StateHasChanged();
+        }
+    }
+} *@
+
+
+
+@page "/coursedtos"
+@using LMS.Shared.DTOs
+@using LMS.Blazor.Client.Services
+@using Microsoft.AspNetCore.Components.Authorization
+@inject IApiService ApiService
+@inject NavigationManager NavigationManager
+@rendermode InteractiveWebAssembly
+
+<PageTitle>Courses</PageTitle>
+
+<h1>Courses</h1>
+
+<p>
+    <a class="btn btn-primary" href="/coursedtos/create">Create New Course</a>
+</p>
+
+@if (!loaded)
+{
+    <p><em>Loading...</em></p>
+}
+else if (errorOccurred)
+{
+    <p class="text-danger"><em>Failed to load courses. Please try again later.</em></p>
+}
+else if (courseList == null || !courseList.Any())
+{
+    <p>No courses found.</p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Course Name</th>
+                <th>Start Date</th>
+                <th>Number of Modules</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var course in courseList)
+            {
+                <tr>
+                    <td>@course.CourseName</td>
+                    <td>@course.StartDate</td>
+                    <td>@(course.Modules?.Count ?? 0)</td>
+                    <td>
+                        <a class="btn btn-sm btn-secondary" href="@($"coursedtos/edit?id={course.Id}")">Edit</a>
+                        
+
+
+                        <a class="btn btn-sm btn-info" href="@($"coursedtos/details?id={course.Id}")">Details</a>
+                        <a class="btn btn-sm btn-danger" href="@($"coursedtos/delete?id={course.Id}")">Delete</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    private List<CourseDto>? courseList;
+    private bool loaded = false;
+    private bool errorOccurred = false;
+
+    private void NavigateToEdit(int courseId)
+    {
+        NavigationManager.NavigateTo($"/coursedtos/edit/{courseId}");
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender && !loaded)
+        {
+            loaded = true;
+
+            try
+            {
+                // Fetch the list of courses from the API
+                courseList = (await ApiService.GetAsync<IEnumerable<CourseDto>>("api/courses"))?.ToList() ?? new List<CourseDto>();
+            }
+            catch (Exception ex)
+            {
+                Console.Error.WriteLine($"Error fetching courses: {ex.Message}");
+                errorOccurred = true;
+            }
+
+            StateHasChanged();
+        }
+    }
+}
+
+
+ 
+@* @page "/coursedtos"
+@using LMS.Shared.DTOs
+@using LMS.Blazor.Client.Services
+@using Microsoft.AspNetCore.Components.Authorization
+
+@inject NavigationManager NavigationManager
+
+<PageTitle>Courses</PageTitle>
+
+<h1>Courses</h1>
+
+<p>
+    <a class="btn btn-primary" href="/coursedtos/create">Create New Course</a>
+</p>
+
+@if (!loaded)
+{
+    <p><em>Loading...</em></p>
+}
+
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Course Name</th>
+                <th>Start Date</th>
+                <th>Number of Modules</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var course in courseList)
+            {
+                <tr>
+                    <td>@course.CourseName</td>
+                    <td>@course.StartDate.ToShortDateString()</td>
+                    @* <td>@(course.Modules?.Count ?? 0)</td> 
+                    
+@*                         <a class="btn btn-sm btn-secondary" href="@($"coursedtos/edit?id={course.Id}")">Edit</a>
+                        <a class="btn btn-sm btn-info" href="@($"coursedtos/details?id={course.Id}")">Details</a>
+                        <a class="btn btn-sm btn-danger" href="@($"coursedtos/delete?id={course.Id}")">Delete</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    private List<CourseDto>? courseList;
+    private bool loaded = false;
+    [Inject]
+    private ILogger<CourseDto> Logger { get; set; } = default!;
+
+    [Inject]
+    private AuthenticationStateProvider AuthenticationStateProvider { get; set; } = default!;
+
+    [Inject]
+    private IApiService ApiService { get; set; } = default!;
+
+    protected override async Task OnInitializedAsync()
+    {
+
+        try
+        {
+            Logger.LogInformation("Fetching course data...");
+
+            // Fetch the list of courses from the API
+            courseList = (await ApiService.GetAsync<IEnumerable<CourseDto>>("api/courses"))?.ToList() ?? new List<CourseDto>();
+            Console.WriteLine($"Loaded {courseList} courses.");
+            loaded = true;
+        }
+        catch (Exception ex)
+        {
+            Logger.LogError($"Error loading courses: {ex.Message}");
+            courseList = new List<CourseDto>(); // Ensure it's not null to avoid further errors
+        }
+    }
+} *@

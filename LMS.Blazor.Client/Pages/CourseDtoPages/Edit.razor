@@ -1,0 +1,616 @@
+﻿@rendermode InteractiveWebAssembly
+@page "/coursedtos/edit"
+@using LMS.Blazor.Client.Services
+@using LMS.Shared.DTOs
+@using Microsoft.AspNetCore.Components.Authorization
+@inject NavigationManager NavigationManager
+@inject IApiService ApiService
+
+
+<PageTitle>Edit</PageTitle>
+
+<h1>Edit</h1>
+
+<h2>Edit Course</h2>
+<hr />
+@if (!loaded)
+{
+    <p><em>Loading...</em></p>
+}
+else if (CourseDto is null)
+{
+    <p><em>Course not found.</em></p>
+}
+else
+{
+    <div class="row">
+        <div class="col-md-4">
+            <EditForm Model="CourseDto" OnValidSubmit="UpdateCourseDto" Enhance>
+                <DataAnnotationsValidator />
+                <ValidationSummary role="alert" />
+                <div class="mb-3">
+                    <label for="coursename" class="form-label">Course Name:</label>
+                    <InputText id="coursename" @bind-Value="CourseDto.CourseName" class="form-control" aria-required="true" />
+                    <ValidationMessage For="() => CourseDto.CourseName" class="text-danger" />
+                </div>
+                <div class="mb-3">
+                    <label for="description" class="form-label">Description:</label>
+                    <InputTextArea id="description" @bind-Value="CourseDto.Description" class="form-control" />
+                    <ValidationMessage For="() => CourseDto.Description" class="text-danger" />
+                </div>
+                <div class="mb-3">
+                    <label for="startdate" class="form-label">Start Date:</label>
+                    <InputDate id="startdate" @bind-Value="CourseDto.StartDate" class="form-control" aria-required="true" />
+                    <ValidationMessage For="() => CourseDto.StartDate" class="text-danger" />
+                </div>
+                <div class="mb-3">
+                    <label for="enddate" class="form-label">End Date:</label>
+                    <InputDate id="enddate" @bind-Value="CourseDto.EndDate" class="form-control" aria-required="true" />
+                    <ValidationMessage For="() => CourseDto.EndDate" class="text-danger" />
+                </div>
+                <button type="submit" class="btn btn-primary">Save</button>
+            </EditForm>
+        </div>
+    </div>
+}
+
+<div>
+    <a href="/coursedtos">Back to List</a>
+</div>
+
+@code {
+    [Parameter]
+    [SupplyParameterFromQuery]
+    public int Id { get; set; }
+    // public CourseDto? CourseDto { get; set; }
+    public CourseDto? CourseDto = new CourseDto();
+
+    // public CourseDto? course = new CourseDto();
+
+    private bool loaded = false;
+
+
+
+    [Inject]
+    private IApiService _apiService { get; set; } = default!;
+
+    [Inject]
+    private AuthenticationStateProvider AuthenticationStateProvider { get; set; } = default!;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender && !loaded)
+        {
+            loaded = true;
+            try
+            {
+                Console.WriteLine($"Fetching course with ID: {Id}");
+                CourseDto = (await _apiService.GetAsync<CourseDto>($"api/courses/{Id}")) ?? null;
+                if (CourseDto is null)
+                {
+                    Console.WriteLine($"Course with ID {Id} not found.");
+                    NavigationManager.NavigateTo("/notfound");
+                    return;
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.Error.WriteLine($"Error loading course: {ex.Message}");
+                NavigationManager.NavigateTo("/coursedtos");
+            }
+            StateHasChanged();
+        }
+    }
+
+    private async Task UpdateCourseDto()
+    {
+        try
+        {
+            // Call PUT endpoint
+            await _apiService.PutAsync<CourseDto, CourseDto>($"api/courses/{Id}", CourseDto);
+
+            NavigationManager.NavigateTo("/coursedtos");
+        }
+        catch (Exception ex)
+        {
+            Console.Error.WriteLine($"Error updating course: {ex.Message}");
+        }
+    }
+} 
+
+
+
+@* @page "/coursedtos/edit/{Id:int}"
+@using LMS.Blazor.Client.Services
+@using LMS.Shared.DTOs
+@inject NavigationManager NavigationManager
+@inject IApiService ApiService
+@rendermode InteractiveWebAssembly
+
+<PageTitle>Edit</PageTitle>
+
+<h1>Edit</h1>
+
+<h2>Edit Course</h2>
+<hr />
+@if (!loaded)
+{
+    <p><em>Loading...</em></p>
+}
+else if (CourseDto is null)
+{
+    <p><em>Course not found.</em></p>
+}
+else
+{
+    <div class="row">
+        <div class="col-md-4">
+            <EditForm Model="CourseDto" OnValidSubmit="UpdateCourseDto">
+                <DataAnnotationsValidator />
+                <ValidationSummary role="alert" />
+                <div class="mb-3">
+                    <label for="coursename" class="form-label">Course Name:</label>
+                    <InputText id="coursename" @bind-Value="CourseDto.CourseName" class="form-control" aria-required="true" />
+                    <ValidationMessage For="() => CourseDto.CourseName" class="text-danger" />
+                </div>
+                <div class="mb-3">
+                    <label for="description" class="form-label">Description:</label>
+                    <InputTextArea id="description" @bind-Value="CourseDto.Description" class="form-control" />
+                    <ValidationMessage For="() => CourseDto.Description" class="text-danger" />
+                </div>
+                <div class="mb-3">
+                    <label for="startdate" class="form-label">Start Date:</label>
+                    <InputDate id="startdate" @bind-Value="CourseDto.StartDate" class="form-control" aria-required="true" />
+                    <ValidationMessage For="() => CourseDto.StartDate" class="text-danger" />
+                </div>
+                <div class="mb-3">
+                    <label for="enddate" class="form-label">End Date:</label>
+                    <InputDate id="enddate" @bind-Value="CourseDto.EndDate" class="form-control" aria-required="true" />
+                    <ValidationMessage For="() => CourseDto.EndDate" class="text-danger" />
+                </div>
+                <div class="mb-3">
+                    <label for="moduleids" class="form-label">Module IDs (comma-separated):</label>
+                    <InputText id="moduleids" @bind-Value="ModuleIdsInput" class="form-control" />
+                    <ValidationMessage For="() => ModuleIdsInput" class="text-danger" />
+                </div>
+                <button type="submit" class="btn btn-primary">Save</button>
+            </EditForm>
+        </div>
+    </div>
+}
+
+<div>
+    <a href="/coursedtos">Back to List</a>
+</div>
+
+@code {
+    [Parameter]
+    public int Id { get; set; }
+    private CourseDto? CourseDto { get; set; }
+    private string ModuleIdsInput { get; set; } = string.Empty;
+
+    private bool loaded = false;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender && !loaded)
+        {
+            try
+            {
+                loaded = true;
+
+                // Fetch the course to edit
+                CourseDto = await ApiService.GetAsync<CourseDto>($"api/courses/{Id}");
+                if (CourseDto is null)
+                {
+                    NavigationManager.NavigateTo("/notfound");
+                    return;
+                }
+
+                // Initialize ModuleIdsInput
+                ModuleIdsInput = string.Join(", ", CourseDto.Modules?.Select(m => m.Id) ?? Enumerable.Empty<int>());
+            }
+            catch (Exception ex)
+            {
+                Console.Error.WriteLine($"Error loading course: {ex.Message}");
+                NavigationManager.NavigateTo("/coursedtos");
+            }
+            StateHasChanged();
+        }
+    }
+
+    private async Task UpdateCourseDto()
+    {
+        try
+        {
+            // Parse and update modules
+            var moduleIds = ModuleIdsInput.Split(',', StringSplitOptions.RemoveEmptyEntries)
+                                          .Select(id => int.TryParse(id.Trim(), out var result) ? result : 0)
+                                          .Where(id => id > 0)
+                                          .ToList();
+
+            CourseDto.Modules = moduleIds.Select(id => new ModuleDto { Id = id }).ToList();
+
+            // Call PUT endpoint
+            await ApiService.PutAsync<CourseDto, CourseDto>($"api/courses/{Id}", CourseDto);
+
+            NavigationManager.NavigateTo("/coursedtos");
+        }
+        catch (Exception ex)
+        {
+            Console.Error.WriteLine($"Error updating course: {ex.Message}");
+        }
+    }
+}
+
+
+@* 
+
+@page "/coursedtos/edit/{Id:int}"
+@using LMS.Blazor.Client.Services
+@using LMS.Shared.DTOs
+@using Microsoft.AspNetCore.Components.Authorization
+@inject NavigationManager NavigationManager
+@inject IApiService ApiService
+@rendermode InteractiveWebAssembly
+
+<PageTitle>Edit</PageTitle>
+
+<h1>Edit</h1>
+
+<h2>Edit Course</h2>
+<hr />
+@if (!loaded)
+{
+    <p><em>don't want to show!!!</em></p>
+}
+else if ( CourseDto is null)
+{
+    <p><em>Loading...</em></p>
+
+}
+else
+{
+    <div class="row">
+        <div class="col-md-4">
+            <EditForm Model="CourseDto" OnValidSubmit="UpdateCourseDto">
+                <DataAnnotationsValidator />
+                <ValidationSummary role="alert" />
+                <div class="mb-3">
+                    <label for="coursename" class="form-label">Course Name:</label>
+                    <InputText id="coursename" @bind-Value="CourseDto.CourseName" class="form-control" aria-required="true" />
+                    <ValidationMessage For="() => CourseDto.CourseName" class="text-danger" />
+                </div>
+                <div class="mb-3">
+                    <label for="description" class="form-label">Description:</label>
+                    <InputTextArea id="description" @bind-Value="CourseDto.Description" class="form-control" />
+                    <ValidationMessage For="() => CourseDto.Description" class="text-danger" />
+                </div>
+                <div class="mb-3">
+                    <label for="startdate" class="form-label">Start Date:</label>
+                    <InputDate id="startdate" @bind-Value="CourseDto.StartDate" class="form-control" aria-required="true" />
+                    <ValidationMessage For="() => CourseDto.StartDate" class="text-danger" />
+                </div>
+                <div class="mb-3">
+                    <label for="enddate" class="form-label">End Date:</label>
+                    <InputDate id="enddate" @bind-Value="CourseDto.EndDate" class="form-control" aria-required="true" />
+                    <ValidationMessage For="() => CourseDto.EndDate" class="text-danger" />
+                </div>
+                <div class="mb-3">
+                    <label for="moduleids" class="form-label">Module IDs (comma-separated):</label>
+                    <InputText id="moduleids" @bind-Value="ModuleIdsInput" class="form-control" />
+                    <ValidationMessage For="() => ModuleIdsInput" class="text-danger" />
+                </div>
+                <button type="submit" class="btn btn-primary">Save</button>
+            </EditForm>
+        </div>
+    </div>
+}
+
+<div>
+    <a href="/coursedtos">Back to List</a>
+</div>
+
+@code {
+    [Parameter]
+    public int Id { get; set; }
+    private CourseDto? CourseDto { get; set; }
+    private string ModuleIdsInput { get; set; } = string.Empty;
+
+    private bool loaded = false;
+
+    [Inject]
+    private AuthenticationStateProvider AuthenticationStateProvider { get; set; } = default!;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+
+        if (firstRender && !loaded)
+        {
+            loaded = true;
+
+            // try
+            // {
+                // Fetch the course to edit
+                CourseDto = await ApiService.GetAsync<CourseDto>($"api/courses/{Id}");
+                if (CourseDto is null)
+                {
+                    NavigationManager.NavigateTo("notfound");
+                    return;
+                }
+
+                // Initialize ModuleIdsInput with a comma-separated list of module IDs
+                ModuleIdsInput = string.Join(", ", CourseDto.Modules?.Select(m => m.Id) ?? Enumerable.Empty<int>());
+            // }
+            // catch (Exception ex)
+            // {
+            //     Console.Error.WriteLine($"Error loading course: {ex.Message}");
+            //     NavigationManager.NavigateTo("/coursedtos");
+            // }
+            StateHasChanged();
+        }
+    }
+
+    private async Task UpdateCourseDto()
+    {
+        try
+        {
+            // Parse ModuleIdsInput and update the Modules list
+            var moduleIds = ModuleIdsInput.Split(',', StringSplitOptions.RemoveEmptyEntries)
+                                          .Select(id => int.TryParse(id.Trim(), out var result) ? result : 0)
+                                          .Where(id => id > 0)
+                                          .ToList();
+
+            CourseDto.Modules = moduleIds.Select(id => new ModuleDto { Id = id }).ToList();
+
+            // Call the PUT endpoint to update the course
+             await ApiService.PutAsync<CourseDto, CourseDto>($"api/courses/{Id}", CourseDto);
+
+            // Call the PUT endpoint to update the course
+            // await ApiService.PostAsync<CourseDto, CourseDto>($"api/courses/{Id}", CourseDto);
+
+            NavigationManager.NavigateTo("/coursedtos");
+        }
+        catch (Exception ex)
+        {
+            Console.Error.WriteLine($"Error updating course: {ex.Message}");
+        }
+    }
+}
+ *@
+
+
+@* @page "/coursedtos/edit"
+@using LMS.Blazor.Client.Services
+@using LMS.Shared.DTOs
+@inject NavigationManager NavigationManager
+@inject IApiService ApiService
+@rendermode InteractiveWebAssembly
+
+<PageTitle>Edit</PageTitle>
+
+<h1>Edit</h1>
+
+<h2>Edit Course</h2>
+<hr />
+@if (CourseDto is null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <div class="row">
+        <div class="col-md-4">
+            <EditForm Model="CourseDto" OnValidSubmit="UpdateCourseDto">
+                <DataAnnotationsValidator />
+                <ValidationSummary role="alert" />
+                <div class="mb-3">
+                    <label for="coursename" class="form-label">Course Name:</label>
+                    <InputText id="coursename" @bind-Value="CourseDto.CourseName" class="form-control" aria-required="true" />
+                    <ValidationMessage For="() => CourseDto.CourseName" class="text-danger" />
+                </div>
+                <div class="mb-3">
+                    <label for="description" class="form-label">Description:</label>
+                    <InputTextArea id="description" @bind-Value="CourseDto.Description" class="form-control" />
+                    <ValidationMessage For="() => CourseDto.Description" class="text-danger" />
+                </div>
+                <div class="mb-3">
+                    <label for="startdate" class="form-label">Start Date:</label>
+                    <InputDate id="startdate" @bind-Value="CourseDto.StartDate" class="form-control" aria-required="true" />
+                    <ValidationMessage For="() => CourseDto.StartDate" class="text-danger" />
+                </div>
+                <div class="mb-3">
+                    <label for="enddate" class="form-label">End Date:</label>
+                    <InputDate id="enddate" @bind-Value="CourseDto.EndDate" class="form-control" aria-required="true" />
+                    <ValidationMessage For="() => CourseDto.EndDate" class="text-danger" />
+                </div>
+                <div class="mb-3">
+                    <label for="moduleids" class="form-label">Module IDs (comma-separated):</label>
+                    <InputText id="moduleids" @bind-Value="ModuleIdsInput" class="form-control" />
+                    <ValidationMessage For="() => ModuleIdsInput" class="text-danger" />
+                </div>
+                <button type="submit" class="btn btn-primary">Save</button>
+            </EditForm>
+        </div>
+    </div>
+}
+
+<div>
+    <a href="/coursedtos">Back to List</a>
+</div>
+
+@code {
+    [Parameter]
+    public int Id { get; set; }
+    private CourseDto? CourseDto { get; set; }
+    private string ModuleIdsInput { get; set; } = string.Empty;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            // Fetch the course to edit
+            CourseDto = await ApiService.GetAsync<CourseDto>($"api/courses/{Id}");
+            if (CourseDto is null)
+            {
+                NavigationManager.NavigateTo("notfound");
+                return;
+            }
+
+            // Initialize ModuleIdsInput with a comma-separated list of module IDs
+            ModuleIdsInput = string.Join(", ", CourseDto.Modules?.Select(m => m.Id) ?? new List<int>());
+        }
+        catch (Exception ex)
+        {
+            Console.Error.WriteLine($"Error loading course: {ex.Message}");
+            NavigationManager.NavigateTo("/coursedtos");
+        }
+    }
+
+    private async Task UpdateCourseDto()
+    {
+        try
+        {
+            // Parse ModuleIdsInput and update the Modules list
+            var moduleIds = ModuleIdsInput.Split(',', StringSplitOptions.RemoveEmptyEntries)
+                                          .Select(id => int.TryParse(id.Trim(), out var result) ? result : 0)
+                                          .Where(id => id > 0)
+                                          .ToList();
+
+            CourseDto.Modules = moduleIds.Select(id => new ModuleDto { Id = id }).ToList();
+
+            // Call the PUT endpoint to update the course
+            await ApiService.PostAsync<CourseDto, CourseDto>($"api/courses/{Id}", CourseDto);
+
+            NavigationManager.NavigateTo("/coursedtos");
+        }
+        catch (Exception ex)
+        {
+            Console.Error.WriteLine($"Error updating course: {ex.Message}");
+        }
+    }
+} *@
+
+
+
+
+@* @page "/coursedtos/edit"
+@using LMS.Shared.DTOs
+@inject NavigationManager NavigationManager
+@rendermode InteractiveWebAssembly
+
+<PageTitle>Edit</PageTitle>
+
+<h1>Edit</h1>
+
+<h2>CourseDto</h2>
+<hr />
+@if (CourseDto is null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <div class="row">
+        <div class="col-md-4">
+            <EditForm method="post" Model="CourseDto" OnValidSubmit="UpdateCourseDto" FormName="edit" Enhance>
+                <DataAnnotationsValidator />
+                <ValidationSummary role="alert" />
+                <input type="hidden" name="CourseDto.Id" value="@CourseDto.Id" />
+                <div class="mb-3">
+                    <label for="coursename" class="form-label">CourseName:</label>
+                    <InputText id="coursename" @bind-Value="CourseDto.CourseName" class="form-control" aria-required="true" />
+                    <ValidationMessage For="() => CourseDto.CourseName" class="text-danger" />
+                </div>
+                <div class="mb-3">
+                    <label for="startdate" class="form-label">StartDate:</label>
+                    <InputDate id="startdate" @bind-Value="CourseDto.StartDate" class="form-control" aria-required="true" />
+                    <ValidationMessage For="() => CourseDto.StartDate" class="text-danger" />
+                </div>
+                <div class="mb-3">
+                    <label for="moduleids" class="form-label">ModuleIds:</label>
+                    <InputText id="moduleids" @bind-Value="ModuleIdsInput" class="form-control" aria-required="true" />
+                    <ValidationMessage For="() => ModuleIdsInput" class="text-danger" />
+                </div>
+                <button type="submit" class="btn btn-primary">Save</button>
+            </EditForm>
+        </div>
+    </div>
+}
+
+<div>
+    <a href="/coursedtos">Back to List</a>
+</div>
+
+@code {
+    [SupplyParameterFromQuery]
+    private int Id { get; set; }
+
+    [SupplyParameterFromForm]
+    private CourseDto? CourseDto { get; set; }
+
+    private string ModuleIdsInput { get; set; } = string.Empty; // Temporary string for ModuleIds
+
+    protected override async Task OnInitializedAsync()
+    {
+        using var context = DbFactory.CreateDbContext();
+        CourseDto ??= await context.CourseDto.FirstOrDefaultAsync(m => m.Id == Id);
+
+        if (CourseDto is null)
+        {
+            NavigationManager.NavigateTo("notfound");
+        }
+        else
+        {
+            // Initialize the ModuleIdsInput with a comma-separated string
+            ModuleIdsInput = string.Join(", ", CourseDto.Modules ?? new List<ModuleDto>());
+        }
+    }
+
+    // To protect from overposting attacks, enable the specific properties you want to bind to.
+    // For more information, see https://learn.microsoft.com/aspnet/core/blazor/forms/#mitigate-overposting-attacks.
+    private async Task UpdateCourseDto()
+    {
+        using var context = DbFactory.CreateDbContext();
+
+        // Convert ModuleIdsInput to List<int> and update CourseDto.ModuleIds
+        List<int> moduleIdsList = ModuleIdsInput.Split(',', StringSplitOptions.RemoveEmptyEntries)
+                                             .Select(id => int.TryParse(id.Trim(), out var result) ? result : 0)
+                                             .Where(id => id > 0) // Filter out invalid IDs
+                                             .ToList();
+
+        List<ModuleDto> moduleDtos = new List<ModuleDto>();
+        foreach (int moduleId in moduleIdsList)
+        {
+            moduleDtos.Add(new ModuleDto { Id = moduleId });
+        }
+        CourseDto.Modules = moduleDtos;
+
+        context.Attach(CourseDto).State = EntityState.Modified;
+
+        try
+        {
+            await context.SaveChangesAsync();
+        }
+        catch (DbUpdateConcurrencyException)
+        {
+            if (!CourseDtoExists(CourseDto.Id))
+            {
+                NavigationManager.NavigateTo("notfound");
+            }
+            else
+            {
+                throw;
+            }
+        }
+
+        NavigationManager.NavigateTo("/coursedtos");
+    }
+
+    private bool CourseDtoExists(int id)
+    {
+        using var context = DbFactory.CreateDbContext();
+        return context.CourseDto.Any(e => e.Id == id);
+    }
+}
+ *@

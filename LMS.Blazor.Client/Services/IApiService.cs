@@ -10,6 +10,11 @@
         /// <param name="endpoint">The API endpoint to call.</param>
         /// <param name="payload">The request payload (optional for GET requests).</param>
         /// <returns>A task containing the response payload.</returns>
-        Task<TResponse?> CallApiAsync<TRequest, TResponse>(string endpoint, HttpMethod method, TRequest? payload = default);
+        //Task<TResponse?> CallApiAsync<TRequest, TResponse>(string endpoint, HttpMethod method, TRequest? payload = default);
+
+
+        Task<TResponse?> GetAsync<TResponse>(string endpoint);
+        Task<TResponse?> PostAsync<TRequest, TResponse>(string endpoint, TRequest dto);
+        Task<TResponse?> PutAsync<TRequest, TResponse>(string endpoint, TRequest dto);
     }
 }

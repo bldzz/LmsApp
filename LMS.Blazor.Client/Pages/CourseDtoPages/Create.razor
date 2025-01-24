@@ -1,9 +1,9 @@
-﻿@* @page "/coursedtos/create"
+﻿@page "/coursedtos/create"
 @using LMS.Blazor.Client.Services
 @using LMS.Shared.DTOs
 @inject IApiService ApiService
 @inject NavigationManager NavigationManager
-
+@rendermode InteractiveWebAssembly
 
 <PageTitle>Create</PageTitle>
 
@@ -12,41 +12,40 @@
 <hr />
 <div class="row">
     <div class="col-md-6">
-        <!-- Add the @formname attribute -->
-        <EditForm method="post" Model="CourseDto" OnValidSubmit="AddCourseDto" @formname="CreateCourseForm" Enhance>
+        <EditForm Model="CourseDto" OnValidSubmit="AddCourseDto">
             <DataAnnotationsValidator />
             <ValidationSummary class="text-danger" />
-            
+
             <div class="mb-3">
                 <label for="coursename" class="form-label">Course Name:</label>
                 <InputText id="coursename" @bind-Value="CourseDto.CourseName" class="form-control" />
                 <ValidationMessage For="() => CourseDto.CourseName" class="text-danger" />
             </div>
-            
+
             <div class="mb-3">
                 <label for="description" class="form-label">Description:</label>
                 <InputTextArea id="description" @bind-Value="CourseDto.Description" class="form-control" />
                 <ValidationMessage For="() => CourseDto.Description" class="text-danger" />
             </div>
-            
+
             <div class="mb-3">
                 <label for="startdate" class="form-label">Start Date:</label>
                 <InputDate id="startdate" @bind-Value="CourseDto.StartDate" class="form-control" />
                 <ValidationMessage For="() => CourseDto.StartDate" class="text-danger" />
             </div>
-            
+
             <div class="mb-3">
                 <label for="enddate" class="form-label">End Date:</label>
                 <InputDate id="enddate" @bind-Value="CourseDto.EndDate" class="form-control" />
                 <ValidationMessage For="() => CourseDto.EndDate" class="text-danger" />
             </div>
-            
+
             <div class="mb-3">
                 <label for="moduleids" class="form-label">Module IDs (comma-separated):</label>
                 <InputText id="moduleids" @bind-Value="ModuleIdsInput" class="form-control" />
                 <ValidationMessage For="() => ModuleIdsInput" class="text-danger" />
             </div>
-            
+
             <button type="submit" class="btn btn-primary">Create Course</button>
         </EditForm>
     </div>
@@ -64,25 +63,26 @@
     {
         try
         {
+            // Parse and process module IDs from input
             var moduleIds = ModuleIdsInput.Split(',', StringSplitOptions.RemoveEmptyEntries)
                                           .Select(id => int.TryParse(id.Trim(), out var result) ? result : 0)
                                           .Where(id => id > 0)
                                           .ToList();
 
-            var modules = new List<ModuleDto>();
-            foreach (var moduleId in moduleIds)
+            CourseDto.Modules = moduleIds.Select(id => new ModuleDto { Id = id }).ToList();
+
+            // Use the POST endpoint to create the course
+            var response = await ApiService.PostAsync<CourseDto, CourseDto>("api/courses", CourseDto);
+
+            if (response != null)
             {
-                var module = await ApiService.CallApiAsync<ModuleDto>($"api/modules/{moduleId}");
-                if (module != null)
-                {
-                    modules.Add(module);
-                }
+                Console.WriteLine("Course created successfully.");
+                NavigationManager.NavigateTo("/coursedtos");
             }
-
-            CourseDto.Modules = modules;
-
-            await ApiService.CallApiAsync("api/courses", CourseDto); // Assuming POST
-            NavigationManager.NavigateTo("/coursedtos");
+            else
+            {
+                Console.WriteLine("Failed to create the course.");
+            }
         }
         catch (Exception ex)
         {
@@ -90,4 +90,4 @@
         }
     }
 }
- *@
+

@@ -11,8 +11,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace LMS.Infrastructure.Migrations
 {
     [DbContext(typeof(LmsContext))]
-    [Migration("20250117140535_UpdatedSeed")]
-    partial class UpdatedSeed
+    [Migration("20250121113731_Init5")]
+    partial class Init5
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -308,19 +308,19 @@ namespace LMS.Infrastructure.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "61e57b8b-e67b-4a45-b773-700fec203703",
+                            Id = "e39c12fb-88df-472d-ad76-991274b5e922",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "713d3078-9e62-4f0d-be5d-6de192bfdbef",
+                            Id = "23a3bc0b-47db-431e-b00f-20064d8fb427",
                             Name = "Teacher",
                             NormalizedName = "TEACHER"
                         },
                         new
                         {
-                            Id = "22e53da2-873e-44ef-872e-c36424e5821d",
+                            Id = "e7362a15-9169-42bf-bbaa-04976d6f7919",
                             Name = "Student",
                             NormalizedName = "STUDENT"
                         });
