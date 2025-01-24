@@ -73,7 +73,7 @@ public static class SeedData
         var faker = new Faker<ApplicationUser>("sv").Rules((faker, user) =>
         {
             user.Email = faker.Person.Email;
-            user.UserName = faker.Person.Email;
+            user.UserName = faker.Person.UserName;
             user.FirstName = faker.Name.FirstName();
             user.LastName = faker.Name.LastName();
         });
