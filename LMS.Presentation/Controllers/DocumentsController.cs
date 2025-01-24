@@ -18,7 +18,6 @@ namespace LMS.Presentation.Controllers
 
         // GET: api/Documents
         [HttpGet]
-        // [Authorize(Roles = "Admin, Teacher")]
         public async Task<ActionResult<IEnumerable<DocumentDto>>> GetDocuments()
         {
             return Ok(await _serviceManager.DocumentService.GetAllAsync());
@@ -26,7 +25,6 @@ namespace LMS.Presentation.Controllers
 
         // GET: api/Documents/5
         [HttpGet("{id}")]
-        // [Authorize(Roles = "Admin, Teacher")]
         public async Task<ActionResult<DocumentDto>> GetDocument(int id)
         {
             var document = await _serviceManager.DocumentService.GetByIdAsync(id);
@@ -39,7 +37,6 @@ namespace LMS.Presentation.Controllers
 
         // PUT: api/Documents/5
         [HttpPut("{id}")]
-        // [Authorize(Roles = "Admin, Teacher")]
         public async Task<IActionResult> PutDocument(int id, DocumentDto document)
         {
             await _serviceManager.DocumentService.UpdateAsync(id, document);
@@ -48,23 +45,31 @@ namespace LMS.Presentation.Controllers
 
         // POST: api/Documents/upload
         [HttpPost("upload")]
-        // [Authorize(Roles = "Admin, Teacher")]
-        public async Task<ActionResult<DocumentDto>> UploadDocument([FromForm] DocumentCreationDto document)
+        [Consumes("multipart/form-data")] // Explicitly tell Swagger this is a file upload
+        public async Task<IActionResult> UploadDocument([FromForm] FileUploadDto uploadDto)
         {
-            try
+            if (uploadDto.File == null || uploadDto.File.Length == 0)
             {
-                var newDocument = await _serviceManager.DocumentService.CreateAsync(document);
-                return CreatedAtAction("GetDocument", new { id = newDocument.Id }, newDocument);
+                return BadRequest("No file uploaded.");
             }
-            catch (Exception ex)
+
+            // Example logic to save the file
+            var uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads");
+            Directory.CreateDirectory(uploadsFolder); // Ensure the folder exists
+
+            var uniqueFileName = $"{Guid.NewGuid()}_{Path.GetFileName(uploadDto.File.FileName)}";
+            var filePath = Path.Combine(uploadsFolder, uniqueFileName);
+
+            using (var stream = new FileStream(filePath, FileMode.Create))
             {
-                return StatusCode(500, new { message = "An error occurred while uploading the document.", details = ex.Message });
+                await uploadDto.File.CopyToAsync(stream);
             }
+
+            return Ok(new { FileName = uniqueFileName, FilePath = filePath });
         }
 
         // DELETE: api/Documents/5
         [HttpDelete("{id}")]
-        // [Authorize(Roles = "Admin, Teacher")]
         public async Task<IActionResult> DeleteDocument(int id)
         {
             try
@@ -106,7 +111,6 @@ namespace LMS.Presentation.Controllers
                 var fileBytes = await System.IO.File.ReadAllBytesAsync(document.FilePath);
 
                 // Return file with proper headers
-                // Add the header using the indexer
                 Response.Headers["Access-Control-Expose-Headers"] = "Content-Disposition";
                 return File(fileBytes, document.ContentType, document.Name);
             }
