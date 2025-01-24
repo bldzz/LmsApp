@@ -9,9 +9,8 @@ namespace LMS.Infrastructure.Data;
 
 public static class SeedData
 {
-    private static UserManager<ApplicationUser> userManager = null!;
-    private static RoleManager<IdentityRole> roleManager = null!;
-    private const string adminRole = "Admin";
+    private static UserManager<ApplicationUser> _userManager = null!;
+    private static RoleManager<IdentityRole> _roleManager = null!;
 
     public static async Task SeedDataAsync(this IApplicationBuilder builder)
     {
@@ -22,25 +21,30 @@ public static class SeedData
 
             if (await db.Users.AnyAsync()) return;
 
-            userManager = serviceProvider.GetRequiredService<UserManager<ApplicationUser>>() ?? throw new ArgumentNullException(nameof(userManager));
-            roleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole>>() ?? throw new ArgumentNullException(nameof(roleManager));
+            _userManager = serviceProvider.GetRequiredService<UserManager<ApplicationUser>>() 
+                           ?? throw new InvalidOperationException("UserManager service is not available.");
+            _roleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole>>() 
+                           ?? throw new InvalidOperationException("RoleManager service is not available.");
 
-            try //TODO: något går fel här när man seedar ny databas
+            try
             {
                 // Seed roles
-                await CreateRolesAsync(new[] { adminRole, "Student", "Teacher" });
+                await CreateRolesAsync(new[] { "Admin", "Student", "Teacher" });
 
                 // Generate users and assign roles
                 var users = await GenerateUsersAsync(5);
 
                 // Seed courses, modules, and documents
                 await SeedCoursesAndModulesAsync(db, users);
-
                 await db.SaveChangesAsync();
+            }
+            catch (DbUpdateException ex)
+            {
+                throw new InvalidOperationException("An error occurred while updating the database.", ex);
             }
             catch (Exception ex)
             {
-                throw new Exception("Error seeding database", ex);
+                throw new InvalidOperationException("An unexpected error occurred during database seeding.", ex);
             }
         }
     }
@@ -49,11 +53,13 @@ public static class SeedData
     {
         foreach (var roleName in roleNames)
         {
-            if (await roleManager.RoleExistsAsync(roleName)) continue;
-            var role = new IdentityRole { Name = roleName, NormalizedName = roleName.ToUpper() };
-            var result = await roleManager.CreateAsync(role);
+            if (await _roleManager.RoleExistsAsync(roleName)) continue;
 
-            if (!result.Succeeded) throw new Exception(string.Join("\n", result.Errors));
+            var role = new IdentityRole { Name = roleName, NormalizedName = roleName.ToUpper() };
+            var result = await _roleManager.CreateAsync(role);
+
+            if (!result.Succeeded)
+                throw new InvalidOperationException($"Failed to create role '{roleName}': {string.Join("\n", result.Errors.Select(e => e.Description))}");
         }
     }
 
@@ -71,20 +77,23 @@ public static class SeedData
 
         var passWord = "BytMig123!";
         if (string.IsNullOrEmpty(passWord))
-            throw new Exception("Password not found");
+            throw new InvalidOperationException("Password cannot be null or empty.");
 
         foreach (var user in users)
         {
-            var result = await userManager.CreateAsync(user, passWord);
-            if (!result.Succeeded) throw new Exception(string.Join("\n", result.Errors));
+            var result = await _userManager.CreateAsync(user, passWord);
+            if (!result.Succeeded)
+            {
+                throw new InvalidOperationException($"Failed to create user '{user.UserName}': {string.Join("\n", result.Errors.Select(e => e.Description))}");
+            }
 
             // Assign "Student" role to all generated users
-            await userManager.AddToRoleAsync(user, "Student");
+            await _userManager.AddToRoleAsync(user, "Student");
         }
 
         return users;
     }
-
+    
     private static async Task SeedCoursesAndModulesAsync(LmsContext db, List<ApplicationUser> users)
     {
         var faker = new Faker();
@@ -104,6 +113,7 @@ public static class SeedData
         }
 
         await db.Courses.AddRangeAsync(courses);
+        await db.SaveChangesAsync();
 
         // Seed modules
         var modules = new List<Module>();
@@ -125,6 +135,7 @@ public static class SeedData
         }
 
         await db.Modules.AddRangeAsync(modules);
+        await db.SaveChangesAsync();
 
         // Seed documents
         var documents = new List<Document>();
@@ -146,5 +157,6 @@ public static class SeedData
         }
 
         await db.Documents.AddRangeAsync(documents);
+        await db.SaveChangesAsync(); // Save all changes at the end
     }
 }
